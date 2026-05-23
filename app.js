@@ -13,7 +13,36 @@ const INITIAL_BLOG_ARTICLES = [
     date: "15 Mei 2026",
     author: "Tim Mentor Robotik",
     excerpt: "Langkah pertama Anda memasuki dunia mikroprosesor. Pelajari arsitektur Arduino Uno, instalasi IDE, dan cara membuat LED berkedip (Blink).",
-    content: `<h3>Pengenalan Arduino</h3><p>Arduino Uno adalah papan mikrokontroler berbasis ATmega328P. Ini adalah papan sirkuit ramah pemula terpopuler di dunia yang digunakan untuk mengendalikan sensor, motor, dan lampu led. Menghubungkan dunia digital dengan dunia fisik sangat mudah dengan Arduino.</p><h3>Struktur Kode Arduino</h3><p>Setiap program Arduino (disebut sketch) terdiri dari dua fungsi utama:</p><pre><code>void setup() {\n  // Dijalankan sekali saat Arduino menyala\n  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  // Dijalankan berulang terus menerus\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}</code></pre><h3>Langkah Awal Memulai</h3><ol><li>Koneksikan Arduino Uno ke komputer via kabel USB tipe B.</li><li>Unduh dan instal Arduino IDE dari situs resmi.</li><li>Pilih port dan jenis papan di menu Alat -> Port.</li><li>Tulis kode program Blink sederhana di atas, lalu klik tombol Upload (panah kanan).</li><li>Selamat! Lampu indikator bawaan (LED 13) di papan Arduino Anda sekarang berkedip setiap 1 detik.</li></ol>`
+    content: `### Pengenalan Arduino
+
+Arduino Uno adalah papan mikrokontroler berbasis ATmega328P. Ini adalah papan sirkuit ramah pemula terpopuler di dunia yang digunakan untuk mengendalikan sensor, motor, dan lampu led. Menghubungkan dunia digital dengan dunia fisik sangat mudah dengan Arduino.
+
+### Struktur Kode Arduino
+
+Setiap program Arduino (disebut sketch) terdiri dari dua fungsi utama:
+
+\`\`\`javascript
+void setup() {
+  // Dijalankan sekali saat Arduino menyala
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  // Dijalankan berulang terus menerus
+  digitalWrite(13, HIGH);
+  delay(1000);
+  digitalWrite(13, LOW);
+  delay(1000);
+}
+\`\`\`
+
+### Langkah Awal Memulai
+
+1. Koneksikan Arduino Uno ke komputer via kabel USB tipe B.
+2. Unduh dan instal Arduino IDE dari situs resmi.
+3. Pilih port dan jenis papan di menu Alat -> Port.
+4. Tulis kode program Blink sederhana di atas, lalu klik tombol Upload (panah kanan).
+5. Selamat! Lampu indikator bawaan (LED 13) di papan Arduino Anda sekarang berkedip setiap 1 detik.`
   },
   {
     id: 2,
@@ -22,7 +51,21 @@ const INITIAL_BLOG_ARTICLES = [
     date: "10 Mei 2026",
     author: "Faris Ramadhan (Ketua Divisi Robotika)",
     excerpt: "Panduan praktis merakit robot pengikut garis tanpa pemrograman. Memanfaatkan sensor LDR, komparator LM358, dan driver motor transistor.",
-    content: `<h3>Konsep Dasar Robot Pengikut Garis</h3><p>Robot Line Follower analog mendeteksi perbedaan kontras warna permukaan jalan (biasanya garis hitam di atas permukaan putih) menggunakan sensor cahaya dan mengendalikan motor secara langsung tanpa otak mikrokontroler. Ini adalah proyek fondasi mekanika dan elektronika dasar terbaik.</p><h3>Komponen yang Diperlukan</h3><ul><li>Sensor Photodiode atau LDR (Light Dependent Resistor) 2 buah.</li><li>IC Op-Amp Comparator LM358 sebagai pengolah logika pembanding tegangan.</li><li>Transistor TIP41C atau MOSFET sebagai saklar driver motor DC.</li><li>Sepasang Motor DC dengan Gearbox dan Roda.</li><li>Casing/Chassis Akrilik dan Baterai Lithium 18650 2 Cell (7.4v).</li></ul><h3>Bagaimana Cara Kerjanya?</h3><p>Ketika sensor sebelah kiri mendeteksi permukaan hitam (garis lintasan), LDR menerima sedikit pantulan cahaya sehingga nilai resistansinya melonjak tinggi. IC pembanding mendeteksi perubahan ini dan memicu driver motor untuk memutar motor kanan lebih cepat, sehingga robot berbelok kembali ke tengah garis lintasan. Sederhana, cepat, dan responsif!</p>`
+    content: `### Konsep Dasar Robot Pengikut Garis
+
+Robot Line Follower analog mendeteksi perbedaan kontras warna permukaan jalan (biasanya garis hitam di atas permukaan putih) menggunakan sensor cahaya dan mengendalikan motor secara langsung tanpa otak mikrokontroler. Ini adalah proyek fondasi mekanika dan elektronika dasar terbaik.
+
+### Komponen yang Diperlukan
+
+- Sensor Photodiode atau LDR (Light Dependent Resistor) 2 buah.
+- IC Op-Amp Comparator LM358 sebagai pengolah logika pembanding tegangan.
+- Transistor TIP41C atau MOSFET sebagai saklar driver motor DC.
+- Sepasang Motor DC dengan Gearbox dan Roda.
+- Casing/Chassis Akrilik dan Baterai Lithium 18650 2 Cell (7.4v).
+
+### Bagaimana Cara Kerjanya?
+
+Ketika sensor sebelah kiri mendeteksi permukaan hitam (garis lintasan), LDR menerima sedikit pantulan cahaya sehingga nilai resistansinya melonjak tinggi. IC pembanding mendeteksi perubahan ini dan memicu driver motor untuk memutar motor kanan lebih cepat, sehingga robot berbelok kembali ke tengah garis lintasan. Sederhana, cepat, dan responsif!`
   },
   {
     id: 3,
@@ -31,7 +74,17 @@ const INITIAL_BLOG_ARTICLES = [
     date: "02 Mei 2026",
     author: "Zaskia Amalia (Alumni & Mahasiswa Teknik Elektro)",
     excerpt: "Bagaimana mengontrol pergerakan robot dari mana saja di seluruh dunia menggunakan protokol MQTT, ESP32, dan dashboard real-time.",
-    content: `<h3>Apa itu ESP32?</h3><p>ESP32 adalah mikrokontroler berbiaya rendah dengan konsumsi daya rendah yang dilengkapi Wi-Fi terintegrasi dan modul Bluetooth dual-mode. Ini menjadikannya otak ideal untuk proyek Internet of Things (IoT) dan sistem robot nirkabel.</p><h3>Mengapa Menggunakan MQTT?</h3><p>MQTT (Message Queuing Telemetry Transport) adalah protokol perpesanan standar ringan untuk IoT. Protokol ini menggunakan arsitektur publish/subscribe yang sangat hemat bandwidth, berlatensi rendah, dan sangat cocok untuk komunikasi waktu nyata robot dengan internet.</p><h3>Contoh Implementasi</h3><p>Di ekstrakurikuler kami, kami membuat lengan robot industri mini yang dikendalikan dari jarak jauh melalui antarmuka web. Sensor giroskop di ponsel mengirim koordinat sudut via MQTT ke ESP32 di lengan robot, yang kemudian menerjemahkannya ke servo secara real-time dari jarak ratusan kilometer.</p>`
+    content: `### Apa itu ESP32?
+
+ESP32 adalah mikrokontroler berbiaya rendah dengan konsumsi daya rendah yang dilengkapi Wi-Fi terintegrasi dan modul Bluetooth dual-mode. Ini menjadikannya otak ideal untuk proyek Internet of Things (IoT) dan sistem robot nirkabel.
+
+### Mengapa Menggunakan MQTT?
+
+MQTT (Message Queuing Telemetry Transport) adalah protokol perpesanan standar ringan untuk IoT. Protokol ini menggunakan arsitektur publish/subscribe yang sangat hemat bandwidth, berlatensi rendah, dan sangat cocok untuk komunikasi waktu nyata robot dengan internet.
+
+### Contoh Implementasi
+
+Di ekstrakurikuler kami, kami membuat lengan robot industri mini yang dikendalikan dari jarak jauh melalui antarmuka web. Sensor giroskop di ponsel mengirim koordinat sudut via MQTT ke ESP32 di lengan robot, yang kemudian menerjemahkannya ke servo secara real-time dari jarak ratusan kilometer.`
   },
   {
     id: 4,
@@ -40,7 +93,17 @@ const INITIAL_BLOG_ARTICLES = [
     date: "28 April 2026",
     author: "Drs. Eko Prasetyo (Pembina Ekstrakurikuler)",
     excerpt: "Tips dan rahasia sukses dari pembina ekskul robotik yang berhasil menyabet juara 1 tingkat nasional selama 3 tahun berturut-turut.",
-    content: `<h3>1. Desain Modular dan Kuat</h3><p>Saat kompetisi, kerusakan fisik robot sering terjadi akibat tabrakan atau kesalahan navigasi. Desainlah robot secara modular sehingga jika salah satu sensor atau motor rusak, komponen tersebut bisa diganti dalam hitungan detik tanpa harus membongkar seluruh badan robot.</p><h3>2. Manajemen Daya dan Baterai</h3><p>Selalu gunakan baterai dengan arus keluaran tinggi (C-Rating tinggi) untuk motor servo berkinerja tinggi, dan pisahkan jalur catu daya untuk sensor/kontroler (menggunakan regulator terpisah) untuk menghindari 'reset' mikrokontroler saat motor menarik arus puncak.</p><h3>3. Mentalitas dan Kerja Tim di Lapangan</h3><p>Kompetisi robotik bukan hanya tentang teknologi terbaik, melainkan tentang adaptabilitas. Setiap arena kompetisi memiliki intensitas cahaya dan tekstur permukaan berbeda. Kunci kemenangan kami terletak pada kesiapan pemrogram melakukan kalibrasi ulang cepat dalam waktu 5 menit sebelum pertandingan dimulai!</p>`
+    content: `### 1. Desain Modular dan Kuat
+
+Saat kompetisi, kerusakan fisik robot sering terjadi akibat tabrakan atau kesalahan navigasi. Desainlah robot secara modular sehingga jika salah satu sensor atau motor rusak, komponen tersebut bisa diganti dalam hitungan detik tanpa harus membongkar seluruh badan robot.
+
+### 2. Manajemen Daya dan Baterai
+
+Selalu gunakan baterai dengan arus keluaran tinggi (C-Rating tinggi) untuk motor servo berkinerja tinggi, dan pisahkan jalur catu daya untuk sensor/kontroler (menggunakan regulator terpisah) untuk menghindari 'reset' mikrokontroler saat motor menarik arus puncak.
+
+### 3. Mentalitas dan Kerja Tim di Lapangan
+
+Kompetisi robotik bukan hanya tentang teknologi terbaik, melainkan tentang adaptabilitas. Setiap arena kompetisi memiliki intensitas cahaya dan tekstur permukaan berbeda. Kunci kemenangan kami terletak pada kesiapan pemrogram melakukan kalibrasi ulang cepat dalam waktu 5 menit sebelum pertandingan dimulai!`
   }
 ];
 
@@ -618,6 +681,91 @@ function renderPublicArticles() {
   });
 }
 
+// --- LIGHTWEIGHT EMBEDDED MARKDOWN TO HTML PARSER ---
+function parseMarkdownToHtml(markdown) {
+  if (!markdown) return '';
+
+  // 1. Escape HTML strings for security
+  let escaped = markdown
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // 2. Extract code blocks ```lang ... ``` to placeholders
+  const codeBlocks = [];
+  escaped = escaped.replace(/```([\s\S]*?)```/g, (match, code) => {
+    let cleanCode = code;
+    const matchLang = code.match(/^([a-zA-Z0-9+#-]+)\r?\n/);
+    let lang = '';
+    if (matchLang) {
+      lang = matchLang[1];
+      cleanCode = code.slice(matchLang[0].length);
+    }
+    const id = `__CODE_BLOCK_${codeBlocks.length}__`;
+    codeBlocks.push(`<pre><code class="language-${lang}">${cleanCode.trim()}</code></pre>`);
+    return id;
+  });
+
+  // 3. Blockquotes
+  escaped = escaped.replace(/^\s*>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // 4. Headers
+  escaped = escaped.replace(/^\s*####\s+(.+)$/gm, '<h4>$1</h4>');
+  escaped = escaped.replace(/^\s*###\s+(.+)$/gm, '<h3>$1</h3>');
+  escaped = escaped.replace(/^\s*##\s+(.+)$/gm, '<h2>$1</h2>');
+  escaped = escaped.replace(/^\s*#\s+(.+)$/gm, '<h1>$1</h1>');
+
+  // 5. Unordered lists: convert lines starting with - or *
+  escaped = escaped.replace(/^\s*[\-\*]\s+(.+)$/gm, '<li>$1</li>');
+  escaped = escaped.replace(/(?:^\s*<li>.*?<\/li>\s*)+/gm, (match) => {
+    return `<ul>\n${match}</ul>\n`;
+  });
+
+  // 6. Ordered lists: convert lines starting with numbers
+  escaped = escaped.replace(/^\s*\d+\.\s+(.+)$/gm, '<ol-item>$1</ol-item>');
+  escaped = escaped.replace(/(?:^\s*<ol-item>.*?<\/ol-item>\s*)+/gm, (match) => {
+    return `<ol>\n${match.replace(/<ol-item>/g, '<li>').replace(/<\/ol-item>/g, '</li>')}</ol>\n`;
+  });
+
+  // 7. Paragraphs: split by double newlines or more
+  const paragraphs = escaped.split(/\n\s*\n+/);
+  const processed = paragraphs.map(p => {
+    const trimmed = p.trim();
+    if (!trimmed) return '';
+    // If it's already an HTML block tag, don't wrap in <p>
+    if (/^(<h[1-6]|<ul|<ol|<blockquote|<pre|<li>|__CODE_BLOCK_)/.test(trimmed)) {
+      return trimmed;
+    }
+    return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+  });
+  escaped = processed.join('\n\n');
+
+  // 8. Inline formatting
+  // Bold: **text** or __text__
+  escaped = escaped.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+  escaped = escaped.replace(/__([^__]+)__/g, '<strong>$1</strong>');
+
+  // Italic: *text* or _text_
+  escaped = escaped.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
+  escaped = escaped.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+  // Inline code: `code`
+  escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Links: [text](url)
+  escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+  // Images: ![alt](url)
+  escaped = escaped.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="blog-img">');
+
+  // 9. Restore code blocks
+  codeBlocks.forEach((block, idx) => {
+    escaped = escaped.replace(`__CODE_BLOCK_${idx}__`, block);
+  });
+
+  return escaped;
+}
+
 function openArticleDetail(id) {
   const article = blogArticles.find(a => a.id === id);
   if (!article) return;
@@ -630,7 +778,7 @@ function openArticleDetail(id) {
     <div class="dialog-meta">${article.date || ''} | Oleh: ${article.author || 'Tim Robotik'}</div>
     <h2 class="dialog-title">${article.title}</h2>
     <div class="dialog-badge">${article.category.toUpperCase()}</div>
-    <div class="dialog-rich-text">${article.content}</div>
+    <div class="dialog-rich-text">${parseMarkdownToHtml(article.content)}</div>
   `;
 
   detailDialog.showModal();
@@ -1339,8 +1487,8 @@ function openCmsEditor(type, mode, id = null) {
         <textarea id="edit-excerpt" class="input-control" required placeholder="Tulis deskripsi 1-2 baris untuk kartu list artikel...">${article.excerpt || ''}</textarea>
       </div>
       <div class="form-group">
-        <label class="form-label" for="edit-content">Konten Lengkap (Format HTML) <span>*</span></label>
-        <textarea id="edit-content" class="input-control" required placeholder="Tulis isi tulisan lengkap dengan tag HTML seperti &lt;p&gt;, &lt;h3&gt;, &lt;ul&gt; untuk kerapian format...">${article.content || ''}</textarea>
+        <label class="form-label" for="edit-content">Konten Lengkap (Format Markdown) <span>*</span></label>
+        <textarea id="edit-content" class="input-control" required placeholder="Tulis isi tulisan lengkap menggunakan format Markdown (misal: ### Judul, **tebal**, *miring*, - list, dll)..." style="height: 250px;">${article.content || ''}</textarea>
       </div>
     `;
   } else if (type === 'portfolio') {

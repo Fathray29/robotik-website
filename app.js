@@ -1152,7 +1152,14 @@ function openPortfolioDetail(id) {
             
             <h3 style="margin-top: 3.5rem; margin-bottom: 1.25rem; color: var(--accent-cyan); font-size: 1.5rem;">Skema & Kode Pemrograman Robot 💻</h3>
             
-            <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden;">
+            <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden; position: relative;">
+              <button class="btn-copy-code" id="btn-copy-arduino-code" title="Salin Kode Arduino">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Salin</span>
+              </button>
               <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
                 <button class="viewer-tab active" data-tab="code" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Arduino C++ Code</button>
                 <button class="viewer-tab" data-tab="schematic" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Fisik & Koneksi</button>
@@ -1197,6 +1204,40 @@ function openPortfolioDetail(id) {
     });
   }
 
+  // Bind copy code button click & tab show/hide
+  const copyBtn = detailDialog.querySelector('#btn-copy-arduino-code');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(proj.code).then(() => {
+        playRoboticSound('success');
+        copyBtn.classList.add('success');
+        const btnText = copyBtn.querySelector('span');
+        const btnSvg = copyBtn.querySelector('svg');
+        
+        if (btnText) btnText.textContent = 'Tersalin! ✔️';
+        if (btnSvg) {
+          btnSvg.setAttribute('viewBox', '0 0 24 24');
+          btnSvg.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+        }
+        
+        setTimeout(() => {
+          copyBtn.classList.remove('success');
+          if (btnText) btnText.textContent = 'Salin';
+          if (btnSvg) {
+            btnSvg.setAttribute('viewBox', '0 0 24 24');
+            btnSvg.innerHTML = `
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            `;
+          }
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy code: ', err);
+        playRoboticSound('error');
+      });
+    });
+  }
+
   // Bind tab click event inside full-screen modal
   const tabs = detailDialog.querySelectorAll('.viewer-tab');
   tabs.forEach(tab => {
@@ -1206,6 +1247,14 @@ function openPortfolioDetail(id) {
       
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
+
+      if (copyBtn) {
+        if (targetTab === 'code') {
+          copyBtn.style.display = 'inline-flex';
+        } else {
+          copyBtn.style.display = 'none';
+        }
+      }
       
       detailDialog.querySelectorAll('.viewer-content').forEach(content => {
         if (content.getAttribute('data-content') === targetTab) {
@@ -1789,7 +1838,17 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-header-image">URL Gambar Header (Foto Sampul)</label>
-        <input type="text" id="edit-header-image" class="input-control" value="${article.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar lainnya...">
+        <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
+          <input type="text" id="edit-header-image" class="input-control" value="${article.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
+          <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+            Pilih File 📁
+          </button>
+        </div>
+        <input type="file" id="edit-image-file" accept="image/*" style="display: none;">
+        <div id="upload-preview-container" style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
+          <div class="img-upload-preview" id="edit-image-preview"></div>
+          <span id="upload-status" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-excerpt">Ringkasan Singkat (Excerpt) <span>*</span></label>
@@ -1843,7 +1902,17 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-header-image">URL Gambar Header (Foto Sampul)</label>
-        <input type="text" id="edit-header-image" class="input-control" value="${proj.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar lainnya...">
+        <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
+          <input type="text" id="edit-header-image" class="input-control" value="${proj.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
+          <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+            Pilih File 📁
+          </button>
+        </div>
+        <input type="file" id="edit-image-file" accept="image/*" style="display: none;">
+        <div id="upload-preview-container" style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
+          <div class="img-upload-preview" id="edit-image-preview"></div>
+          <span id="upload-status" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-components">Komponen Utama <span>*</span></label>
@@ -1878,6 +1947,9 @@ function openCmsEditor(type, mode, id = null) {
 
   // Setup markdown formatting toolbar logic
   setupMarkdownToolbar();
+
+  // Setup local image compressor / uploader logic
+  setupLocalImageUploader(type === 'blog' ? article : proj);
 
   dialog.showModal();
   document.body.classList.add('dialog-open');
@@ -2243,12 +2315,25 @@ function renderAdminApplicantsTable() {
   const tableBody = document.getElementById('admin-applicants-table-body');
   if (!tableBody) return;
 
-  if (applicants.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Tidak ada pendaftar masuk.</td></tr>`;
+  const searchInput = document.getElementById('search-applicants');
+  const statusSelect = document.getElementById('filter-applicant-status');
+  
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const statusFilter = statusSelect ? statusSelect.value : 'ALL';
+
+  // Filter list
+  const filtered = applicants.filter(app => {
+    const matchesSearch = (app.nama || '').toLowerCase().includes(query) || (app.id || '').toLowerCase().includes(query);
+    const matchesStatus = statusFilter === 'ALL' || app.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  if (filtered.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tidak ada pendaftar yang cocok dengan filter.</td></tr>`;
     return;
   }
 
-  tableBody.innerHTML = applicants.map((applicant, index) => {
+  tableBody.innerHTML = filtered.map((applicant, index) => {
     let statusClass = 'status-pending';
     let statusLabel = 'Menunggu Persetujuan';
     
@@ -3446,8 +3531,212 @@ function setupPendaftaranCMSAndCountdown() {
   renderWhatsAppBanner();
 }
 
+// --- COMPRESS IMAGE & CANVAS UPLOADER ---
+function compressImage(file, callback) {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = (event) => {
+    const img = new Image();
+    img.src = event.target.result;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      
+      const maxBound = 800;
+      if (width > maxBound) {
+        height = Math.round((height * maxBound) / width);
+        width = maxBound;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      callback(compressedDataUrl);
+    };
+  };
+}
+
+function setupLocalImageUploader(item) {
+  const btnUploadLocal = document.getElementById('btn-upload-local');
+  const editImageFile = document.getElementById('edit-image-file');
+  const editHeaderImage = document.getElementById('edit-header-image');
+  const editImagePreview = document.getElementById('edit-image-preview');
+  const uploadStatus = document.getElementById('upload-status');
+
+  if (editImagePreview && item.headerImage) {
+    editImagePreview.style.backgroundImage = `url('${item.headerImage}')`;
+    editImagePreview.style.display = 'block';
+  }
+
+  if (btnUploadLocal && editImageFile) {
+    btnUploadLocal.addEventListener('click', () => {
+      playRoboticSound('click');
+      editImageFile.click();
+    });
+
+    editImageFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (uploadStatus) {
+        uploadStatus.textContent = 'Mengompres gambar... 🔄';
+        uploadStatus.style.color = 'var(--accent-cyan)';
+      }
+
+      compressImage(file, (base64Url) => {
+        if (editHeaderImage) {
+          editHeaderImage.value = base64Url;
+          editHeaderImage.dispatchEvent(new Event('input'));
+        }
+        if (editImagePreview) {
+          editImagePreview.style.backgroundImage = `url('${base64Url}')`;
+          editImagePreview.style.display = 'block';
+        }
+        if (uploadStatus) {
+          const sizeInKb = Math.round((base64Url.length * 3) / 4 / 1024);
+          uploadStatus.textContent = `Sukses dikompres! ⚡ (${sizeInKb} KB)`;
+          uploadStatus.style.color = '#34D399';
+        }
+        playRoboticSound('success');
+      });
+    });
+  }
+
+  if (editHeaderImage && editImagePreview) {
+    editHeaderImage.addEventListener('input', () => {
+      const urlVal = editHeaderImage.value.trim();
+      if (urlVal) {
+        editImagePreview.style.backgroundImage = `url('${urlVal}')`;
+        editImagePreview.style.display = 'block';
+      } else {
+        editImagePreview.style.backgroundImage = 'none';
+        editImagePreview.style.display = 'none';
+      }
+    });
+  }
+}
+
+// --- ACCESSIBILITY THEME SAKELAR PERSIST (LIGHT/DARK) ---
+function setupThemeControl() {
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  if (!themeToggleBtn) return;
+
+  const sunIcon = themeToggleBtn.querySelector('.sun-icon');
+  const moonIcon = themeToggleBtn.querySelector('.moon-icon');
+
+  // Determine initial theme
+  let currentTheme = localStorage.getItem('robotik_theme') || 'dark';
+
+  const applyTheme = (theme) => {
+    if (theme === 'light') {
+      document.body.classList.add('light-theme');
+      if (sunIcon) sunIcon.style.display = 'none';
+      if (moonIcon) moonIcon.style.display = 'block';
+    } else {
+      document.body.classList.remove('light-theme');
+      if (sunIcon) sunIcon.style.display = 'block';
+      if (moonIcon) moonIcon.style.display = 'none';
+    }
+  };
+
+  // Apply initial theme
+  applyTheme(currentTheme);
+
+  // Bind click listener
+  themeToggleBtn.addEventListener('click', () => {
+    playRoboticSound('click');
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('robotik_theme', currentTheme);
+    applyTheme(currentTheme);
+  });
+
+  themeToggleBtn.addEventListener('mouseenter', () => {
+    playRoboticSound('hover');
+  });
+}
+
+// --- APPLICANTS FILTER & EXPORTER ---
+function setupApplicantsFilterAndExport() {
+  const searchInput = document.getElementById('search-applicants');
+  const statusSelect = document.getElementById('filter-applicant-status');
+  const btnExportCsv = document.getElementById('btn-export-applicants-csv');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      renderAdminApplicantsTable();
+    });
+  }
+
+  if (statusSelect) {
+    statusSelect.addEventListener('change', () => {
+      playRoboticSound('click');
+      renderAdminApplicantsTable();
+    });
+  }
+
+  if (btnExportCsv) {
+    btnExportCsv.addEventListener('click', () => {
+      playRoboticSound('click');
+      exportApplicantsToCsv();
+    });
+  }
+}
+
+function exportApplicantsToCsv() {
+  if (applicants.length === 0) {
+    alert('Tidak ada data pendaftar untuk diekspor.');
+    playRoboticSound('error');
+    return;
+  }
+
+  const headers = ['No', 'ID Pendaftaran', 'Nama Lengkap', 'Kelas', 'NISN', 'No. WhatsApp', 'Minat Divisi', 'Motivasi', 'Tanggal Daftar', 'Status'];
+  
+  const rows = applicants.map((app, index) => {
+    const joinedDivisions = Array.isArray(app.divisi) ? app.divisi.join(', ') : app.divisi;
+    return [
+      index + 1,
+      app.id || '',
+      app.nama || '',
+      app.kelas || '',
+      app.nisn || '',
+      app.noHp || '',
+      joinedDivisions || '',
+      (app.motivasi || '').replace(/\r?\n/g, ' '),
+      app.tanggalDaftar || '',
+      app.status || ''
+    ];
+  });
+
+  const csvContent = [
+    headers.join(';'),
+    ...rows.map(row => row.map(val => {
+      const strVal = String(val).replace(/"/g, '""');
+      return `"${strVal}"`;
+    }).join(';'))
+  ].join('\r\n');
+
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `pendaftar-robotik-${new Date().getFullYear()}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  playRoboticSound('success');
+}
+
 // --- APP BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', () => {
+  setupThemeControl();
   setupRouter();
   setupAudioToggle();
   setupBlog();
@@ -3464,6 +3753,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCmsAuthentication();
   setupCmsTabs();
   setupPendaftaranCMSAndCountdown();
+  setupApplicantsFilterAndExport();
 
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();

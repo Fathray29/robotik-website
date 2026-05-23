@@ -213,45 +213,46 @@
           </div>
         </div>
 
-        <!-- Divisi Utama Section -->
+        <!-- Seksi Divisi Keahlian (Interactive Split Instrument Panel) -->
         <div class="divisi-section">
-          <div class="section-subtitle-center">
+          <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
             <h2>Divisi Keahlian Kami</h2>
-            <p>Pilih dan kembangkan minat teknologi Anda di salah satu dari tiga pilar kompetensi robotika utama:</p>
           </div>
           
-          <div class="divisi-grid">
-            <div class="glass-card divisi-card mechanics">
-              <div class="divisi-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                </svg>
-              </div>
-              <h3 class="divisi-title">Mekanik (Mechanics)</h3>
-              <p class="divisi-desc" id="home-div-mech-desc">Merancang struktur fisik robot, penghubung gear, chassis akrilik, 3D printing modeling, dan kestabilan pergerakan mekanis aerodinamis.</p>
+          <div class="divisi-split-panel">
+            <!-- Left Side: Navigasi Instrumen Vertikal -->
+            <div class="divisi-nav-panel">
+              <button type="button" class="divisi-nav-btn active" data-div="mechanics">
+                <div class="nav-btn-indicator"></div>
+                <div class="nav-btn-icon">⚙️</div>
+                <div class="nav-btn-text">
+                  <span class="btn-label">DIVISI 01</span>
+                  <span class="btn-title">Mekanik (Mechanics)</span>
+                </div>
+              </button>
+              
+              <button type="button" class="divisi-nav-btn" data-div="electronics">
+                <div class="nav-btn-indicator"></div>
+                <div class="nav-btn-icon">⚡</div>
+                <div class="nav-btn-text">
+                  <span class="btn-label">DIVISI 02</span>
+                  <span class="btn-title">Elektronik (Electronics)</span>
+                </div>
+              </button>
+              
+              <button type="button" class="divisi-nav-btn" data-div="programming">
+                <div class="nav-btn-indicator"></div>
+                <div class="nav-btn-icon">💻</div>
+                <div class="nav-btn-text">
+                  <span class="btn-label">DIVISI 03</span>
+                  <span class="btn-title">Pemrograman (Programming)</span>
+                </div>
+              </button>
             </div>
-
-            <div class="glass-card divisi-card electronics">
-              <div class="divisi-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </div>
-              <h3 class="divisi-title">Elektronik (Electronics)</h3>
-              <p class="divisi-desc" id="home-div-elec-desc">Menyusun sirkuit sirkulasi daya, penyolderan sensor pintar, perakitan mikrokontroler (Arduino/ESP32), baterai sel, dan sistem aktuator driver.</p>
-            </div>
-
-            <div class="glass-card divisi-card programming">
-              <div class="divisi-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="16 18 22 12 16 6"></polyline>
-                  <polyline points="8 6 2 12 8 18"></polyline>
-                </svg>
-              </div>
-              <h3 class="divisi-title">Pemrograman (Programming)</h3>
-              <p class="divisi-desc" id="home-div-prog-desc">Menulis kode algoritma C++ dan Python, integrasi navigasi sensor otomatis, penyelarasan PID motor, hingga kendali jarak jauh IoT nirkabel.</p>
+            
+            <!-- Right Side: Card Detail & Preview Grafis -->
+            <div class="divisi-detail-panel" id="divisi-detail-container">
+              <!-- Rendered dynamically via JS -->
             </div>
           </div>
         </div>

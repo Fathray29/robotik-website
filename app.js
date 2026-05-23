@@ -3518,6 +3518,11 @@ function renderLandingPage() {
       `).join('');
     }
   }
+
+  // Populate / refresh the interactive divisions panel
+  if (typeof setupInteractiveDivisions === 'function') {
+    setupInteractiveDivisions();
+  }
 }
 
 function setupLandingPageCMS() {
@@ -3947,6 +3952,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderLandingPage();
   setupLandingPageCMS();
   
+  // Initialize interactive division instrument panel
+  setupInteractiveDivisions();
+  
   // Dynamic CMS setups boot hookup
   setupCmsAuthentication();
   setupCmsTabs();
@@ -3969,4 +3977,157 @@ document.addEventListener('DOMContentLoaded', () => {
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();
 });
+
+// --- INTERACTIVE DIVISIONS SHOWCASE MODULE ---
+function setupInteractiveDivisions() {
+  const navButtons = document.querySelectorAll('.divisi-nav-btn');
+  const detailContainer = document.getElementById('divisi-detail-container');
+  if (navButtons.length === 0 || !detailContainer) return;
+
+  function showDivision(divisionId) {
+    let specTitle = '';
+    let specHeading = '';
+    let specDesc = '';
+    let themeClass = '';
+    let bulletColor = '';
+    let focusPoints = [];
+    let graphicHtml = '';
+
+    if (divisionId === 'mechanics') {
+      specTitle = 'DIVISI 01 / STRUCTURAL DESIGN';
+      specHeading = 'Mekanik (Mechanics)';
+      specDesc = landingData.divMechDesc || 'Merancang struktur fisik robot, chassis, gear, dan kestabilan pergerakan mekanis.';
+      themeClass = 'mech-theme';
+      bulletColor = 'var(--accent-yellow)';
+      focusPoints = [
+        'Drafting & 3D Modeling (CAD)',
+        'Chassis Fabrication & Materials',
+        'Robotic Kinematics & Stability',
+        '3D Printing & Physical Assembly'
+      ];
+      graphicHtml = `
+        <svg class="gear-svg" width="180" height="180" viewBox="0 0 220 220" fill="none" style="color: var(--accent-yellow);">
+          <g class="gear-main">
+            <circle cx="100" cy="100" r="45" stroke="currentColor" stroke-width="6" stroke-dasharray="10 5" />
+            <circle cx="100" cy="100" r="25" stroke="currentColor" stroke-width="4" />
+            <path d="M100 20 L100 40 M100 160 L100 180 M20 100 L40 100 M160 100 L180 100 M43.4 43.4 L57.6 57.6 M142.4 142.4 L156.6 156.6 M43.4 156.6 L57.6 142.4 M142.4 43.4 L156.6 57.6" stroke="currentColor" stroke-width="8" stroke-linecap="round" />
+          </g>
+          <g class="gear-sub">
+            <circle cx="155" cy="145" r="25" stroke="currentColor" stroke-width="4" stroke-dasharray="6 3" />
+            <circle cx="155" cy="145" r="12" stroke="currentColor" stroke-width="3" />
+            <path d="M155 105 L155 117 M155 173 L155 185 M115 145 L127 145 M183 145 L195 145 M126.7 116.7 L135.2 125.2 M174.8 164.8 L183.3 173.3 M126.7 173.3 L135.2 164.8 M174.8 116.7 L183.3 125.2" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+          </g>
+          <circle cx="100" cy="100" r="6" fill="currentColor" />
+          <circle cx="155" cy="145" r="4" fill="currentColor" />
+        </svg>
+      `;
+    } else if (divisionId === 'electronics') {
+      specTitle = 'DIVISI 02 / HARDWARE CIRCUITS';
+      specHeading = 'Elektronik (Electronics)';
+      specDesc = landingData.divElecDesc || 'Menyusun sirkuit sirkulasi daya, mikrokontroler (Arduino/ESP32), dan sistem sensor pintar.';
+      themeClass = 'elec-theme';
+      bulletColor = 'var(--accent-cyan)';
+      focusPoints = [
+        'Microcontroller Programming (Arduino/ESP32)',
+        'Sensor Integration & Soldering',
+        'Power Delivery & Battery Management',
+        'Motor Drivers & Actuators Control'
+      ];
+      graphicHtml = `
+        <svg class="circuit-svg" width="180" height="180" viewBox="0 0 200 200" fill="none" style="color: var(--accent-cyan);">
+          <path d="M 20 80 H 50 V 140 H 100 V 100 H 150 V 60 H 180" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3" />
+          <path d="M 50 140 H 100 V 180" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3" />
+          <path d="M 100 100 H 150 V 140" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3" />
+          <path d="M 20 80 H 50 V 140 H 100 V 100 H 150 V 60 H 180" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 15" stroke-dashoffset="0" />
+          <rect x="85" y="85" width="30" height="30" rx="3" fill="rgba(15,23,42,0.8)" stroke="currentColor" stroke-width="3" />
+          <circle class="circuit-node node-1" cx="50" cy="80" r="6" fill="currentColor" />
+          <circle class="circuit-node node-2" cx="150" cy="60" r="6" fill="currentColor" />
+          <circle class="circuit-node node-3" cx="100" cy="140" r="6" fill="currentColor" />
+        </svg>
+      `;
+    } else if (divisionId === 'programming') {
+      specTitle = 'DIVISI 03 / EMBEDDED INTELLIGENCE';
+      specHeading = 'Pemrograman (Programming)';
+      specDesc = landingData.divProgDesc || 'Menulis kode algoritma C++ dan Python, navigasi sensor otomatis, dan kendali jarak jauh IoT.';
+      themeClass = 'prog-theme';
+      bulletColor = '#D946EF';
+      focusPoints = [
+        'Embedded C++ & Python Development',
+        'Autonomous Navigation Algorithms',
+        'PID Control Tuning for Motors',
+        'Wireless IoT & WebSockets Sync'
+      ];
+      graphicHtml = `
+        <div class="code-terminal" style="color: #D946EF; border-color: rgba(217,70,239,0.2);">
+          <div class="terminal-header">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 0.5rem; font-family: monospace;">PID_controller.cpp</span>
+          </div>
+          <div style="font-family: monospace; font-size: 0.7rem; color: #fdf2f8; line-height: 1.5;">
+            <span style="color: #D946EF;">#include</span> &lt;PID_v1.h&gt;<br/>
+            <span style="color: #6EE7B7;">double</span> Setpoint, Input, Output;<br/>
+            <span style="color: #6EE7B7;">double</span> Kp=2.0, Ki=5.0, Kd=1.0;<br/>
+            PID <span style="color: #68D391;">myPID</span>(&amp;Input, &amp;Output, ...);<br/>
+            <br/>
+            <span style="color: #6EE7B7;">void</span> <span style="color: #FBBF24;">setup</span>() {<br/>
+            &nbsp;&nbsp;Input = <span style="color: #FBBF24;">readSensor</span>();<br/>
+            &nbsp;&nbsp;myPID.SetMode(AUTOMATIC);<br/>
+            }<br/>
+            <span style="color: #6EE7B7;">void</span> <span style="color: #FBBF24;">loop</span>() {<br/>
+            &nbsp;&nbsp;<span style="color: #A7F3D0;">// compute output and drive motor</span><br/>
+            &nbsp;&nbsp;myPID.Compute();<br/>
+            }
+          </div>
+        </div>
+      `;
+    }
+
+    const bulletItemsHtml = focusPoints.map(point => `
+      <li class="div-focus-item">
+        <span class="div-focus-bullet" style="background: ${bulletColor}; box-shadow: 0 0 8px ${bulletColor};"></span>
+        ${point}
+      </li>
+    `).join('');
+
+    detailContainer.innerHTML = `
+      <div class="divisi-detail-content">
+        <span class="div-spec-title" style="color: ${bulletColor};">${specTitle}</span>
+        <h3 class="div-spec-heading">${specHeading}</h3>
+        <p class="div-spec-desc">${escapeHtml(specDesc)}</p>
+        <ul class="div-focus-list">
+          ${bulletItemsHtml}
+        </ul>
+      </div>
+      <div class="divisi-detail-graphic" style="color: ${bulletColor};">
+        ${graphicHtml}
+      </div>
+    `;
+
+    detailContainer.className = `divisi-detail-panel ${themeClass}`;
+  }
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const divisionId = btn.getAttribute('data-div');
+      
+      navButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      playRoboticSound('click');
+      showDivision(divisionId);
+    });
+    btn.addEventListener('mouseenter', () => {
+      if (!btn.classList.contains('active')) {
+        playRoboticSound('hover');
+      }
+    });
+  });
+
+  const initialActive = document.querySelector('.divisi-nav-btn.active');
+  if (initialActive) {
+    showDivision(initialActive.getAttribute('data-div'));
+  }
+}
 

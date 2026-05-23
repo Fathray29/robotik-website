@@ -504,7 +504,7 @@ const INITIAL_LANDING_DATA = {
     'Mempersiapkan tim tangguh untuk berkompetisi di tingkat nasional dan internasional.',
     'Menghasilkan alumni berkarakter teknik yang siap bersaing di era otomatisasi global.'
   ],
-  divMechDesc: 'Merancang struktur fisik robot, penghubung gear, chassis akrilik, 3D printing modeling, dan kestabilan pergerakan mekanis aerodinamis.',
+  divMechDesc: 'Merancang struktur fisik robot, chassis akrilik, pemodelan 3D (CAD), 3D printing modeling, dan kestabilan pergerakan mekanis aerodinamis.',
   divElecDesc: 'Menyusun sirkuit sirkulasi daya, penyolderan sensor pintar, perakitan mikrokontroler (Arduino/ESP32), baterai sel, dan sistem aktuator driver.',
   divProgDesc: 'Menulis kode algoritma C++ dan Python, integrasi navigasi sensor otomatis, penyelarasan PID motor, hingga kendali jarak jauh IoT nirkabel.',
   achievements: [
@@ -3996,7 +3996,7 @@ function setupInteractiveDivisions() {
     if (divisionId === 'mechanics') {
       specTitle = 'DIVISI 01 / STRUCTURAL DESIGN';
       specHeading = 'Mekanik (Mechanics)';
-      specDesc = landingData.divMechDesc || 'Merancang struktur fisik robot, chassis, gear, dan kestabilan pergerakan mekanis.';
+      specDesc = landingData.divMechDesc || 'Merancang struktur fisik robot, chassis, pemodelan 3D (CAD), dan kestabilan pergerakan mekanis.';
       themeClass = 'mech-theme';
       bulletColor = 'var(--accent-yellow)';
       focusPoints = [
@@ -4006,21 +4006,56 @@ function setupInteractiveDivisions() {
         '3D Printing & Physical Assembly'
       ];
       graphicHtml = `
-        <svg class="gear-svg" width="180" height="180" viewBox="0 0 220 220" fill="none" style="color: var(--accent-yellow);">
-          <g class="gear-main">
-            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="12s" repeatCount="indefinite" />
-            <circle cx="100" cy="100" r="45" stroke="currentColor" stroke-width="6" stroke-dasharray="10 5" />
-            <circle cx="100" cy="100" r="25" stroke="currentColor" stroke-width="4" />
-            <path d="M100 20 L100 40 M100 160 L100 180 M20 100 L40 100 M160 100 L180 100 M43.4 43.4 L57.6 57.6 M142.4 142.4 L156.6 156.6 M43.4 156.6 L57.6 142.4 M142.4 43.4 L156.6 57.6" stroke="currentColor" stroke-width="8" stroke-linecap="round" />
+        <svg class="mechanics-blueprint-svg" width="180" height="180" viewBox="0 0 200 200" fill="none" style="color: var(--accent-yellow); filter: drop-shadow(0 0 15px currentColor);">
+          <!-- Blueprint Grid Background -->
+          <g opacity="0.15" stroke="currentColor" stroke-width="0.5">
+            <line x1="20" y1="20" x2="20" y2="180" />
+            <line x1="50" y1="20" x2="50" y2="180" />
+            <line x1="80" y1="20" x2="80" y2="180" />
+            <line x1="110" y1="20" x2="110" y2="180" />
+            <line x1="140" y1="20" x2="140" y2="180" />
+            <line x1="170" y1="20" x2="170" y2="180" />
+            
+            <line x1="20" y1="20" x2="180" y2="20" />
+            <line x1="20" y1="50" x2="180" y2="50" />
+            <line x1="20" y1="80" x2="180" y2="80" />
+            <line x1="20" y1="110" x2="180" y2="110" />
+            <line x1="20" y1="140" x2="180" y2="140" />
+            <line x1="20" y1="170" x2="180" y2="170" />
           </g>
-          <g class="gear-sub">
-            <animateTransform attributeName="transform" type="rotate" from="0 155 145" to="-360 155 145" dur="8s" repeatCount="indefinite" />
-            <circle cx="155" cy="145" r="25" stroke="currentColor" stroke-width="4" stroke-dasharray="6 3" />
-            <circle cx="155" cy="145" r="12" stroke="currentColor" stroke-width="3" />
-            <path d="M155 105 L155 117 M155 173 L155 185 M115 145 L127 145 M183 145 L195 145 M126.7 116.7 L135.2 125.2 M174.8 164.8 L183.3 173.3 M126.7 173.3 L135.2 164.8 M174.8 116.7 L183.3 125.2" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+          
+          <!-- Outer Tech HUD Rings -->
+          <circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="1.5" stroke-dasharray="12 8" opacity="0.4" />
+          <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-width="1" stroke-dasharray="40 10 5 10" opacity="0.3" />
+          
+          <!-- Inner Spinning CAD Ring -->
+          <g>
+            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite" />
+            <circle cx="100" cy="100" r="50" stroke="currentColor" stroke-width="2" stroke-dasharray="30 15 10 15" />
+            <path d="M 100 45 L 100 50 M 100 150 L 100 155 M 45 100 L 50 100 M 150 100 L 155 100" stroke="currentColor" stroke-width="2" />
           </g>
-          <circle cx="100" cy="100" r="6" fill="currentColor" />
-          <circle cx="155" cy="145" r="4" fill="currentColor" />
+          
+          <!-- Holographic 3D Wireframe Cube (Rotating) -->
+          <g>
+            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="-360 100 100" dur="25s" repeatCount="indefinite" />
+            <!-- Front Face -->
+            <rect x="75" y="75" width="50" height="50" stroke="currentColor" stroke-width="2" opacity="0.85" />
+            <!-- Back Face -->
+            <rect x="85" y="65" width="50" height="50" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5" />
+            <!-- Connecting Edges -->
+            <line x1="75" y1="75" x2="85" y2="65" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
+            <line x1="125" y1="75" x2="135" y2="65" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
+            <line x1="75" y1="125" x2="85" y2="115" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
+            <line x1="125" y1="125" x2="135" y2="115" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
+            <!-- Center Core Point -->
+            <circle cx="100" cy="100" r="4" fill="currentColor" />
+          </g>
+          
+          <!-- Laser Scanning Line (Sweeping vertically) -->
+          <line x1="15" y1="20" x2="185" y2="20" stroke="currentColor" stroke-width="2" opacity="0.8">
+            <animate attributeName="y1" values="30; 170; 30" dur="4s" repeatCount="indefinite" />
+            <animate attributeName="y2" values="30; 170; 30" dur="4s" repeatCount="indefinite" />
+          </line>
         </svg>
       `;
     } else if (divisionId === 'electronics') {

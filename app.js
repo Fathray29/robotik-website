@@ -3620,44 +3620,6 @@ function setupLocalImageUploader(item) {
   }
 }
 
-// --- ACCESSIBILITY THEME SAKELAR PERSIST (LIGHT/DARK) ---
-function setupThemeControl() {
-  const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  if (!themeToggleBtn) return;
-
-  const sunIcon = themeToggleBtn.querySelector('.sun-icon');
-  const moonIcon = themeToggleBtn.querySelector('.moon-icon');
-
-  // Determine initial theme
-  let currentTheme = localStorage.getItem('robotik_theme') || 'dark';
-
-  const applyTheme = (theme) => {
-    if (theme === 'light') {
-      document.body.classList.add('light-theme');
-      if (sunIcon) sunIcon.style.display = 'none';
-      if (moonIcon) moonIcon.style.display = 'block';
-    } else {
-      document.body.classList.remove('light-theme');
-      if (sunIcon) sunIcon.style.display = 'block';
-      if (moonIcon) moonIcon.style.display = 'none';
-    }
-  };
-
-  // Apply initial theme
-  applyTheme(currentTheme);
-
-  // Bind click listener
-  themeToggleBtn.addEventListener('click', () => {
-    playRoboticSound('click');
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('robotik_theme', currentTheme);
-    applyTheme(currentTheme);
-  });
-
-  themeToggleBtn.addEventListener('mouseenter', () => {
-    playRoboticSound('hover');
-  });
-}
 
 // --- APPLICANTS FILTER & EXPORTER ---
 function setupApplicantsFilterAndExport() {
@@ -3736,7 +3698,6 @@ function exportApplicantsToCsv() {
 
 // --- APP BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', () => {
-  setupThemeControl();
   setupRouter();
   setupAudioToggle();
   setupBlog();

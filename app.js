@@ -3474,7 +3474,7 @@ function renderLandingPage() {
   const divMechDescEl = document.getElementById('home-div-mech-desc');
   const divElecDescEl = document.getElementById('home-div-elec-desc');
   const divProgDescEl = document.getElementById('home-div-prog-desc');
-  const achievementsEl = document.getElementById('home-achievements-marquee');
+  const achievementsEl = document.getElementById('home-achievements-grid');
 
   if (heroTagEl) heroTagEl.textContent = landingData.heroTag;
   if (heroTitleEl) heroTitleEl.innerHTML = landingData.heroTitle;
@@ -3490,13 +3490,18 @@ function renderLandingPage() {
   if (divProgDescEl) divProgDescEl.textContent = landingData.divProgDesc;
 
   if (achievementsEl && landingData.achievements) {
-    const itemsHtml = landingData.achievements.map(ach => 
-      `<div class="prestasi-item"><span class="prestasi-trophy">🏆</span> ${escapeHtml(ach.title)} <span class="prestasi-year">${escapeHtml(ach.year)}</span></div>`
-    ).join('');
-    achievementsEl.innerHTML = `
-      <div class="marquee-track">${itemsHtml}</div>
-      <div class="marquee-track">${itemsHtml}</div>
-    `;
+    if (landingData.achievements.length === 0) {
+      achievementsEl.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 3rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-lg);">Belum ada penghargaan & prestasi yang ditambahkan.</div>`;
+    } else {
+      achievementsEl.innerHTML = landingData.achievements.map(ach => `
+        <div class="achievement-card">
+          <div class="ach-card-glow"></div>
+          <span class="ach-badge">${escapeHtml(ach.year)}</span>
+          <div class="ach-trophy">🏆</div>
+          <p class="ach-text">${escapeHtml(ach.title)}</p>
+        </div>
+      `).join('');
+    }
   }
 }
 

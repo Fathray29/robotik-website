@@ -256,6 +256,52 @@
           </div>
         </div>
 
+        <!-- Telemetry Stats Section -->
+        <section class="telemetry-stats-section" id="stats-section" aria-labelledby="stats-title">
+          <h2 id="stats-title" class="visually-hidden">Statistik Keberhasilan Motechart Robotik</h2>
+          <div class="telemetry-grid">
+            <div class="stat-card border-cyan">
+              <div class="stat-icon-wrapper">
+                <span class="stat-icon">🏆</span>
+              </div>
+              <div class="stat-number-wrapper">
+                <span class="stat-number" data-target="18">0</span><span class="stat-plus">+</span>
+              </div>
+              <div class="stat-label">Piala Kejuaraan</div>
+            </div>
+            
+            <div class="stat-card border-yellow">
+              <div class="stat-icon-wrapper">
+                <span class="stat-icon">👥</span>
+              </div>
+              <div class="stat-number-wrapper">
+                <span class="stat-number" data-target="150">0</span><span class="stat-plus">+</span>
+              </div>
+              <div class="stat-label">Anggota Aktif</div>
+            </div>
+            
+            <div class="stat-card border-cyan">
+              <div class="stat-icon-wrapper">
+                <span class="stat-icon">🤖</span>
+              </div>
+              <div class="stat-number-wrapper">
+                <span class="stat-number" data-target="12">0</span><span class="stat-plus">+</span>
+              </div>
+              <div class="stat-label">Robot Tercipta</div>
+            </div>
+            
+            <div class="stat-card border-yellow">
+              <div class="stat-icon-wrapper">
+                <span class="stat-icon">🌐</span>
+              </div>
+              <div class="stat-number-wrapper">
+                <span class="stat-number" data-target="5">0</span><span class="stat-plus">+</span>
+              </div>
+              <div class="stat-label">Proyek IoT Sekolah</div>
+            </div>
+          </div>
+        </section>
+
         <!-- Prestasi Section Marquee -->
         <div class="prestasi-section">
           <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
@@ -978,24 +1024,26 @@
               </div>
 
               <!-- D. SECTION PRESTASI -->
-              <h5 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; margin-top: 2rem;">D. Bagian Prestasi Kejuaraan (4 Prestasi Terbaru)</h5>
+              <h5 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; margin-top: 2rem;">D. Bagian Prestasi Kejuaraan Dinamis</h5>
+              <p class="hint-text" style="margin-bottom: 1rem;">Kelola daftar seluruh piala penghargaan kejuaraan ekskul secara dinamis tanpa batasan kuantitas.</p>
               
-              <div class="form-group" style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
-                <input type="text" id="cms-ach-title-1" class="input-control" required placeholder="Judul Prestasi 1">
-                <input type="text" id="cms-ach-year-1" class="input-control" required placeholder="Tahun (e.g. 2025)">
+              <div class="table-container" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                <table class="data-table" id="admin-achievements-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">No</th>
+                      <th>Judul Prestasi Kejuaraan</th>
+                      <th style="width: 100px; text-align: center;">Tahun</th>
+                      <th style="width: 120px; text-align: center;">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-achievements-table-body">
+                    <!-- Rendered dynamically via JS -->
+                  </tbody>
+                </table>
               </div>
-              <div class="form-group" style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
-                <input type="text" id="cms-ach-title-2" class="input-control" required placeholder="Judul Prestasi 2">
-                <input type="text" id="cms-ach-year-2" class="input-control" required placeholder="Tahun">
-              </div>
-              <div class="form-group" style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
-                <input type="text" id="cms-ach-title-3" class="input-control" required placeholder="Judul Prestasi 3">
-                <input type="text" id="cms-ach-year-3" class="input-control" required placeholder="Tahun">
-              </div>
-              <div class="form-group" style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" id="cms-ach-title-4" class="input-control" required placeholder="Judul Prestasi 4">
-                <input type="text" id="cms-ach-year-4" class="input-control" required placeholder="Tahun">
-              </div>
+              
+              <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement" style="margin-bottom: 1.5rem;">+ Tambah Prestasi Baru</button>
               
               <button type="submit" class="btn btn-cyan" style="min-width: 180px; margin-top: 1.5rem;">Simpan Konten Landing Page 💾</button>
             </form>
@@ -1239,7 +1287,37 @@
     </form>
   </dialog>
 
-
+  <!-- DIALOG KELOLA PRESTASI KEJUARAAN CMS -->
+  <dialog id="custom-achievement-dialog" aria-labelledby="achievement-dialog-title" style="max-width: 500px; width: 95%;">
+    <div class="dialog-close-bar">
+      <button type="button" id="close-achievement-dialog-btn" class="btn-close" aria-label="Tutup Dialog Prestasi">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Kelola Prestasi Kejuaraan</h2>
+    
+    <form id="custom-achievement-form">
+      <input type="hidden" id="edit-achievement-idx" value="">
+      
+      <div class="form-group" style="margin-bottom: 1.25rem;">
+        <label class="form-label" for="achievement-title">Judul / Nama Prestasi Kejuaraan <span>*</span></label>
+        <input type="text" id="achievement-title" class="input-control" required placeholder="Contoh: Juara 1 Nasional Kontes Robot Soccer">
+      </div>
+      
+      <div class="form-group" style="margin-bottom: 1.25rem;">
+        <label class="form-label" for="achievement-year">Tahun Kejuaraan <span>*</span></label>
+        <input type="text" id="achievement-year" class="input-control" required placeholder="Contoh: 2025" pattern="[0-9]{4}">
+      </div>
+      
+      <div class="form-actions-row" style="margin-top: 2rem;">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-achievement-dialog">Batal</button>
+        <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan Prestasi 🏆</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- App scripts logic -->
   <script src="./app.js" type="module"></script>

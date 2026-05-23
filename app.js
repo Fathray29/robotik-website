@@ -2673,6 +2673,113 @@ function setupLandingPageCMS() {
   const form = document.getElementById('cms-landing-form');
   if (!form) return;
 
+  function renderAdminAchievementsTable() {
+    const tableBody = document.getElementById('admin-achievements-table-body');
+    if (!tableBody) return;
+
+    if (!landingData.achievements || landingData.achievements.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tidak ada data prestasi kejuaraan. Silakan tambah baru.</td></tr>`;
+      return;
+    }
+
+    tableBody.innerHTML = landingData.achievements.map((ach, idx) => `
+      <tr>
+        <td style="text-align: center;">${idx + 1}</td>
+        <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(ach.title)}</td>
+        <td style="text-align: center;"><span class="table-badge" style="background: rgba(6,182,212,0.1); color: var(--accent-cyan); font-weight: bold; border: 1px solid rgba(6,182,212,0.2);">${escapeHtml(ach.year)}</span></td>
+        <td style="text-align: center;">
+          <div style="display: flex; gap: 0.5rem; justify-content: center;">
+            <button type="button" class="btn btn-outline-cyan btn-sm edit-ach-btn" data-index="${idx}">Edit</button>
+            <button type="button" class="btn btn-secondary btn-sm delete-ach-btn" data-index="${idx}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    // Attach click listeners for edit
+    tableBody.querySelectorAll('.edit-ach-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        const ach = landingData.achievements[idx];
+        if (!ach) return;
+        
+        playRoboticSound('click');
+        document.getElementById('edit-achievement-idx').value = idx;
+        document.getElementById('achievement-title').value = ach.title;
+        document.getElementById('achievement-year').value = ach.year;
+        
+        const dialog = document.getElementById('custom-achievement-dialog');
+        if (dialog) dialog.showModal();
+      });
+    });
+
+    // Attach click listeners for delete
+    tableBody.querySelectorAll('.delete-ach-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        if (confirm('Apakah Anda yakin ingin menghapus prestasi kejuaraan ini?')) {
+          playRoboticSound('click');
+          landingData.achievements.splice(idx, 1);
+          saveData('robotik_landing', landingData);
+          renderLandingPage();
+          renderAdminAchievementsTable();
+        }
+      });
+    });
+  }
+
+  const achDialog = document.getElementById('custom-achievement-dialog');
+  const achForm = document.getElementById('custom-achievement-form');
+  const btnAddAch = document.getElementById('btn-add-custom-achievement');
+  const btnCloseAch = document.getElementById('close-achievement-dialog-btn');
+  const btnCancelAch = document.getElementById('btn-cancel-achievement-dialog');
+
+  if (btnAddAch && achDialog) {
+    btnAddAch.addEventListener('click', () => {
+      playRoboticSound('click');
+      document.getElementById('edit-achievement-idx').value = '';
+      document.getElementById('achievement-title').value = '';
+      document.getElementById('achievement-year').value = '';
+      achDialog.showModal();
+    });
+  }
+
+  const closeAchModal = () => {
+    playRoboticSound('click');
+    if (achDialog) achDialog.close();
+  };
+
+  if (btnCloseAch) btnCloseAch.addEventListener('click', closeAchModal);
+  if (btnCancelAch) btnCancelAch.addEventListener('click', closeAchModal);
+
+  if (achForm) {
+    achForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const idxVal = document.getElementById('edit-achievement-idx').value;
+      const titleVal = document.getElementById('achievement-title').value.trim();
+      const yearVal = document.getElementById('achievement-year').value.trim();
+
+      if (!landingData.achievements) {
+        landingData.achievements = [];
+      }
+
+      if (idxVal !== '') {
+        const idx = parseInt(idxVal, 10);
+        landingData.achievements[idx] = { title: titleVal, year: yearVal };
+      } else {
+        landingData.achievements.push({ title: titleVal, year: yearVal });
+      }
+
+      saveData('robotik_landing', landingData);
+      renderLandingPage();
+      renderAdminAchievementsTable();
+
+      playRoboticSound('success');
+      if (achDialog) achDialog.close();
+    });
+  }
+
   function populateLandingCmsInputs() {
     const heroTagInput = document.getElementById('cms-hero-tag');
     const heroTitleInput = document.getElementById('cms-hero-title');
@@ -2699,15 +2806,7 @@ function setupLandingPageCMS() {
     if (divElecInput) divElecInput.value = landingData.divElecDesc || '';
     if (divProgInput) divProgInput.value = landingData.divProgDesc || '';
 
-    // Populate Achievements
-    if (landingData.achievements) {
-      for (let i = 0; i < 4; i++) {
-        const titleInput = document.getElementById(`cms-ach-title-${i + 1}`);
-        const yearInput = document.getElementById(`cms-ach-year-${i + 1}`);
-        if (titleInput) titleInput.value = landingData.achievements[i]?.title || '';
-        if (yearInput) yearInput.value = landingData.achievements[i]?.year || '';
-      }
-    }
+    renderAdminAchievementsTable();
   }
 
   // Populate initially
@@ -2732,19 +2831,6 @@ function setupLandingPageCMS() {
       if (input) updatedMisi.push(input.value.trim());
     }
 
-    // Collect Achievements
-    const updatedAch = [];
-    for (let i = 1; i <= 4; i++) {
-      const titleInput = document.getElementById(`cms-ach-title-${i}`);
-      const yearInput = document.getElementById(`cms-ach-year-${i}`);
-      if (titleInput && yearInput) {
-        updatedAch.push({
-          title: titleInput.value.trim(),
-          year: yearInput.value.trim()
-        });
-      }
-    }
-
     // Save to landingData object
     landingData = {
       heroTag: heroTagInput ? heroTagInput.value.trim() : '',
@@ -2755,14 +2841,14 @@ function setupLandingPageCMS() {
       divMechDesc: divMechInput ? divMechInput.value.trim() : '',
       divElecDesc: divElecInput ? divElecInput.value.trim() : '',
       divProgDesc: divProgInput ? divProgInput.value.trim() : '',
-      achievements: updatedAch
+      achievements: landingData.achievements || []
     };
 
     saveData('robotik_landing', landingData);
     renderLandingPage();
 
     playRoboticSound('success');
-    alert('Konten landing page dan prestasi kejuaraan berhasil diperbarui! 🚀');
+    alert('Konten landing page berhasil diperbarui! 🚀');
   });
 
   // Expose populate function to window for database reset triggers
@@ -2844,6 +2930,78 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCmsTabs();
   setupPendaftaranCMSAndCountdown();
 
+  // Trigger interactive stats counters (Opsi 2)
+  setupInteractiveStatsCounters();
+
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();
 });
+
+// --- INTERACTIVE STATS COUNTERS (OPSI 2) ---
+function setupInteractiveStatsCounters() {
+  const statsSection = document.getElementById('stats-section');
+  if (!statsSection) return;
+
+  const numbers = statsSection.querySelectorAll('.stat-number');
+  let animated = false;
+
+  const animateCounters = () => {
+    if (animated) return;
+    animated = true;
+
+    // Respect reduced motion settings
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    numbers.forEach(el => {
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      if (isNaN(target)) return;
+
+      if (prefersReducedMotion) {
+        el.textContent = target;
+        return;
+      }
+
+      let start = 0;
+      const duration = 2000; // 2 seconds
+      const startTime = performance.now();
+
+      const updateCount = (timestamp) => {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Ease out quad formula for smooth decelerating animation
+        const easeProgress = progress * (2 - progress);
+        const currentValue = Math.floor(easeProgress * target);
+
+        el.textContent = currentValue;
+
+        if (progress < 1) {
+          requestAnimationFrame(updateCount);
+        } else {
+          el.textContent = target;
+        }
+      };
+
+      requestAnimationFrame(updateCount);
+    });
+  };
+
+  // IntersectionObserver to trigger when scrolled into view
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15 // trigger when 15% of section is visible
+    });
+
+    observer.observe(statsSection);
+  } else {
+    // Fallback if IntersectionObserver is not supported
+    animateCounters();
+  }
+}

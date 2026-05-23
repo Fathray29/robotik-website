@@ -166,7 +166,7 @@ function loadData(key, fallbackData) {
   try {
     const rawData = localStorage.getItem(key);
     if (!rawData) {
-      saveData(key, fallbackData);
+      saveData(key, fallbackData, false);
       return fallbackData;
     }
     
@@ -182,11 +182,11 @@ function loadData(key, fallbackData) {
     try {
       const parsed = JSON.parse(rawData);
       // Transparently migrate legacy data to secure format
-      saveData(key, parsed);
+      saveData(key, parsed, false);
       return parsed;
     } catch (e) {
       // If it's corrupted, save fallback and return it
-      saveData(key, fallbackData);
+      saveData(key, fallbackData, false);
       return fallbackData;
     }
   } catch (e) {
@@ -195,14 +195,14 @@ function loadData(key, fallbackData) {
   }
 }
 
-function saveData(key, data) {
+function saveData(key, data, syncToCloud = true) {
   try {
     const serialized = JSON.stringify(data);
     const encrypted = obfuscate(serialized);
     localStorage.setItem(key, encrypted);
 
     // Centered, transparent synchronization with Cloud Firestore
-    if (useFirebase) {
+    if (useFirebase && syncToCloud) {
       if (key === 'robotik_reg_settings') {
         db.collection('settings').doc('registration').set(data)
           .then(() => console.log("Cloud Sync: Registration settings successfully updated!"))
@@ -261,6 +261,7 @@ async function syncApplicantsFromFirestore() {
       fetched.push(doc.data());
     });
     applicants = fetched;
+    saveData('robotik_applicants', applicants, false); // Cache locally, do not sync to cloud
     console.log(`Cloud sync completed: ${applicants.length} applicants loaded.`);
   } catch (e) {
     console.error("Firestore sync applicants failed:", e);
@@ -273,6 +274,7 @@ async function syncRegSettingsFromFirestore() {
     const doc = await db.collection('settings').doc('registration').get();
     if (doc.exists) {
       regSettings = doc.data();
+      saveData('robotik_reg_settings', regSettings, false); // Cache locally, do not sync to cloud
       console.log("Cloud sync completed: Registration settings loaded.");
     } else {
       // Seed initial settings to Firestore
@@ -290,6 +292,7 @@ async function syncLandingDataFromFirestore() {
     const doc = await db.collection('landing').doc('content').get();
     if (doc.exists) {
       landingData = doc.data();
+      saveData('robotik_landing', landingData, false); // Cache locally, do not sync to cloud
       console.log("Cloud sync completed: Landing page data loaded.");
     } else {
       // Seed initial landing data to Firestore
@@ -313,6 +316,7 @@ function setupRealTimeApplicantsSync() {
         fetched.push(doc.data());
       });
       applicants = fetched;
+      saveData('robotik_applicants', applicants, false); // Cache locally, do not sync to cloud
       console.log("Real-time applicants updated from Cloud Firestore!");
       const panelSection = document.getElementById('admin-panel-section');
       if (panelSection && panelSection.style.display !== 'none') {
@@ -351,12 +355,12 @@ let landingData = loadData('robotik_landing', INITIAL_LANDING_DATA);
 // Defensive check: if loaded data is an empty object or lacks critical fields, re-seed from INITIAL objects
 if (!landingData || !landingData.heroTitle || !landingData.achievements) {
   landingData = JSON.parse(JSON.stringify(INITIAL_LANDING_DATA));
-  saveData('robotik_landing', landingData);
+  saveData('robotik_landing', landingData, false);
 }
 
 if (!regSettings || typeof regSettings.isOpen === 'undefined' || !regSettings.customQuestions) {
   regSettings = JSON.parse(JSON.stringify(INITIAL_REG_SETTINGS));
-  saveData('robotik_reg_settings', regSettings);
+  saveData('robotik_reg_settings', regSettings, false);
 }
 
 // Backfill WhatsApp settings if they don't exist
@@ -364,7 +368,7 @@ if (!regSettings.waTitle) {
   regSettings.waTitle = INITIAL_REG_SETTINGS.waTitle;
   regSettings.waDesc = INITIAL_REG_SETTINGS.waDesc;
   regSettings.waLink = INITIAL_REG_SETTINGS.waLink;
-  saveData('robotik_reg_settings', regSettings);
+  saveData('robotik_reg_settings', regSettings, false);
 }
 
 let countdownInterval = null;
@@ -2658,7 +2662,10 @@ function renderLandingPage() {
     const itemsHtml = landingData.achievements.map(ach => 
       `<div class="prestasi-item"><span class="prestasi-trophy">🏆</span> ${escapeHtml(ach.title)} <span class="prestasi-year">${escapeHtml(ach.year)}</span></div>`
     ).join('');
-    achievementsEl.innerHTML = itemsHtml + itemsHtml; // duplicate for seamless scrolling
+    achievementsEl.innerHTML = `
+      <div class="marquee-track">${itemsHtml}</div>
+      <div class="marquee-track">${itemsHtml}</div>
+    `;
   }
 }
 

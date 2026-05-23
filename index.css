@@ -698,20 +698,27 @@ a {
 
 .marquee-content {
   display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-track {
+  display: flex;
   gap: 3rem;
+  padding-right: 3rem;
   white-space: nowrap;
   animation: marquee 25s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
 }
 
-.marquee-content:hover {
+.marquee-content:hover .marquee-track {
   animation-play-state: paused;
 }
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
 }
 
 .prestasi-item {
@@ -2123,7 +2130,7 @@ select.input-control option {
     gap: 0.25rem;
   }
 
-  .marquee-content {
+  .marquee-track {
     animation-duration: 15s;
   }
 
@@ -2156,7 +2163,8 @@ select.input-control option {
     animation: none !important;
   }
 
-  .marquee-content {
+  .marquee-content,
+  .marquee-track {
     animation: none !important;
     flex-wrap: wrap;
     white-space: normal;

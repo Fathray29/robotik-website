@@ -315,40 +315,6 @@
         <!-- Articles Grid Container (Filled dynamically by JS) -->
         <div class="blog-grid" id="blog-grid"></div>
 
-        <!-- ==========================================
-             NATIVE TOP-LAYER BLOG DETAIL DIALOG
-             ========================================== -->
-        <dialog id="blog-detail-dialog" aria-labelledby="dialog-body-content">
-          <div class="dialog-close-bar">
-            <button id="close-dialog-btn" class="btn-close" aria-label="Tutup Detail Artikel">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-          <div id="dialog-body-content">
-            <!-- Populated dynamically via JS -->
-          </div>
-        </dialog>
-
-        <!-- ==========================================
-             NATIVE TOP-LAYER PORTFOLIO DETAIL DIALOG
-             ========================================== -->
-        <dialog id="portfolio-detail-dialog" aria-labelledby="portfolio-dialog-body-content">
-          <div class="dialog-close-bar">
-            <button id="close-portfolio-dialog-btn" class="btn-close" aria-label="Tutup Detail Proyek">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-          <div id="portfolio-dialog-body-content">
-            <!-- Populated dynamically via JS -->
-          </div>
-        </dialog>
-
       </section>
 
       <!-- ==========================================
@@ -1306,6 +1272,40 @@
         <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan Prestasi 🏆</button>
       </div>
     </form>
+  </dialog>
+
+  <!-- ==========================================
+       NATIVE TOP-LAYER BLOG DETAIL DIALOG
+       ========================================== -->
+  <dialog id="blog-detail-dialog" aria-labelledby="dialog-body-content">
+    <div class="dialog-close-bar">
+      <button id="close-dialog-btn" class="btn-close" aria-label="Tutup Detail Artikel">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div id="dialog-body-content">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </dialog>
+
+  <!-- ==========================================
+       NATIVE TOP-LAYER PORTFOLIO DETAIL DIALOG
+       ========================================== -->
+  <dialog id="portfolio-detail-dialog" aria-labelledby="portfolio-dialog-body-content">
+    <div class="dialog-close-bar">
+      <button id="close-portfolio-dialog-btn" class="btn-close" aria-label="Tutup Detail Proyek">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div id="portfolio-dialog-body-content">
+      <!-- Populated dynamically via JS -->
+    </div>
   </dialog>
 
   <!-- App scripts logic -->

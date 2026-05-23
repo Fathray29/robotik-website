@@ -854,6 +854,74 @@ function parseMarkdownToHtml(markdown) {
   return escaped;
 }
 
+// --- DYNAMIC TABLE OF CONTENTS GENERATOR ---
+function generateTableOfContents(dialogElement) {
+  const richText = dialogElement.querySelector('.dialog-rich-text');
+  const tocContainer = dialogElement.querySelector('.dialog-toc-container');
+  const tocList = dialogElement.querySelector('.toc-list');
+  if (!richText || !tocContainer || !tocList) return;
+
+  // Find all headings (h2 and h3) inside the rich text
+  const headings = richText.querySelectorAll('h2, h3');
+  if (headings.length === 0) {
+    tocContainer.style.display = 'none';
+    return;
+  }
+
+  // Clear previous list
+  tocList.innerHTML = '';
+  tocContainer.style.display = 'block';
+
+  headings.forEach((heading, index) => {
+    // Generate unique ID
+    const headingId = `heading-${index}`;
+    heading.setAttribute('id', headingId);
+    heading.style.scrollMarginTop = '2rem'; // ensure scrolling has padding
+
+    // Create TOC item
+    const li = document.createElement('li');
+    li.style.paddingLeft = heading.tagName === 'H3' ? '0.75rem' : '0';
+    
+    const a = document.createElement('a');
+    a.href = `#${headingId}`;
+    a.textContent = heading.textContent.replace(/[🤖💻🛠️📋🔗📷]/g, '').trim(); // strip emojis for cleaner menu
+    a.style.color = heading.tagName === 'H3' ? 'var(--text-muted)' : 'var(--text-light)';
+    a.style.textDecoration = 'none';
+    a.style.transition = 'var(--transition-smooth)';
+    a.style.display = 'block';
+    a.style.lineHeight = '1.3';
+    
+    // Add active tracking state
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      playRoboticSound('click');
+      
+      // Smooth scroll inside dialog
+      heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // Set active visual state
+      tocList.querySelectorAll('a').forEach(link => {
+        link.style.color = link.parentNode.style.paddingLeft ? 'var(--text-muted)' : 'var(--text-light)';
+        link.style.fontWeight = 'normal';
+      });
+      a.style.color = 'var(--accent-cyan)';
+      a.style.fontWeight = 'bold';
+    });
+
+    a.addEventListener('mouseenter', () => {
+      a.style.color = 'var(--accent-cyan)';
+    });
+    a.addEventListener('mouseleave', () => {
+      if (a.style.fontWeight !== 'bold') {
+        a.style.color = heading.tagName === 'H3' ? 'var(--text-muted)' : 'var(--text-light)';
+      }
+    });
+
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+}
+
 function openArticleDetail(id) {
   const article = blogArticles.find(a => a.id === id);
   if (!article) return;
@@ -883,8 +951,21 @@ function openArticleDetail(id) {
         <div class="dialog-badge">${article.category.toUpperCase()}</div>
       </div>
       
-      <div class="dialog-rich-text">
-        ${parseMarkdownToHtml(article.content)}
+      <div class="dialog-grid-container">
+        <!-- Table of Contents Sidebar -->
+        <aside class="dialog-toc-container">
+          <div class="dialog-toc-sticky">
+            <h4>Daftar Isi 📖</h4>
+            <ul class="toc-list"></ul>
+          </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="dialog-content-area">
+          <div class="dialog-rich-text">
+            ${parseMarkdownToHtml(article.content)}
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -898,6 +979,9 @@ function openArticleDetail(id) {
       document.body.classList.remove('dialog-open');
     });
   }
+
+  // Generate interactive Table of Contents
+  generateTableOfContents(detailDialog);
 
   detailDialog.showModal();
   document.body.classList.add('dialog-open');
@@ -1037,37 +1121,50 @@ function openPortfolioDetail(id) {
         </div>
       </div>
       
-      <div class="dialog-rich-text">
-        <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 1.25rem;">Deskripsi Detail Proyek 🤖</h3>
-        ${parseMarkdownToHtml(proj.content || '*Belum ada deskripsi mendalam.*')}
-        
-        <h3 style="margin-top: 3.5rem; margin-bottom: 1.25rem; color: var(--accent-cyan); font-size: 1.5rem;">Skema & Kode Pemrograman Robot 💻</h3>
-        
-        <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden;">
-          <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
-            <button class="viewer-tab active" data-tab="code" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Arduino C++ Code</button>
-            <button class="viewer-tab" data-tab="schematic" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Fisik & Koneksi</button>
+      <div class="dialog-grid-container">
+        <!-- Table of Contents Sidebar -->
+        <aside class="dialog-toc-container">
+          <div class="dialog-toc-sticky">
+            <h4>Daftar Isi 📖</h4>
+            <ul class="toc-list"></ul>
           </div>
-          <div class="viewer-content active" data-content="code" style="padding: 1.5rem; display: block; overflow-y: auto;">
-            <pre style="margin: 0;"><code style="font-family: monospace; font-size: 0.9rem; color: #a7f3d0; white-space: pre-wrap;">${escapeHtml(proj.code)}</code></pre>
-          </div>
-          <div class="viewer-content" data-content="schematic" style="padding: 1.5rem; display: none; overflow-y: auto;">
-            <div class="schematic-mock" style="display: flex; gap: 1.5rem; align-items: flex-start;">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="1.5" style="flex-shrink: 0;">
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <circle cx="8" cy="10" r="2" />
-                <circle cx="16" cy="10" r="2" />
-                <path d="M6 16h12" />
-              </svg>
-              <div class="schematic-info">
-                <h4 style="color: var(--accent-yellow); font-size: 1.15rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
-                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Gunakan pinout koneksi mikroprosesor berikut untuk perakitan fisik:</p>
-                <ul style="color: var(--text-muted); padding-left: 1.25rem; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                  <li><strong>VCC</strong> -> Baterai Li-Ion 7.4V (via Regulator Tegangan LM7805)</li>
-                  <li><strong>GND</strong> -> Ground Bersama (Baterai & Papan Controller)</li>
-                  <li><strong>Sensor I/O</strong> -> Analog Pins A0, A1, A2 (Kiri, Tengah, Kanan)</li>
-                  <li><strong>Motor Driver EnA/EnB</strong> -> PWM Pins D5, D6 (Pemicu Kecepatan Motor)</li>
-                </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="dialog-content-area">
+          <div class="dialog-rich-text">
+            <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 1.25rem;">Deskripsi Detail Proyek 🤖</h3>
+            ${parseMarkdownToHtml(proj.content || '*Belum ada deskripsi mendalam.*')}
+            
+            <h3 style="margin-top: 3.5rem; margin-bottom: 1.25rem; color: var(--accent-cyan); font-size: 1.5rem;">Skema & Kode Pemrograman Robot 💻</h3>
+            
+            <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden;">
+              <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
+                <button class="viewer-tab active" data-tab="code" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Arduino C++ Code</button>
+                <button class="viewer-tab" data-tab="schematic" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Fisik & Koneksi</button>
+              </div>
+              <div class="viewer-content active" data-content="code" style="padding: 1.5rem; display: block; overflow-y: auto;">
+                <pre style="margin: 0;"><code style="font-family: monospace; font-size: 0.9rem; color: #a7f3d0; white-space: pre-wrap;">${escapeHtml(proj.code)}</code></pre>
+              </div>
+              <div class="viewer-content" data-content="schematic" style="padding: 1.5rem; display: none; overflow-y: auto;">
+                <div class="schematic-mock" style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="1.5" style="flex-shrink: 0;">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <circle cx="8" cy="10" r="2" />
+                    <circle cx="16" cy="10" r="2" />
+                    <path d="M6 16h12" />
+                  </svg>
+                  <div class="schematic-info">
+                    <h4 style="color: var(--accent-yellow); font-size: 1.15rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Gunakan pinout koneksi mikroprosesor berikut untuk perakitan fisik:</p>
+                    <ul style="color: var(--text-muted); padding-left: 1.25rem; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                      <li><strong>VCC</strong> -> Baterai Li-Ion 7.4V (via Regulator Tegangan LM7805)</li>
+                      <li><strong>GND</strong> -> Ground Bersama (Baterai & Papan Controller)</li>
+                      <li><strong>Sensor I/O</strong> -> Analog Pins A0, A1, A2 (Kiri, Tengah, Kanan)</li>
+                      <li><strong>Motor Driver EnA/EnB</strong> -> PWM Pins D5, D6 (Pemicu Kecepatan Motor)</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1105,6 +1202,9 @@ function openPortfolioDetail(id) {
       });
     });
   });
+
+  // Generate interactive Table of Contents
+  generateTableOfContents(detailDialog);
 
   detailDialog.showModal();
   document.body.classList.add('dialog-open');

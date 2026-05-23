@@ -200,6 +200,19 @@ function saveData(key, data) {
     const serialized = JSON.stringify(data);
     const encrypted = obfuscate(serialized);
     localStorage.setItem(key, encrypted);
+
+    // Centered, transparent synchronization with Cloud Firestore
+    if (useFirebase) {
+      if (key === 'robotik_reg_settings') {
+        db.collection('settings').doc('registration').set(data)
+          .then(() => console.log("Cloud Sync: Registration settings successfully updated!"))
+          .catch(err => console.error("Cloud Sync Error: Settings sync failed:", err));
+      } else if (key === 'robotik_landing') {
+        db.collection('landing').doc('content').set(data)
+          .then(() => console.log("Cloud Sync: Landing page content successfully updated!"))
+          .catch(err => console.error("Cloud Sync Error: Landing content sync failed:", err));
+      }
+    }
   } catch (e) {
     console.error('LocalStorage save failed:', e);
     // Graceful error notification if storage is full
@@ -209,10 +222,107 @@ function saveData(key, data) {
   }
 }
 
+// --- CLOUD FIREBASE CONFIGURATION (DUAL-MODE HYBRID PERSISTENCE ENGINE) ---
+const firebaseConfig = {
+  apiKey: "PLACEHOLDER_API_KEY",
+  authDomain: "PLACEHOLDER_AUTH_DOMAIN",
+  projectId: "PLACEHOLDER_PROJECT_ID",
+  storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
+  messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
+  appId: "PLACEHOLDER_APP_ID"
+};
+
+let db = null;
+let useFirebase = false;
+
+if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER_PROJECT_ID') {
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    useFirebase = true;
+    console.log("Motechart Cloud Engine: Firebase Firestore initialized successfully! ☁️");
+  } catch (e) {
+    console.error("Motechart Cloud Engine: Firebase initialization failed:", e);
+  }
+}
+
 let blogArticles = loadData('robotik_blog', INITIAL_BLOG_ARTICLES);
 let portfolioProjects = loadData('robotik_portfolio', INITIAL_PORTFOLIO_PROJECTS);
 let applicants = loadData('robotik_applicants', INITIAL_APPLICANTS);
 let regSettings = loadData('robotik_reg_settings', INITIAL_REG_SETTINGS);
+
+// --- FIREBASE FIRESTORE SYNC & SEEDING HELPERS ---
+async function syncApplicantsFromFirestore() {
+  if (!useFirebase) return;
+  try {
+    const snapshot = await db.collection('applicants').get();
+    const fetched = [];
+    snapshot.forEach(doc => {
+      fetched.push(doc.data());
+    });
+    applicants = fetched;
+    console.log(`Cloud sync completed: ${applicants.length} applicants loaded.`);
+  } catch (e) {
+    console.error("Firestore sync applicants failed:", e);
+  }
+}
+
+async function syncRegSettingsFromFirestore() {
+  if (!useFirebase) return;
+  try {
+    const doc = await db.collection('settings').doc('registration').get();
+    if (doc.exists) {
+      regSettings = doc.data();
+      console.log("Cloud sync completed: Registration settings loaded.");
+    } else {
+      // Seed initial settings to Firestore
+      await db.collection('settings').doc('registration').set(regSettings);
+      console.log("Firestore seeded with initial registration settings.");
+    }
+  } catch (e) {
+    console.error("Firestore sync settings failed:", e);
+  }
+}
+
+async function syncLandingDataFromFirestore() {
+  if (!useFirebase) return;
+  try {
+    const doc = await db.collection('landing').doc('content').get();
+    if (doc.exists) {
+      landingData = doc.data();
+      console.log("Cloud sync completed: Landing page data loaded.");
+    } else {
+      // Seed initial landing data to Firestore
+      await db.collection('landing').doc('content').set(landingData);
+      console.log("Firestore seeded with initial landing page content.");
+    }
+  } catch (e) {
+    console.error("Firestore sync landing data failed:", e);
+  }
+}
+
+let applicantsUnsubscribe = null;
+function setupRealTimeApplicantsSync() {
+  if (!useFirebase) return;
+  if (applicantsUnsubscribe) return;
+  
+  try {
+    applicantsUnsubscribe = db.collection('applicants').onSnapshot(snapshot => {
+      const fetched = [];
+      snapshot.forEach(doc => {
+        fetched.push(doc.data());
+      });
+      applicants = fetched;
+      console.log("Real-time applicants updated from Cloud Firestore!");
+      const panelSection = document.getElementById('admin-panel-section');
+      if (panelSection && panelSection.style.display !== 'none') {
+        renderAdminApplicantsTable();
+      }
+    });
+  } catch (e) {
+    console.error("Failed to setup Firestore real-time listener:", e);
+  }
+}
 
 const INITIAL_LANDING_DATA = {
   heroTag: 'Ekstrakurikuler Unggulan',
@@ -1050,6 +1160,12 @@ function setupRegistrationForm() {
       applicants.push(newApplicant);
       saveData('robotik_applicants', applicants);
 
+      if (useFirebase) {
+        db.collection('applicants').doc(regId).set(newApplicant)
+          .then(() => console.log("Applicant successfully saved to Cloud Firestore!"))
+          .catch(err => console.error("Firestore save applicant failed:", err));
+      }
+
       // Refresh admin table
       renderAdminApplicantsTable();
 
@@ -1333,6 +1449,25 @@ function setupCmsAuthentication() {
         saveData('robotik_applicants', applicants);
         saveData('robotik_reg_settings', regSettings);
         saveData('robotik_landing', landingData);
+
+        if (useFirebase) {
+          // Reset and re-seed applicants collection in Cloud Firestore
+          db.collection('applicants').get()
+            .then(snapshot => {
+              const batch = db.batch();
+              snapshot.forEach(doc => {
+                batch.delete(doc.ref);
+              });
+              // Re-seed initial demo applicants
+              INITIAL_APPLICANTS.forEach(app => {
+                const docRef = db.collection('applicants').doc(app.id);
+                batch.set(docRef, app);
+              });
+              return batch.commit();
+            })
+            .then(() => console.log("Cloud Reset: Applicants database successfully reset & re-seeded!"))
+            .catch(err => console.error("Cloud Reset Error: Firestore applicants clear failed:", err));
+        }
         
         renderAdminBlogTable();
         renderAdminPortfolioTable();
@@ -1663,6 +1798,12 @@ function approveApplicant(id) {
     applicants[idx].status = 'Diterima';
     saveData('robotik_applicants', applicants);
     renderAdminApplicantsTable();
+
+    if (useFirebase) {
+      db.collection('applicants').doc(id).update({ status: 'Diterima' })
+        .then(() => console.log("Applicant approval successfully synced to Cloud Firestore!"))
+        .catch(err => console.error("Firestore approval sync failed:", err));
+    }
   }
 }
 
@@ -1673,6 +1814,12 @@ function rejectApplicant(id) {
     applicants[idx].status = 'Ditolak';
     saveData('robotik_applicants', applicants);
     renderAdminApplicantsTable();
+
+    if (useFirebase) {
+      db.collection('applicants').doc(id).update({ status: 'Ditolak' })
+        .then(() => console.log("Applicant rejection successfully synced to Cloud Firestore!"))
+        .catch(err => console.error("Firestore rejection sync failed:", err));
+    }
   }
 }
 
@@ -1684,6 +1831,12 @@ function deleteApplicant(id) {
       applicants.splice(idx, 1);
       saveData('robotik_applicants', applicants);
       renderAdminApplicantsTable();
+
+      if (useFirebase) {
+        db.collection('applicants').doc(id).delete()
+          .then(() => console.log("Applicant deletion successfully synced to Cloud Firestore!"))
+          .catch(err => console.error("Firestore deletion sync failed:", err));
+      }
     } else {
       playRoboticSound('error');
     }
@@ -2252,6 +2405,12 @@ function setupAdminRegSettings() {
 
       saveData('robotik_reg_settings', regSettings);
 
+      if (useFirebase) {
+        db.collection('settings').doc('registration').set(regSettings)
+          .then(() => console.log("Registration settings successfully synced to Cloud Firestore!"))
+          .catch(err => console.error("Firestore settings sync failed:", err));
+      }
+
       playRoboticSound('success');
       updateCountdownTimer();
       renderWhatsAppBanner();
@@ -2622,6 +2781,32 @@ function renderWhatsAppBanner() {
   }
 }
 
+async function initializeCloudDataSync() {
+  if (useFirebase) {
+    console.log("Motechart Cloud Engine: Initiating data sync from Firebase Firestore...");
+    await syncLandingDataFromFirestore();
+    await syncRegSettingsFromFirestore();
+    await syncApplicantsFromFirestore();
+    
+    // Setup real-time dynamic listener for admin applicants list
+    setupRealTimeApplicantsSync();
+    
+    // Re-render components with newly synced cloud data
+    renderLandingPage();
+    renderCustomQuestionsInForm();
+    updateCountdownTimer();
+    renderWhatsAppBanner();
+    
+    // Re-populate inputs in CMS if forms are loaded
+    if (typeof window.populateLandingCmsInputs === 'function') {
+      window.populateLandingCmsInputs();
+    }
+    if (typeof window.populateRegSettingsCmsInputs === 'function') {
+      window.populateRegSettingsCmsInputs();
+    }
+  }
+}
+
 function setupPendaftaranCMSAndCountdown() {
   renderCustomQuestionsInForm();
   updateCountdownTimer();
@@ -2648,4 +2833,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCmsAuthentication();
   setupCmsTabs();
   setupPendaftaranCMSAndCountdown();
+
+  // Async cloud sync trigger (runs in background and populates UI seamlessly)
+  initializeCloudDataSync();
 });

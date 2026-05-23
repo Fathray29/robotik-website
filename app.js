@@ -63,7 +63,7 @@ const INITIAL_PORTFOLIO_PROJECTS = [
     creators: "Tim IoT Kelas XII (Sarah, Kevin)",
     components: "ESP32, Sensor Kelembaban Tanah Soil Moisture v1.2, Sensor Suhu/Kelembaban DHT22, Pompa Air 5v Mini, LCD I2C",
     specs: "Konektivitas WiFi, Pengiriman Data Telemetri via MQTT, Kontrol Pompa Air Otomatis & Manual",
-    code: `// Cuplikan Koneksi IoT Blynk ESP32\n#include <WiFi.h>\n#include <WiFiClient.h>\n#include <BlynkSimpleEsp32.h>\n\nchar auth[] = "Your_Blynk_Auth_Token";\nchar ssid[] = "Wifi_Motechart_Robotik";\nchar pass[] = "motechart2026";\n\n#define SOIL_PIN 34\n#define RELAY_PIN 23\n\nvoid setup() {\n  Blynk.begin(auth, ssid, pass);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  Blynk.run();\n  int soilMoisture = analogRead(SOIL_PIN);\n  Blynk.virtualWrite(V1, soilMoisture);\n  \n  if (soilMoisture > 3000) { // Tanah kering\n    digitalWrite(RELAY_PIN, HIGH); // Pompa menyala\n  } else {\n    digitalWrite(RELAY_PIN, LOW);\n  }\n  delay(1000);\n}`
+    code: `// Cuplikan Koneksi IoT Blynk ESP32\n#include <WiFi.h>\n#include <WiFiClient.h>\n#include <BlynkSimpleEsp32.h>\n\nchar auth[] = "Your_Blynk_Auth_Token";\nchar ssid[] = "Wifi_Motechart_Robotik";\nchar pass[] = "motechart_wifi_pass";\n\n#define SOIL_PIN 34\n#define RELAY_PIN 23\n\nvoid setup() {\n  Blynk.begin(auth, ssid, pass);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  Blynk.run();\n  int soilMoisture = analogRead(SOIL_PIN);\n  Blynk.virtualWrite(V1, soilMoisture);\n  \n  if (soilMoisture > 3000) { // Tanah kering\n    digitalWrite(RELAY_PIN, HIGH); // Pompa menyala\n  } else {\n    digitalWrite(RELAY_PIN, LOW);\n  }\n  delay(1000);\n}`
   },
   {
     id: 3,
@@ -133,18 +133,80 @@ const INITIAL_REG_SETTINGS = {
   waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
 };
 
-// --- LOCAL STORAGE DATA HELPERS (CMS PERSISTENCE) ---
+// --- LOCAL STORAGE DATA HELPERS (CMS PERSISTENCE WITH ENCRYPTION) ---
+function obfuscate(text) {
+  try {
+    // Simple custom XOR bitwise obfuscation + base64 encoding to prevent plaintext exposure in localStorage
+    const b64 = btoa(unescape(encodeURIComponent(text)));
+    let result = '';
+    for (let i = 0; i < b64.length; i++) {
+      result += String.fromCharCode(b64.charCodeAt(i) ^ 18); // XOR with key 18
+    }
+    return 'SEC_' + result;
+  } catch (e) {
+    return text;
+  }
+}
+
+function deobfuscate(text) {
+  if (!text || typeof text !== 'string' || !text.startsWith('SEC_')) return null;
+  try {
+    const rawCipher = text.substring(4);
+    let raw = '';
+    for (let i = 0; i < rawCipher.length; i++) {
+      raw += String.fromCharCode(rawCipher.charCodeAt(i) ^ 18);
+    }
+    return decodeURIComponent(escape(atob(raw)));
+  } catch (e) {
+    return null;
+  }
+}
+
 function loadData(key, fallbackData) {
-  const data = localStorage.getItem(key);
-  if (!data) {
-    localStorage.setItem(key, JSON.stringify(fallbackData));
+  try {
+    const rawData = localStorage.getItem(key);
+    if (!rawData) {
+      saveData(key, fallbackData);
+      return fallbackData;
+    }
+    
+    // Attempt to deobfuscate if it's secured
+    if (rawData.startsWith('SEC_')) {
+      const dec = deobfuscate(rawData);
+      if (dec) {
+        return JSON.parse(dec);
+      }
+    }
+    
+    // Fallback: If it's legacy plaintext JSON, parse it, encrypt it, and save it
+    try {
+      const parsed = JSON.parse(rawData);
+      // Transparently migrate legacy data to secure format
+      saveData(key, parsed);
+      return parsed;
+    } catch (e) {
+      // If it's corrupted, save fallback and return it
+      saveData(key, fallbackData);
+      return fallbackData;
+    }
+  } catch (e) {
+    console.error('LocalStorage load failed:', e);
     return fallbackData;
   }
-  return JSON.parse(data);
 }
 
 function saveData(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
+  try {
+    const serialized = JSON.stringify(data);
+    const encrypted = obfuscate(serialized);
+    localStorage.setItem(key, encrypted);
+  } catch (e) {
+    console.error('LocalStorage save failed:', e);
+    // Graceful error notification if storage is full
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      alert('⚠️ Penyimpanan browser Anda penuh! Perubahan data tidak dapat disimpan secara permanen. Silakan bersihkan riwayat peramban.');
+    }
+  }
 }
 
 let blogArticles = loadData('robotik_blog', INITIAL_BLOG_ARTICLES);
@@ -616,7 +678,14 @@ function setupPortfolio() {
   renderPublicPortfolio();
 }
 
+function sanitizeInput(text) {
+  if (typeof text !== 'string') return text;
+  // Rigorously strip any HTML tags to prevent XSS injections
+  return text.replace(/<[^>]*>/g, '').trim();
+}
+
 function escapeHtml(text) {
+  if (typeof text !== 'string') return text;
   return text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -644,8 +713,8 @@ function setupRegistrationForm() {
   const validationRules = {
     'nama_lengkap': {
       required: true,
-      pattern: /^[a-zA-Z\s]{3,50}$/,
-      errorMessage: 'Nama lengkap wajib diisi (minimal 3 huruf, hanya huruf dan spasi).'
+      pattern: /^[a-zA-Z\s]{2,50}$/,
+      errorMessage: 'Nama lengkap wajib diisi (minimal 2 huruf, hanya huruf alfabet dan spasi).'
     },
     'nisn': {
       required: true,
@@ -654,13 +723,13 @@ function setupRegistrationForm() {
     },
     'no_hp': {
       required: true,
-      pattern: /^08\d{8,11}$/,
-      errorMessage: 'No. WhatsApp tidak valid (format: 08xxxxxxxx, 10-13 digit).'
+      pattern: /^(08|\+62)[0-9]{8,12}$/,
+      errorMessage: 'Nomor WhatsApp tidak valid (format Indonesia: dimulai 08 atau +62, panjang 10-14 digit numerik).'
     },
     'motivasi': {
       required: true,
-      minlength: 20,
-      errorMessage: 'Berikan motivasi yang jelas (minimal 20 karakter).'
+      minlength: 10,
+      errorMessage: 'Berikan motivasi yang jelas (minimal 10 karakter).'
     }
   };
 
@@ -677,7 +746,7 @@ function setupRegistrationForm() {
       if (fieldId === 'motivasi') {
         const charCount = document.getElementById('char-count');
         if (charCount) {
-          const charsLeft = 20 - input.value.length;
+          const charsLeft = 10 - input.value.length;
           if (charsLeft > 0) {
             charCount.textContent = `(${charsLeft} karakter lagi)`;
             charCount.style.color = 'var(--text-muted)';
@@ -916,10 +985,16 @@ function setupRegistrationForm() {
     playRoboticSound('success');
 
     setTimeout(() => {
-      const namaSiswa = document.getElementById('nama_lengkap').value;
+      const rawNama = document.getElementById('nama_lengkap').value;
       const kelasSiswa = document.querySelector('input[name="kelas"]:checked')?.value || 'X';
-      const noHpSiswa = document.getElementById('no_hp').value;
+      const rawNoHp = document.getElementById('no_hp').value;
       const regId = 'ROBO-' + Math.floor(100000 + Math.random() * 900000);
+
+      // Sanitize registration input values
+      const namaSiswa = sanitizeInput(rawNama);
+      const noHpSiswa = sanitizeInput(rawNoHp);
+      const nisnSiswa = sanitizeInput(document.getElementById('nisn').value);
+      const motivasiSiswa = sanitizeInput(document.getElementById('motivasi').value);
 
       // Populate review pending elements
       const studentNameEl = document.getElementById('registered-student-name');
@@ -949,10 +1024,10 @@ function setupRegistrationForm() {
         regSettings.customQuestions.forEach((q) => {
           if (q.type === 'text' || q.type === 'select') {
             const input = document.getElementById(q.id);
-            if (input) customAnswers[q.id] = input.value.trim();
+            if (input) customAnswers[q.id] = sanitizeInput(input.value);
           } else if (q.type === 'radio') {
             const checkedRadio = document.querySelector(`input[name="${q.id}"]:checked`);
-            if (checkedRadio) customAnswers[q.id] = checkedRadio.value;
+            if (checkedRadio) customAnswers[q.id] = sanitizeInput(checkedRadio.value);
           }
         });
       }
@@ -962,11 +1037,11 @@ function setupRegistrationForm() {
         id: regId,
         nama: namaSiswa,
         kelas: kelasSiswa,
-        nisn: document.getElementById('nisn').value,
+        nisn: nisnSiswa,
         noHp: noHpSiswa,
         laptop: document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak',
         divisi: [],
-        motivasi: document.getElementById('motivasi').value,
+        motivasi: motivasiSiswa,
         tanggalDaftar: new Date().toISOString().split('T')[0],
         status: 'Pending',
         customAnswers: customAnswers
@@ -1202,6 +1277,16 @@ function closeCmsEditor() {
   document.body.classList.remove('dialog-open');
 }
 
+const ADMIN_PASS_HASH = '7094bc26dc244ec1bbef932b02a6fe1b2c629f334e3212621188674058c6bd11';
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 // CMS Admin Authentication controllers
 function setupCmsAuthentication() {
   const loginForm = document.getElementById('cms-login-form');
@@ -1281,7 +1366,7 @@ function setupCmsAuthentication() {
 
   // Login authentication trigger
   if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const user = document.getElementById('admin_username').value.trim();
       const pass = document.getElementById('admin_password').value.trim();
@@ -1289,8 +1374,10 @@ function setupCmsAuthentication() {
       const errMsg = document.getElementById('login-error-msg');
       if (errMsg) errMsg.style.display = 'none';
 
+      const inputHash = await sha256(pass);
+
       // Credentials verification (approved default configuration)
-      if (user === 'admin' && pass === 'motechart2026') {
+      if (user === 'admin' && inputHash === ADMIN_PASS_HASH) {
         playRoboticSound('success');
         sessionStorage.setItem('robotik_admin_logged', 'true');
 

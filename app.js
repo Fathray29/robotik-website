@@ -937,7 +937,7 @@ function generateTableOfContents(dialogElement) {
 }
 
 function openArticleDetail(id) {
-  const article = blogArticles.find(a => a.id === id);
+  const article = blogArticles.find(a => String(a.id) === String(id));
   if (!article) return;
 
   playRoboticSound('click');
@@ -1090,7 +1090,7 @@ function renderPublicPortfolio() {
 }
 
 function openPortfolioDetail(id) {
-  const proj = portfolioProjects.find(p => p.id === id);
+  const proj = portfolioProjects.find(p => String(p.id) === String(id));
   if (!proj) return;
 
   playRoboticSound('click');
@@ -1725,7 +1725,7 @@ function renderAdminBlogTable() {
   // Bind edit buttons
   document.querySelectorAll('.edit-blog-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = parseInt(btn.getAttribute('data-id'));
+      const id = btn.getAttribute('data-id');
       openCmsEditor('blog', 'edit', id);
     });
     btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
@@ -1734,10 +1734,10 @@ function renderAdminBlogTable() {
   // Bind delete buttons
   document.querySelectorAll('.delete-blog-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = parseInt(btn.getAttribute('data-id'));
+      const id = btn.getAttribute('data-id');
       if (confirm('Apakah Anda yakin ingin menghapus artikel blog ini?')) {
         playRoboticSound('click');
-        blogArticles = blogArticles.filter(a => a.id !== id);
+        blogArticles = blogArticles.filter(a => String(a.id) !== String(id));
         saveData('robotik_blog', blogArticles);
         renderAdminBlogTable();
         renderPublicArticles();
@@ -1777,7 +1777,7 @@ function renderAdminPortfolioTable() {
   // Bind edit buttons
   document.querySelectorAll('.edit-portfolio-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = parseInt(btn.getAttribute('data-id'));
+      const id = btn.getAttribute('data-id');
       openCmsEditor('portfolio', 'edit', id);
     });
     btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
@@ -1786,10 +1786,10 @@ function renderAdminPortfolioTable() {
   // Bind delete buttons
   document.querySelectorAll('.delete-portfolio-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = parseInt(btn.getAttribute('data-id'));
+      const id = btn.getAttribute('data-id');
       if (confirm('Apakah Anda yakin ingin menghapus proyek portfolio ini?')) {
         playRoboticSound('click');
-        portfolioProjects = portfolioProjects.filter(p => p.id !== id);
+        portfolioProjects = portfolioProjects.filter(p => String(p.id) !== String(id));
         saveData('robotik_portfolio', portfolioProjects);
         renderAdminPortfolioTable();
         renderPublicPortfolio();

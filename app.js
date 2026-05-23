@@ -362,15 +362,22 @@ if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER
 }
 
 let blogArticles = loadData('robotik_blog', INITIAL_BLOG_ARTICLES);
-// Proactively merge new fields from default initial data if missing in loaded items
+// Proactively merge new fields and migrate legacy HTML content from default initial data
 let blogModified = false;
 blogArticles = blogArticles.map(article => {
   const initial = INITIAL_BLOG_ARTICLES.find(a => a.id === article.id);
   if (initial) {
+    let changed = false;
     if (article.headerImage === undefined && initial.headerImage !== undefined) {
       article.headerImage = initial.headerImage;
-      blogModified = true;
+      changed = true;
     }
+    // Migrate legacy HTML or content without headings to rich Markdown
+    if (article.content && (article.content.includes('<p>') || !article.content.includes('###'))) {
+      article.content = initial.content;
+      changed = true;
+    }
+    if (changed) blogModified = true;
   }
   return article;
 });
@@ -379,19 +386,26 @@ if (blogModified) {
 }
 
 let portfolioProjects = loadData('robotik_portfolio', INITIAL_PORTFOLIO_PROJECTS);
-// Proactively merge new fields (content and headerImage) from default initial data if missing in loaded items
+// Proactively merge new fields and migrate legacy content from default initial data
 let portfolioModified = false;
 portfolioProjects = portfolioProjects.map(proj => {
   const initial = INITIAL_PORTFOLIO_PROJECTS.find(p => p.id === proj.id);
   if (initial) {
+    let changed = false;
     if (proj.headerImage === undefined && initial.headerImage !== undefined) {
       proj.headerImage = initial.headerImage;
-      portfolioModified = true;
+      changed = true;
     }
     if (proj.content === undefined && initial.content !== undefined) {
       proj.content = initial.content;
-      portfolioModified = true;
+      changed = true;
     }
+    // Migrate legacy HTML or content without headings to rich Markdown
+    if (proj.content && (proj.content.includes('<p>') || !proj.content.includes('###'))) {
+      proj.content = initial.content;
+      changed = true;
+    }
+    if (changed) portfolioModified = true;
   }
   return proj;
 });

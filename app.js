@@ -1816,7 +1816,7 @@ function openCmsEditor(type, mode, id = null) {
 
   if (type === 'blog') {
     title.textContent = mode === 'add' ? 'Tambah Artikel Blog Baru' : 'Ubah Artikel Blog';
-    const article = mode === 'edit' ? blogArticles.find(a => a.id === id) : {};
+    const article = mode === 'edit' ? (blogArticles.find(a => String(a.id) === String(id)) || {}) : {};
     
     container.innerHTML = `
       <div class="form-group">
@@ -1874,7 +1874,7 @@ function openCmsEditor(type, mode, id = null) {
 
   } else if (type === 'portfolio') {
     title.textContent = mode === 'add' ? 'Tambah Proyek Portfolio Baru' : 'Ubah Proyek Portfolio';
-    const proj = mode === 'edit' ? portfolioProjects.find(p => p.id === id) : {};
+    const proj = mode === 'edit' ? (portfolioProjects.find(p => String(p.id) === String(id)) || {}) : {};
 
     container.innerHTML = `
       <div class="form-group">
@@ -2242,8 +2242,8 @@ function setupCmsTabs() {
             headerImage: headerImgVal
           });
         } else if (mode === 'edit') {
-          const id = parseInt(editorForm.getAttribute('data-id'));
-          const article = blogArticles.find(a => a.id === id);
+          const id = editorForm.getAttribute('data-id');
+          const article = blogArticles.find(a => String(a.id) === String(id));
           if (article) {
             article.title = titleVal;
             article.category = catVal;
@@ -2284,8 +2284,8 @@ function setupCmsTabs() {
             headerImage: headerImgVal
           });
         } else if (mode === 'edit') {
-          const id = parseInt(editorForm.getAttribute('data-id'));
-          const proj = portfolioProjects.find(p => p.id === id);
+          const id = editorForm.getAttribute('data-id');
+          const proj = portfolioProjects.find(p => String(p.id) === String(id));
           if (proj) {
             proj.title = titleVal;
             proj.category = catVal;
@@ -3567,7 +3567,7 @@ function setupLocalImageUploader(item) {
   const editImagePreview = document.getElementById('edit-image-preview');
   const uploadStatus = document.getElementById('upload-status');
 
-  if (editImagePreview && item.headerImage) {
+  if (item && editImagePreview && item.headerImage) {
     editImagePreview.style.backgroundImage = `url('${item.headerImage}')`;
     editImagePreview.style.display = 'block';
   }

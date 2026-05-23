@@ -3512,7 +3512,7 @@ function renderLandingPage() {
           <div class="ach-card-glow"></div>
           <span class="ach-badge">${escapeHtml(ach.year || '')}</span>
           <div class="ach-trophy">🏆</div>
-          <h4 class="ach-juara" style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-light); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.02em;">${escapeHtml(ach.juara || '')}</h4>
+          <h4 class="ach-juara" style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-light); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.02em; white-space: pre-wrap;">${escapeHtml(ach.juara || '')}</h4>
           <p class="ach-organizer" style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">${escapeHtml(ach.organizer || 'Penyelenggara Ekskul')}</p>
         </div>
       `).join('');
@@ -3536,7 +3536,7 @@ function setupLandingPageCMS() {
     tableBody.innerHTML = landingData.achievements.map((ach, idx) => `
       <tr>
         <td style="text-align: center;">${idx + 1}</td>
-        <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(ach.juara || '')}</td>
+        <td style="font-weight: 600; color: var(--text-white); white-space: pre-wrap;">${escapeHtml(ach.juara || '')}</td>
         <td style="color: var(--text-muted);">${escapeHtml(ach.organizer || '')}</td>
         <td style="text-align: center;"><span class="table-badge" style="background: rgba(6,182,212,0.1); color: var(--accent-cyan); font-weight: bold; border: 1px solid rgba(6,182,212,0.2);">${escapeHtml(ach.year || '')}</span></td>
         <td style="text-align: center;">

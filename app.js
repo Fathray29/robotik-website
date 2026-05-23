@@ -508,14 +508,28 @@ const INITIAL_LANDING_DATA = {
   divElecDesc: 'Menyusun sirkuit sirkulasi daya, penyolderan sensor pintar, perakitan mikrokontroler (Arduino/ESP32), baterai sel, dan sistem aktuator driver.',
   divProgDesc: 'Menulis kode algoritma C++ dan Python, integrasi navigasi sensor otomatis, penyelarasan PID motor, hingga kendali jarak jauh IoT nirkabel.',
   achievements: [
-    { title: 'Juara 1 Nasional Kontes Robot Soccer Indonesia', year: '2025' },
-    { title: 'Juara 2 Internasional ASEAN Line Follower Championship', year: '2025' },
-    { title: 'Juara 1 Provinsi Lomba Karya Cipta IoT Smart City', year: '2026' },
-    { title: 'Juara Umum Kompetisi Robotik Kreatif Nasional', year: '2025' }
+    { juara: 'Juara 1 Nasional Kontes Robot Soccer', organizer: 'Kementerian Pendidikan & Kebudayaan', year: '2025' },
+    { juara: 'Juara 2 Internasional ASEAN Line Follower', organizer: 'ASEAN Robotics Association', year: '2025' },
+    { juara: 'Juara 1 Provinsi Lomba Karya Cipta IoT', organizer: 'Pemerintah Provinsi & Puspresnas', year: '2026' },
+    { juara: 'Juara Umum Kompetisi Robotik Kreatif', organizer: 'Lembaga Ilmu Pengetahuan Indonesia', year: '2025' }
   ]
 };
 
 let landingData = loadData('robotik_landing', INITIAL_LANDING_DATA);
+
+// Defensive check & migration for achievement data structure
+if (landingData && landingData.achievements) {
+  landingData.achievements = landingData.achievements.map(ach => {
+    if (ach.title && !ach.juara) {
+      return {
+        juara: ach.title,
+        organizer: 'Eksternal / Puspresnas',
+        year: ach.year || '2025'
+      };
+    }
+    return ach;
+  });
+}
 
 // Defensive check: if loaded data is an empty object or lacks critical fields, re-seed from INITIAL objects
 if (!landingData || !landingData.heroTitle || !landingData.achievements) {
@@ -3496,9 +3510,10 @@ function renderLandingPage() {
       achievementsEl.innerHTML = landingData.achievements.map(ach => `
         <div class="achievement-card">
           <div class="ach-card-glow"></div>
-          <span class="ach-badge">${escapeHtml(ach.year)}</span>
+          <span class="ach-badge">${escapeHtml(ach.year || '')}</span>
           <div class="ach-trophy">🏆</div>
-          <p class="ach-text">${escapeHtml(ach.title)}</p>
+          <h4 class="ach-juara" style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--text-light); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.02em;">${escapeHtml(ach.juara || '')}</h4>
+          <p class="ach-organizer" style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">${escapeHtml(ach.organizer || 'Penyelenggara Ekskul')}</p>
         </div>
       `).join('');
     }
@@ -3514,15 +3529,16 @@ function setupLandingPageCMS() {
     if (!tableBody) return;
 
     if (!landingData.achievements || landingData.achievements.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tidak ada data penghargaan & prestasi. Silakan tambah baru.</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tidak ada data penghargaan & prestasi. Silakan tambah baru.</td></tr>`;
       return;
     }
 
     tableBody.innerHTML = landingData.achievements.map((ach, idx) => `
       <tr>
         <td style="text-align: center;">${idx + 1}</td>
-        <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(ach.title)}</td>
-        <td style="text-align: center;"><span class="table-badge" style="background: rgba(6,182,212,0.1); color: var(--accent-cyan); font-weight: bold; border: 1px solid rgba(6,182,212,0.2);">${escapeHtml(ach.year)}</span></td>
+        <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(ach.juara || '')}</td>
+        <td style="color: var(--text-muted);">${escapeHtml(ach.organizer || '')}</td>
+        <td style="text-align: center;"><span class="table-badge" style="background: rgba(6,182,212,0.1); color: var(--accent-cyan); font-weight: bold; border: 1px solid rgba(6,182,212,0.2);">${escapeHtml(ach.year || '')}</span></td>
         <td style="text-align: center;">
           <div style="display: flex; gap: 0.5rem; justify-content: center;">
             <button type="button" class="btn btn-outline-cyan btn-sm edit-ach-btn" data-index="${idx}">Edit</button>
@@ -3541,8 +3557,9 @@ function setupLandingPageCMS() {
         
         playRoboticSound('click');
         document.getElementById('edit-achievement-idx').value = idx;
-        document.getElementById('achievement-title').value = ach.title;
-        document.getElementById('achievement-year').value = ach.year;
+        document.getElementById('achievement-juara').value = ach.juara || '';
+        document.getElementById('achievement-organizer').value = ach.organizer || '';
+        document.getElementById('achievement-year').value = ach.year || '';
         
         const dialog = document.getElementById('custom-achievement-dialog');
         if (dialog) dialog.showModal();
@@ -3574,7 +3591,8 @@ function setupLandingPageCMS() {
     btnAddAch.addEventListener('click', () => {
       playRoboticSound('click');
       document.getElementById('edit-achievement-idx').value = '';
-      document.getElementById('achievement-title').value = '';
+      document.getElementById('achievement-juara').value = '';
+      document.getElementById('achievement-organizer').value = '';
       document.getElementById('achievement-year').value = '';
       achDialog.showModal();
     });
@@ -3593,18 +3611,21 @@ function setupLandingPageCMS() {
       e.preventDefault();
       
       const idxVal = document.getElementById('edit-achievement-idx').value;
-      const titleVal = document.getElementById('achievement-title').value.trim();
+      const juaraVal = document.getElementById('achievement-juara').value.trim();
+      const organizerVal = document.getElementById('achievement-organizer').value.trim();
       const yearVal = document.getElementById('achievement-year').value.trim();
 
       if (!landingData.achievements) {
         landingData.achievements = [];
       }
 
+      const achObj = { juara: juaraVal, organizer: organizerVal, year: yearVal };
+
       if (idxVal !== '') {
         const idx = parseInt(idxVal, 10);
-        landingData.achievements[idx] = { title: titleVal, year: yearVal };
+        landingData.achievements[idx] = achObj;
       } else {
-        landingData.achievements.push({ title: titleVal, year: yearVal });
+        landingData.achievements.push(achObj);
       }
 
       saveData('robotik_landing', landingData);

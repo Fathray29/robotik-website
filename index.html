@@ -256,51 +256,6 @@
           </div>
         </div>
 
-        <!-- Telemetry Stats Section -->
-        <section class="telemetry-stats-section" id="stats-section" aria-labelledby="stats-title">
-          <h2 id="stats-title" class="visually-hidden">Statistik Keberhasilan Motechart Robotik</h2>
-          <div class="telemetry-grid">
-            <div class="stat-card border-cyan">
-              <div class="stat-icon-wrapper">
-                <span class="stat-icon">🏆</span>
-              </div>
-              <div class="stat-number-wrapper">
-                <span class="stat-number" data-target="18">0</span><span class="stat-plus">+</span>
-              </div>
-              <div class="stat-label">Piala Kejuaraan</div>
-            </div>
-            
-            <div class="stat-card border-yellow">
-              <div class="stat-icon-wrapper">
-                <span class="stat-icon">👥</span>
-              </div>
-              <div class="stat-number-wrapper">
-                <span class="stat-number" data-target="150">0</span><span class="stat-plus">+</span>
-              </div>
-              <div class="stat-label">Anggota Aktif</div>
-            </div>
-            
-            <div class="stat-card border-cyan">
-              <div class="stat-icon-wrapper">
-                <span class="stat-icon">🤖</span>
-              </div>
-              <div class="stat-number-wrapper">
-                <span class="stat-number" data-target="12">0</span><span class="stat-plus">+</span>
-              </div>
-              <div class="stat-label">Robot Tercipta</div>
-            </div>
-            
-            <div class="stat-card border-yellow">
-              <div class="stat-icon-wrapper">
-                <span class="stat-icon">🌐</span>
-              </div>
-              <div class="stat-number-wrapper">
-                <span class="stat-number" data-target="5">0</span><span class="stat-plus">+</span>
-              </div>
-              <div class="stat-label">Proyek IoT Sekolah</div>
-            </div>
-          </div>
-        </section>
 
         <!-- Prestasi Section Marquee -->
         <div class="prestasi-section">
@@ -895,27 +850,31 @@
             </div>
             
             <form id="cms-reg-settings-form" style="margin-bottom: 3rem;">
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
-                <div class="form-group">
-                  <label class="form-label" for="reg-status-toggle">Status Pendaftaran Ekskul <span>*</span></label>
-                  <select id="reg-status-toggle" class="input-control">
-                    <option value="open">Buka (Tampilkan Form Pendaftaran)</option>
-                    <option value="closed">Tutup (Tampilkan Countdown Timer)</option>
-                  </select>
-                  <span class="hint-text">Jika ditutup, halaman pendaftaran akan digantikan oleh hitung mundur.</span>
-                </div>
-                
-                <div class="form-group">
-                  <label class="form-label" for="reg-countdown-target">Target Waktu Pembukaan Kembali</label>
-                  <input type="datetime-local" id="reg-countdown-target" class="input-control">
-                  <span class="hint-text">Hanya digunakan jika status pendaftaran adalah "Tutup".</span>
+              <!-- Visual Card 1: Status & Waktu Pendaftaran -->
+              <div class="cms-form-card">
+                <h5 class="cms-form-card-title">🔌 Status & Waktu Pendaftaran</h5>
+                <div class="cms-form-grid">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="reg-status-toggle">Status Pendaftaran Ekskul <span>*</span></label>
+                    <select id="reg-status-toggle" class="input-control">
+                      <option value="open">Buka (Tampilkan Form Pendaftaran)</option>
+                      <option value="closed">Tutup (Tampilkan Countdown Timer)</option>
+                    </select>
+                    <span class="hint-text">Jika ditutup, halaman pendaftaran akan digantikan oleh hitung mundur.</span>
+                  </div>
+                  
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="reg-countdown-target">Target Waktu Pembukaan Kembali</label>
+                    <input type="datetime-local" id="reg-countdown-target" class="input-control">
+                    <span class="hint-text">Hanya digunakan jika status pendaftaran adalah "Tutup".</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- WhatsApp Banner Configuration Section -->
-              <div style="border-top: 1px dashed var(--border-glass); padding-top: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem;">
-                <h5 style="margin-bottom: 1rem; color: var(--accent-yellow); font-size: 1.1rem; font-family: var(--font-heading); font-weight: 700;">Konfigurasi Banner Undangan WhatsApp 💬</h5>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+              <!-- Visual Card 2: WhatsApp Banner Configuration -->
+              <div class="cms-form-card">
+                <h5 class="cms-form-card-title">💬 Konfigurasi Banner Undangan WhatsApp</h5>
+                <div class="cms-form-grid">
                   <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="reg-wa-title">Judul Banner WhatsApp <span>*</span></label>
                     <input type="text" id="reg-wa-title" class="input-control" required placeholder="Grup WhatsApp Resmi Calon Anggota">
@@ -929,17 +888,19 @@
                 </div>
                 <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 0;">
                   <label class="form-label" for="reg-wa-desc">Deskripsi Banner WhatsApp <span>*</span></label>
-                  <textarea id="reg-wa-desc" class="input-control" required style="height: 70px; resize: vertical;" placeholder="Harap bergabung ke grup koordinasi calon anggota baru di bawah ini..."></textarea>
+                  <textarea id="reg-wa-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Harap bergabung ke grup koordinasi calon anggota baru di bawah ini..."></textarea>
                   <span class="hint-text">Deskripsi petunjuk tindakan bagi calon anggota baru.</span>
                 </div>
               </div>
               
-              <button type="submit" class="btn btn-cyan" style="min-width: 180px;">Simpan Konfigurasi Pendaftaran 💾</button>
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konfigurasi Pendaftaran 💾</button>
+              </div>
             </form>
 
-            <div style="border-top: 1px dashed var(--border-glass); padding-top: 2rem; margin-top: 2rem;">
+            <div class="cms-form-card">
               <div class="table-header-control" style="margin-bottom: 1.5rem;">
-                <h4>Daftar Pertanyaan Tambahan (Kustom Form)</h4>
+                <h5 class="cms-form-card-title" style="margin-bottom: 0;">📋 Pertanyaan Tambahan (Kustom Form)</h5>
                 <button type="button" id="btn-add-custom-question" class="btn btn-cyan btn-sm">Tambah Pertanyaan Baru ➕</button>
               </div>
               
@@ -971,81 +932,92 @@
             
             <form id="cms-landing-form" style="margin-bottom: 3rem;">
               
-              <!-- A. SECTION HERO -->
-              <h5 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; margin-top: 1.5rem;">A. Bagian Hero</h5>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-hero-tag">Tagline Hero</label>
-                <input type="text" id="cms-hero-tag" class="input-control" required placeholder="Contoh: Ekstrakurikuler Unggulan">
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-hero-title">Judul Hero (Mendukung tag HTML &lt;span&gt;...&lt;/span&gt;)</label>
-                <input type="text" id="cms-hero-title" class="input-control" required placeholder="Contoh: Rancang Masa Depanmu Bersama &lt;span&gt;Robotik&lt;/span&gt;!">
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-hero-desc">Deskripsi Hero</label>
-                <textarea id="cms-hero-desc" class="input-control" required style="height: 100px; resize: vertical;" placeholder="Deskripsi mengenai ekskul..."></textarea>
-              </div>
-
-              <!-- B. SECTION VISI & MISI -->
-              <h5 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; margin-top: 2rem;">B. Bagian Visi & Misi</h5>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-visi-text">Visi Ekskul</label>
-                <textarea id="cms-visi-text" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Visi ekskul robotik..."></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Misi Ekskul (4 Butir Misi Utama)</label>
-                <input type="text" id="cms-misi-item-1" class="input-control" required placeholder="Misi ke-1" style="margin-bottom: 0.5rem;">
-                <input type="text" id="cms-misi-item-2" class="input-control" required placeholder="Misi ke-2" style="margin-bottom: 0.5rem;">
-                <input type="text" id="cms-misi-item-3" class="input-control" required placeholder="Misi ke-3" style="margin-bottom: 0.5rem;">
-                <input type="text" id="cms-misi-item-4" class="input-control" required placeholder="Misi ke-4">
+              <!-- Visual Card 1: Bagian Hero -->
+              <div class="cms-form-card">
+                <h5 class="cms-form-card-title">✨ Bagian Hero</h5>
+                <div class="form-group">
+                  <label class="form-label" for="cms-hero-tag">Tagline Hero <span>*</span></label>
+                  <input type="text" id="cms-hero-tag" class="input-control" required placeholder="Contoh: Ekstrakurikuler Unggulan">
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="cms-hero-title">Judul Hero (Mendukung tag HTML &lt;span&gt;...&lt;/span&gt;) <span>*</span></label>
+                  <input type="text" id="cms-hero-title" class="input-control" required placeholder="Contoh: Rancang Masa Depanmu Bersama &lt;span&gt;Robotik&lt;/span&gt;!">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="cms-hero-desc">Deskripsi Hero <span>*</span></label>
+                  <textarea id="cms-hero-desc" class="input-control" required style="height: 100px; resize: vertical;" placeholder="Deskripsi mengenai ekskul..."></textarea>
+                </div>
               </div>
 
-              <!-- C. SECTION DESKRIPSI DIVISI -->
-              <h5 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; margin-top: 2rem;">C. Bagian Deskripsi Divisi Keahlian</h5>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-div-mech-desc">Deskripsi Divisi Mekanik</label>
-                <textarea id="cms-div-mech-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Mekanika..."></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-div-elec-desc">Deskripsi Divisi Elektronik</label>
-                <textarea id="cms-div-elec-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Elektronika..."></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label" for="cms-div-prog-desc">Deskripsi Divisi Pemrograman</label>
-                <textarea id="cms-div-prog-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Pemrograman..."></textarea>
+              <!-- Visual Card 2: Bagian Visi & Misi -->
+              <div class="cms-form-card">
+                <h5 class="cms-form-card-title">🎯 Bagian Visi & Misi</h5>
+                <div class="form-group">
+                  <label class="form-label" for="cms-visi-text">Visi Ekskul <span>*</span></label>
+                  <textarea id="cms-visi-text" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Visi ekskul robotik..."></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Misi Ekskul (4 Butir Misi Utama) <span>*</span></label>
+                  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <input type="text" id="cms-misi-item-1" class="input-control" required placeholder="Misi ke-1">
+                    <input type="text" id="cms-misi-item-2" class="input-control" required placeholder="Misi ke-2">
+                    <input type="text" id="cms-misi-item-3" class="input-control" required placeholder="Misi ke-3">
+                    <input type="text" id="cms-misi-item-4" class="input-control" required placeholder="Misi ke-4">
+                  </div>
+                </div>
               </div>
 
-              <!-- D. SECTION PRESTASI -->
-              <h5 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; margin-top: 2rem;">D. Bagian Prestasi Kejuaraan Dinamis</h5>
-              <p class="hint-text" style="margin-bottom: 1rem;">Kelola daftar seluruh piala penghargaan kejuaraan ekskul secara dinamis tanpa batasan kuantitas.</p>
-              
-              <div class="table-container" style="margin-top: 1rem; margin-bottom: 1.5rem;">
-                <table class="data-table" id="admin-achievements-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 50px;">No</th>
-                      <th>Judul Prestasi Kejuaraan</th>
-                      <th style="width: 100px; text-align: center;">Tahun</th>
-                      <th style="width: 120px; text-align: center;">Tindakan</th>
-                    </tr>
-                  </thead>
-                  <tbody id="admin-achievements-table-body">
-                    <!-- Rendered dynamically via JS -->
-                  </tbody>
-                </table>
+              <!-- Visual Card 3: Bagian Deskripsi Divisi Keahlian -->
+              <div class="cms-form-card">
+                <h5 class="cms-form-card-title">⚡ Bagian Divisi Keahlian</h5>
+                <div class="form-group">
+                  <label class="form-label" for="cms-div-mech-desc">Deskripsi Divisi Mekanik <span>*</span></label>
+                  <textarea id="cms-div-mech-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Mekanika..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="cms-div-elec-desc">Deskripsi Divisi Elektronik <span>*</span></label>
+                  <textarea id="cms-div-elec-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Elektronika..."></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="cms-div-prog-desc">Deskripsi Divisi Pemrograman <span>*</span></label>
+                  <textarea id="cms-div-prog-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Pemrograman..."></textarea>
+                </div>
+              </div>
+
+              <!-- Visual Card 4: Bagian Prestasi Kejuaraan Dinamis -->
+              <div class="cms-form-card">
+                <h5 class="cms-form-card-title">🏆 Prestasi Kejuaraan Dinamis</h5>
+                <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala penghargaan kejuaraan ekskul secara dinamis tanpa batasan kuantitas.</p>
+                
+                <div class="table-responsive-wrapper" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                  <table class="cms-table" id="admin-achievements-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px;">No</th>
+                        <th>Judul Prestasi Kejuaraan</th>
+                        <th style="width: 120px; text-align: center;">Tahun</th>
+                        <th style="width: 120px; text-align: center;">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-achievements-table-body">
+                      <!-- Rendered dynamically via JS -->
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-start; margin-bottom: 0;">
+                  <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah Prestasi Baru</button>
+                </div>
               </div>
               
-              <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement" style="margin-bottom: 1.5rem;">+ Tambah Prestasi Baru</button>
-              
-              <button type="submit" class="btn btn-cyan" style="min-width: 180px; margin-top: 1.5rem;">Simpan Konten Landing Page 💾</button>
+              <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+                <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konten Landing Page 💾</button>
+              </div>
             </form>
           </div>
 

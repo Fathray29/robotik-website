@@ -2930,78 +2930,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCmsTabs();
   setupPendaftaranCMSAndCountdown();
 
-  // Trigger interactive stats counters (Opsi 2)
-  setupInteractiveStatsCounters();
-
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();
 });
 
-// --- INTERACTIVE STATS COUNTERS (OPSI 2) ---
-function setupInteractiveStatsCounters() {
-  const statsSection = document.getElementById('stats-section');
-  if (!statsSection) return;
-
-  const numbers = statsSection.querySelectorAll('.stat-number');
-  let animated = false;
-
-  const animateCounters = () => {
-    if (animated) return;
-    animated = true;
-
-    // Respect reduced motion settings
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    numbers.forEach(el => {
-      const target = parseInt(el.getAttribute('data-target'), 10);
-      if (isNaN(target)) return;
-
-      if (prefersReducedMotion) {
-        el.textContent = target;
-        return;
-      }
-
-      let start = 0;
-      const duration = 2000; // 2 seconds
-      const startTime = performance.now();
-
-      const updateCount = (timestamp) => {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Ease out quad formula for smooth decelerating animation
-        const easeProgress = progress * (2 - progress);
-        const currentValue = Math.floor(easeProgress * target);
-
-        el.textContent = currentValue;
-
-        if (progress < 1) {
-          requestAnimationFrame(updateCount);
-        } else {
-          el.textContent = target;
-        }
-      };
-
-      requestAnimationFrame(updateCount);
-    });
-  };
-
-  // IntersectionObserver to trigger when scrolled into view
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounters();
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.15 // trigger when 15% of section is visible
-    });
-
-    observer.observe(statsSection);
-  } else {
-    // Fallback if IntersectionObserver is not supported
-    animateCounters();
-  }
-}

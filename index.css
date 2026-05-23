@@ -1299,9 +1299,12 @@ body.dialog-open {
   display: none; /* hidden by default, shown by JS if headings exist */
 }
 
-@media (min-width: 992px) {
+@media (max-width: 991px) {
   .dialog-toc-container {
-    display: block;
+    display: none !important; /* Force hide on mobile to give full viewport reading area */
+  }
+  .dialog-grid-container {
+    flex-direction: column;
   }
 }
 

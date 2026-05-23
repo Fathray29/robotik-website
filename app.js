@@ -13,6 +13,7 @@ const INITIAL_BLOG_ARTICLES = [
     date: "15 Mei 2026",
     author: "Tim Mentor Robotik",
     excerpt: "Langkah pertama Anda memasuki dunia mikroprosesor. Pelajari arsitektur Arduino Uno, instalasi IDE, dan cara membuat LED berkedip (Blink).",
+    headerImage: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop",
     content: `### Pengenalan Arduino
 
 Arduino Uno adalah papan mikrokontroler berbasis ATmega328P. Ini adalah papan sirkuit ramah pemula terpopuler di dunia yang digunakan untuk mengendalikan sensor, motor, dan lampu led. Menghubungkan dunia digital dengan dunia fisik sangat mudah dengan Arduino.
@@ -51,6 +52,7 @@ void loop() {
     date: "10 Mei 2026",
     author: "Faris Ramadhan (Ketua Divisi Robotika)",
     excerpt: "Panduan praktis merakit robot pengikut garis tanpa pemrograman. Memanfaatkan sensor LDR, komparator LM358, dan driver motor transistor.",
+    headerImage: "https://images.unsplash.com/photo-1546776310-eef45dd6d63c?q=80&w=1200&auto=format&fit=crop",
     content: `### Konsep Dasar Robot Pengikut Garis
 
 Robot Line Follower analog mendeteksi perbedaan kontras warna permukaan jalan (biasanya garis hitam di atas permukaan putih) menggunakan sensor cahaya dan mengendalikan motor secara langsung tanpa otak mikrokontroler. Ini adalah proyek fondasi mekanika dan elektronika dasar terbaik.
@@ -74,6 +76,7 @@ Ketika sensor sebelah kiri mendeteksi permukaan hitam (garis lintasan), LDR mene
     date: "02 Mei 2026",
     author: "Zaskia Amalia (Alumni & Mahasiswa Teknik Elektro)",
     excerpt: "Bagaimana mengontrol pergerakan robot dari mana saja di seluruh dunia menggunakan protokol MQTT, ESP32, dan dashboard real-time.",
+    headerImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
     content: `### Apa itu ESP32?
 
 ESP32 adalah mikrokontroler berbiaya rendah dengan konsumsi daya rendah yang dilengkapi Wi-Fi terintegrasi dan modul Bluetooth dual-mode. Ini menjadikannya otak ideal untuk proyek Internet of Things (IoT) dan sistem robot nirkabel.
@@ -93,6 +96,7 @@ Di ekstrakurikuler kami, kami membuat lengan robot industri mini yang dikendalik
     date: "28 April 2026",
     author: "Drs. Eko Prasetyo (Pembina Ekstrakurikuler)",
     excerpt: "Tips dan rahasia sukses dari pembina ekskul robotik yang berhasil menyabet juara 1 tingkat nasional selama 3 tahun berturut-turut.",
+    headerImage: "https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?q=80&w=1200&auto=format&fit=crop",
     content: `### 1. Desain Modular dan Kuat
 
 Saat kompetisi, kerusakan fisik robot sering terjadi akibat tabrakan atau kesalahan navigasi. Desainlah robot secara modular sehingga jika salah satu sensor atau motor rusak, komponen tersebut bisa diganti dalam hitungan detik tanpa harus membongkar seluruh badan robot.
@@ -116,6 +120,22 @@ const INITIAL_PORTFOLIO_PROJECTS = [
     creators: "Tim R&D Kelas XI (Rian, Maya, Dika)",
     components: "Arduino Mega, Driver L298N, Modul Bluetooth HC-05, Motor DC High-Torque 12v, Solenoid Kicker",
     specs: "Kecepatan 1.2 m/s, Daya Tendang Solenoid 24v, Kontrol Nirkabel via Android App",
+    headerImage: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?q=80&w=1200&auto=format&fit=crop",
+    content: `### Robot Striker Lapangan Hijau
+
+Soccer Bot v2.0 adalah robot striker bertenaga tinggi yang dikendalikan secara nirkabel untuk berkompetisi dalam ajang sepak bola robot tingkat provinsi.
+
+### Proses Rancang Bangun
+
+- **Desain Mekanik**: Menggunakan plat akrilik tebal 5mm dengan sasis melingkar tiga roda (omnidirectional wheels) untuk manuver gerakan 360 derajat instan.
+- **Sistem Penendang (Kicker)**: Dilengkapi dengan solenoid 24v berpegas mekanik kuat yang mampu melontarkan bola tenis dengan kecepatan tinggi.
+- **Elektronik**: Menggunakan motor driver L298N beraliran arus tinggi dan ditenagai oleh baterai Li-Po 3-cell 11.1V.
+
+![Mekanika Soccer Bot](https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop)
+
+### Hasil Uji Coba
+
+Robot ini berhasil memenangkan juara 2 kategori robot olahraga tingkat regional berkat respon kontrol bluetooth yang sangat instan dan kekuatan tendangan solenoid yang memukau.`,
     code: `// Cuplikan Kontrol Solenoid & Motor DC Soccer Bot v2.0\n#define MOTOR_LEFT_F 5\n#define MOTOR_LEFT_B 6\n#define MOTOR_RIGHT_F 9\n#define MOTOR_RIGHT_B 10\n#define SOLENOID_PIN 12\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(MOTOR_LEFT_F, OUTPUT);\n  pinMode(MOTOR_LEFT_B, OUTPUT);\n  pinMode(MOTOR_RIGHT_F, OUTPUT);\n  pinMode(MOTOR_RIGHT_B, OUTPUT);\n  pinMode(SOLENOID_PIN, OUTPUT);\n}\n\nvoid loop() {\n  if (Serial.available() > 0) {\n    char val = Serial.read();\n    if (val == 'F') { // Maju\n      analogWrite(MOTOR_LEFT_F, 255);\n      analogWrite(MOTOR_RIGHT_F, 255);\n    } else if (val == 'K') { // TENDANG! (Solenoid)\n      digitalWrite(SOLENOID_PIN, HIGH);\n      delay(150);\n      digitalWrite(SOLENOID_PIN, LOW);\n    } else if (val == 'S') { // Berhenti\n      analogWrite(MOTOR_LEFT_F, 0);\n      analogWrite(MOTOR_RIGHT_F, 0);\n    }\n  }\n}`
   },
   {
@@ -126,6 +146,22 @@ const INITIAL_PORTFOLIO_PROJECTS = [
     creators: "Tim IoT Kelas XII (Sarah, Kevin)",
     components: "ESP32, Sensor Kelembaban Tanah Soil Moisture v1.2, Sensor Suhu/Kelembaban DHT22, Pompa Air 5v Mini, LCD I2C",
     specs: "Konektivitas WiFi, Pengiriman Data Telemetri via MQTT, Kontrol Pompa Air Otomatis & Manual",
+    headerImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop",
+    content: `### Solusi IoT Pertanian Cerdas
+
+Proyek Smart Agriculture Monitoring dirancang untuk membantu pemantauan dan penyiraman tanaman secara otomatis berbasis internet untuk efisiensi penggunaan air.
+
+### Alur Sistem Kerja
+
+1. **Pembacaan Sensor**: ESP32 membaca kelembaban tanah dan suhu/kelembaban udara setiap 1 detik.
+2. **Koneksi Blynk Cloud**: Data telemetri dikirim secara real-time ke cloud server Blynk menggunakan WiFi terintegrasi.
+3. **Kontrol Pompa Otomatis**: Jika kelembaban tanah berada di bawah nilai batas (tanah kering), relay memicu pompa air mini untuk menyiram secara otomatis.
+
+![Modul Pertanian Cerdas](https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop)
+
+### Manfaat Proyek
+
+Sangat ideal untuk diaplikasikan pada perkebunan hidroponik sekolah, menghemat konsumsi energi, dan memastikan kesehatan tumbuh kembang tanaman terjaga 24 jam penuh.`,
     code: `// Cuplikan Koneksi IoT Blynk ESP32\n#include <WiFi.h>\n#include <WiFiClient.h>\n#include <BlynkSimpleEsp32.h>\n\nchar auth[] = "Your_Blynk_Auth_Token";\nchar ssid[] = "Wifi_Motechart_Robotik";\nchar pass[] = "motechart_wifi_pass";\n\n#define SOIL_PIN 34\n#define RELAY_PIN 23\n\nvoid setup() {\n  Blynk.begin(auth, ssid, pass);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  Blynk.run();\n  int soilMoisture = analogRead(SOIL_PIN);\n  Blynk.virtualWrite(V1, soilMoisture);\n  \n  if (soilMoisture > 3000) { // Tanah kering\n    digitalWrite(RELAY_PIN, HIGH); // Pompa menyala\n  } else {\n    digitalWrite(RELAY_PIN, LOW);\n  }\n  delay(1000);\n}`
   },
   {
@@ -136,6 +172,22 @@ const INITIAL_PORTFOLIO_PROJECTS = [
     creators: "Tim Kompetisi Kelas X & XI (Adit, Budi, Riri)",
     components: "Arduino Nano, Sensor Ultrasonik HC-SR04 3 unit, Sensor Gyroscope MPU6050, Motor Driver TB6612FNG, Micro Metal Gearmotor",
     specs: "Algoritma Pemecah Labirin Flood-Fill, Sensor Akurasi Jarak 1mm, Kecepatan Putar 90 Derajat Instan",
+    headerImage: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop",
+    content: `### Robot Otonom Pemecah Labirin
+
+Maze Solver Robot dirancang untuk bernavigasi secara mandiri memecahkan labirin berliku dalam waktu sesingkat mungkin menggunakan logika penelusuran otonom.
+
+### Integrasi Algoritma Cerdas
+
+- **Sistem Penginderaan Jarak**: Memanfaatkan 3 sensor ultrasonik (kiri, depan, kanan) untuk memantau keberadaan dinding secara simultan.
+- **Koreksi Sudut Gyroscope**: MPU6050 digunakan untuk menstabilkan robot agar tetap berjalan lurus dan berputar tepat 90 derajat.
+- **Algoritma Flood-Fill**: Robot membuat pemetaan koordinat internal di dalam RAM mikrokontroler untuk mengingat jalur mati dan menemukan rute tercepat ke titik tengah.
+
+![Desain Bodi Sasis Maze Solver](https://images.unsplash.com/photo-1546776310-eef45dd6d63c?q=80&w=600&auto=format&fit=crop)
+
+### Status Saat Ini
+
+Saat ini robot berada dalam fase optimasi PID motor agar pergerakan belokan bisa dilakukan dengan kecepatan sudut yang lebih agresif saat kompetisi tingkat nasional mendatang.`,
     code: `// Cuplikan Algoritma Pendeteksi Dinding & Koreksi MPU6050\n#define TRIG_LEFT 2\n#define ECHO_LEFT 3\n#define TRIG_FRONT 4\n#define ECHO_FRONT 5\n\nfloat getDistance(int trig, int echo) {\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n  long duration = pulseIn(echo, HIGH);\n  return duration * 0.034 / 2;\n}\n\nvoid setup() {\n  pinMode(TRIG_LEFT, OUTPUT);\n  pinMode(ECHO_LEFT, INPUT);\n  pinMode(TRIG_FRONT, OUTPUT);\n  pinMode(ECHO_FRONT, INPUT);\n}\n\nvoid loop() {\n  float distFront = getDistance(TRIG_FRONT, ECHO_FRONT);\n  float distLeft = getDistance(TRIG_LEFT, ECHO_LEFT);\n  \n  if (distFront < 10.0) {\n    if (distLeft > 15.0) {\n      belokKiri();\n    } else {\n      belokKanan();\n    }\n  } else {\n    majuLurusPID();\n  }\n}`
   }
 ];
@@ -310,7 +362,43 @@ if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER
 }
 
 let blogArticles = loadData('robotik_blog', INITIAL_BLOG_ARTICLES);
+// Proactively merge new fields from default initial data if missing in loaded items
+let blogModified = false;
+blogArticles = blogArticles.map(article => {
+  const initial = INITIAL_BLOG_ARTICLES.find(a => a.id === article.id);
+  if (initial) {
+    if (article.headerImage === undefined && initial.headerImage !== undefined) {
+      article.headerImage = initial.headerImage;
+      blogModified = true;
+    }
+  }
+  return article;
+});
+if (blogModified) {
+  saveData('robotik_blog', blogArticles);
+}
+
 let portfolioProjects = loadData('robotik_portfolio', INITIAL_PORTFOLIO_PROJECTS);
+// Proactively merge new fields (content and headerImage) from default initial data if missing in loaded items
+let portfolioModified = false;
+portfolioProjects = portfolioProjects.map(proj => {
+  const initial = INITIAL_PORTFOLIO_PROJECTS.find(p => p.id === proj.id);
+  if (initial) {
+    if (proj.headerImage === undefined && initial.headerImage !== undefined) {
+      proj.headerImage = initial.headerImage;
+      portfolioModified = true;
+    }
+    if (proj.content === undefined && initial.content !== undefined) {
+      proj.content = initial.content;
+      portfolioModified = true;
+    }
+  }
+  return proj;
+});
+if (portfolioModified) {
+  saveData('robotik_portfolio', portfolioProjects);
+}
+
 let applicants = loadData('robotik_applicants', INITIAL_APPLICANTS);
 let regSettings = loadData('robotik_reg_settings', INITIAL_REG_SETTINGS);
 
@@ -772,14 +860,44 @@ function openArticleDetail(id) {
 
   playRoboticSound('click');
   const detailDialog = document.getElementById('blog-detail-dialog');
-  const dialogBody = document.getElementById('dialog-body-content');
   
-  dialogBody.innerHTML = `
-    <div class="dialog-meta">${article.date || ''} | Oleh: ${article.author || 'Tim Robotik'}</div>
-    <h2 class="dialog-title">${article.title}</h2>
-    <div class="dialog-badge">${article.category.toUpperCase()}</div>
-    <div class="dialog-rich-text">${parseMarkdownToHtml(article.content)}</div>
+  const bgStyle = article.headerImage ? `style="background-image: url('${article.headerImage}')"` : '';
+  const bannerClass = article.headerImage ? 'dialog-header-banner' : 'dialog-header-banner no-image';
+
+  detailDialog.innerHTML = `
+    <div class="dialog-close-bar floating">
+      <button type="button" class="btn-close" aria-label="Tutup Detail Artikel">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="${bannerClass}" ${bgStyle}></div>
+    
+    <div class="dialog-body-container">
+      <div class="dialog-title-card">
+        <div class="dialog-meta">${article.date || ''} | Oleh: ${article.author || 'Tim Robotik'}</div>
+        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 0.75rem; color: var(--text-white); font-size: 2.25rem;">${article.title}</h2>
+        <div class="dialog-badge">${article.category.toUpperCase()}</div>
+      </div>
+      
+      <div class="dialog-rich-text">
+        ${parseMarkdownToHtml(article.content)}
+      </div>
+    </div>
   `;
+
+  // Bind close click event
+  const closeBtn = detailDialog.querySelector('.btn-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      playRoboticSound('click');
+      detailDialog.close();
+      document.body.classList.remove('dialog-open');
+    });
+  }
 
   detailDialog.showModal();
   document.body.classList.add('dialog-open');
@@ -838,105 +956,178 @@ function renderPublicPortfolio() {
   const portfolioContainer = document.getElementById('portfolio-grid');
   if (!portfolioContainer) return;
 
-  portfolioContainer.innerHTML = portfolioProjects.map(proj => `
-    <div class="glass-card portfolio-card">
-      <div class="portfolio-header">
-        <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${proj.status}</span>
-        <span class="portfolio-category">${proj.category.toUpperCase()}</span>
+  portfolioContainer.innerHTML = portfolioProjects.map(proj => {
+    const cardBg = proj.headerImage ? `style="background-image: linear-gradient(rgba(11, 17, 32, 0.75), rgba(11, 17, 32, 0.95)), url('${proj.headerImage}'); background-size: cover; background-position: center;"` : '';
+    return `
+      <div class="glass-card portfolio-card" ${cardBg}>
+        <div class="portfolio-header">
+          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${proj.status}</span>
+          <span class="portfolio-category">${proj.category.toUpperCase()}</span>
+        </div>
+        <h3 class="portfolio-title">${proj.title}</h3>
+        <div class="portfolio-meta">
+          <strong>Pembuat:</strong> ${proj.creators}
+        </div>
+        <div class="portfolio-meta">
+          <strong>Komponen:</strong> ${proj.components}
+        </div>
+        <div class="portfolio-meta">
+          <strong>Spesifikasi:</strong> ${proj.specs}
+        </div>
+        
+        <button class="btn btn-outline-cyan btn-sm btn-block view-project-detail-btn" data-id="${proj.id}" style="margin-top: 1.5rem;">
+          Lihat Proyek & Kode Arduino 🛠️
+        </button>
       </div>
-      <h3 class="portfolio-title">${proj.title}</h3>
-      <div class="portfolio-meta">
-        <strong>Pembuat:</strong> ${proj.creators}
-      </div>
-      <div class="portfolio-meta">
-        <strong>Komponen:</strong> ${proj.components}
-      </div>
-      <div class="portfolio-meta">
-        <strong>Spesifikasi:</strong> ${proj.specs}
-      </div>
-      
-      <button class="btn btn-outline-cyan btn-sm btn-block toggle-viewer-btn" data-id="${proj.id}">
-        Buka Skema & Code Arduino
-        <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 6px; transition: transform 0.3s;">
-          <polyline points="6 9 12 15 18 9"></polyline>
+    `;
+  }).join('');
+
+  document.querySelectorAll('.view-project-detail-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = parseInt(btn.getAttribute('data-id'));
+      openPortfolioDetail(id);
+    });
+    btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
+  });
+}
+
+function openPortfolioDetail(id) {
+  const proj = portfolioProjects.find(p => p.id === id);
+  if (!proj) return;
+
+  playRoboticSound('click');
+  const detailDialog = document.getElementById('portfolio-detail-dialog');
+  
+  const bgStyle = proj.headerImage ? `style="background-image: url('${proj.headerImage}')"` : '';
+  const bannerClass = proj.headerImage ? 'dialog-header-banner' : 'dialog-header-banner no-image';
+
+  detailDialog.innerHTML = `
+    <div class="dialog-close-bar floating">
+      <button type="button" class="btn-close" aria-label="Tutup Detail Proyek">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-
-      <div class="code-viewer-container" id="viewer-${proj.id}">
-        <div class="viewer-tabs">
-          <button class="viewer-tab active" data-tab="code">Arduino C++ Code</button>
-          <button class="viewer-tab" data-tab="schematic">Fisik & Koneksi</button>
+    </div>
+    
+    <div class="${bannerClass}" ${bgStyle}></div>
+    
+    <div class="dialog-body-container">
+      <div class="dialog-title-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${proj.status}</span>
+          <span class="portfolio-category" style="color: var(--accent-cyan); font-weight: bold; letter-spacing: 1.2px;">${proj.category.toUpperCase()}</span>
         </div>
-        <div class="viewer-content active" data-content="code">
-          <pre><code>${escapeHtml(proj.code)}</code></pre>
+        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 1.5rem; color: var(--text-white); font-size: 2.25rem;">${proj.title}</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1.5rem;">
+          <div>
+            <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Pembuat Siswa</strong>
+            <span style="font-size: 0.95rem; color: var(--text-light);">${proj.creators}</span>
+          </div>
+          <div>
+            <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Komponen Utama</strong>
+            <span style="font-size: 0.95rem; color: var(--text-light);">${proj.components}</span>
+          </div>
+          <div>
+            <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Spesifikasi Fisik</strong>
+            <span style="font-size: 0.95rem; color: var(--text-light);">${proj.specs}</span>
+          </div>
         </div>
-        <div class="viewer-content" data-content="schematic">
-          <div class="schematic-mock">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="1.5">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <circle cx="8" cy="10" r="2" />
-              <circle cx="16" cy="10" r="2" />
-              <path d="M6 16h12" />
-            </svg>
-            <div class="schematic-info">
-              <h4>Diagram Sirkuit Robot</h4>
-              <p>Pinout koneksi mikroprosesor:</p>
-              <ul>
-                <li><strong>VCC</strong> -> Baterai Li-Ion 7.4V (via Regulator LM7805)</li>
-                <li><strong>GND</strong> -> Ground Bersama (Baterai & Papan)</li>
-                <li><strong>Sensor I/O</strong> -> Analog Pins A0, A1, A2</li>
-                <li><strong>Motor Driver EnA/EnB</strong> -> PWM Pins D5, D6</li>
-              </ul>
+      </div>
+      
+      <div class="dialog-rich-text">
+        <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 1.25rem;">Deskripsi Detail Proyek 🤖</h3>
+        ${parseMarkdownToHtml(proj.content || '*Belum ada deskripsi mendalam.*')}
+        
+        <h3 style="margin-top: 3.5rem; margin-bottom: 1.25rem; color: var(--accent-cyan); font-size: 1.5rem;">Skema & Kode Pemrograman Robot 💻</h3>
+        
+        <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden;">
+          <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
+            <button class="viewer-tab active" data-tab="code" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Arduino C++ Code</button>
+            <button class="viewer-tab" data-tab="schematic" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Fisik & Koneksi</button>
+          </div>
+          <div class="viewer-content active" data-content="code" style="padding: 1.5rem; display: block; overflow-y: auto;">
+            <pre style="margin: 0;"><code style="font-family: monospace; font-size: 0.9rem; color: #a7f3d0; white-space: pre-wrap;">${escapeHtml(proj.code)}</code></pre>
+          </div>
+          <div class="viewer-content" data-content="schematic" style="padding: 1.5rem; display: none; overflow-y: auto;">
+            <div class="schematic-mock" style="display: flex; gap: 1.5rem; align-items: flex-start;">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="1.5" style="flex-shrink: 0;">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <circle cx="8" cy="10" r="2" />
+                <circle cx="16" cy="10" r="2" />
+                <path d="M6 16h12" />
+              </svg>
+              <div class="schematic-info">
+                <h4 style="color: var(--accent-yellow); font-size: 1.15rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Gunakan pinout koneksi mikroprosesor berikut untuk perakitan fisik:</p>
+                <ul style="color: var(--text-muted); padding-left: 1.25rem; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                  <li><strong>VCC</strong> -> Baterai Li-Ion 7.4V (via Regulator Tegangan LM7805)</li>
+                  <li><strong>GND</strong> -> Ground Bersama (Baterai & Papan Controller)</li>
+                  <li><strong>Sensor I/O</strong> -> Analog Pins A0, A1, A2 (Kiri, Tengah, Kanan)</li>
+                  <li><strong>Motor Driver EnA/EnB</strong> -> PWM Pins D5, D6 (Pemicu Kecepatan Motor)</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `).join('');
+  `;
 
-  document.querySelectorAll('.toggle-viewer-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-id');
-      const container = document.getElementById(`viewer-${id}`);
-      const icon = btn.querySelector('.chevron-icon');
-      
+  // Bind close click event
+  const closeBtn = detailDialog.querySelector('.btn-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
       playRoboticSound('click');
-      
-      if (container.classList.contains('open')) {
-        container.classList.remove('open');
-        icon.style.transform = 'rotate(0deg)';
-      } else {
-        container.classList.add('open');
-        icon.style.transform = 'rotate(180deg)';
-      }
+      detailDialog.close();
+      document.body.classList.remove('dialog-open');
     });
-    btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
-  });
+  }
 
-  document.querySelectorAll('.viewer-tab').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const parent = tab.closest('.code-viewer-container');
-      const clickedTab = tab.getAttribute('data-tab');
-      
+  // Bind tab click event inside full-screen modal
+  const tabs = detailDialog.querySelectorAll('.viewer-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
       playRoboticSound('click');
+      const targetTab = tab.getAttribute('data-tab');
       
-      parent.querySelectorAll('.viewer-tab').forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-
-      parent.querySelectorAll('.viewer-content').forEach(content => {
-        if (content.getAttribute('data-content') === clickedTab) {
-          content.classList.add('active');
+      
+      detailDialog.querySelectorAll('.viewer-content').forEach(content => {
+        if (content.getAttribute('data-content') === targetTab) {
+          content.style.display = 'block';
         } else {
-          content.classList.remove('active');
+          content.style.display = 'none';
         }
       });
     });
-    tab.addEventListener('mouseenter', () => playRoboticSound('hover'));
   });
+
+  detailDialog.showModal();
+  document.body.classList.add('dialog-open');
 }
 
 function setupPortfolio() {
+  const detailDialog = document.getElementById('portfolio-detail-dialog');
+  if (detailDialog) {
+    detailDialog.addEventListener('cancel', () => {
+      document.body.classList.remove('dialog-open');
+    });
+    detailDialog.addEventListener('click', (e) => {
+      const rect = detailDialog.getBoundingClientRect();
+      const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      if (!isInDialog) {
+        playRoboticSound('click');
+        detailDialog.close();
+        document.body.classList.remove('dialog-open');
+      }
+    });
+  }
+
   renderPublicPortfolio();
 }
 
@@ -1483,6 +1674,10 @@ function openCmsEditor(type, mode, id = null) {
         <input type="text" id="edit-author" class="input-control" required value="${article.author || 'Tim Mentor Robotik'}" placeholder="Nama penulis atau mentor...">
       </div>
       <div class="form-group">
+        <label class="form-label" for="edit-header-image">URL Gambar Header (Foto Sampul)</label>
+        <input type="text" id="edit-header-image" class="input-control" value="${article.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar lainnya...">
+      </div>
+      <div class="form-group">
         <label class="form-label" for="edit-excerpt">Ringkasan Singkat (Excerpt) <span>*</span></label>
         <textarea id="edit-excerpt" class="input-control" required placeholder="Tulis deskripsi 1-2 baris untuk kartu list artikel...">${article.excerpt || ''}</textarea>
       </div>
@@ -1496,15 +1691,13 @@ function openCmsEditor(type, mode, id = null) {
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="- " title="Daftar List" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Daftar 📋</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="[Teks Tautan](https://)" title="Link Tautan" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Tautan 🔗</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="![Keterangan Foto](https://)" title="Sisipkan Foto" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Foto 📷</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="\\\`\\\`\\\`javascript\\n// tulis kode disini\\n\\\`\\\`\\\`" title="Blok Kode" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-family: monospace;">Kode 💻</button>
         </div>
         
         <textarea id="edit-content" class="input-control" required placeholder="Tulis isi tulisan lengkap menggunakan format Markdown (misal: ### Judul, **tebal**, *miring*, - list, dll)..." style="height: 250px;">${article.content || ''}</textarea>
       </div>
     `;
-    
-    // Initialize markdown formatting toolbar logic
-    setupMarkdownToolbar();
 
   } else if (type === 'portfolio') {
     title.textContent = mode === 'add' ? 'Tambah Proyek Portfolio Baru' : 'Ubah Proyek Portfolio';
@@ -1535,6 +1728,10 @@ function openCmsEditor(type, mode, id = null) {
         <input type="text" id="edit-creators" class="input-control" required value="${proj.creators || ''}" placeholder="Masukkan nama pembuat (Kelas)...">
       </div>
       <div class="form-group">
+        <label class="form-label" for="edit-header-image">URL Gambar Header (Foto Sampul)</label>
+        <input type="text" id="edit-header-image" class="input-control" value="${proj.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar lainnya...">
+      </div>
+      <div class="form-group">
         <label class="form-label" for="edit-components">Komponen Utama <span>*</span></label>
         <input type="text" id="edit-components" class="input-control" required value="${proj.components || ''}" placeholder="Arduino Mega, Sensor ultrasonik, driver servo...">
       </div>
@@ -1543,11 +1740,30 @@ function openCmsEditor(type, mode, id = null) {
         <input type="text" id="edit-specs" class="input-control" required value="${proj.specs || ''}" placeholder="Kecepatan maks, jangkauan sensor, kapasitas daya...">
       </div>
       <div class="form-group">
+        <label class="form-label" for="edit-content">Deskripsi Lengkap Proyek (Format Markdown) <span>*</span></label>
+        
+        <!-- Markdown Helper Toolbar -->
+        <div class="markdown-toolbar" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; background: rgba(2, 6, 23, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; border-radius: var(--radius-md);">
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="### " title="Judul H3" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Heading 🏷️</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="**" data-wrap="true" title="Teks Tebal" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">Tebal B</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="- " title="Daftar List" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Daftar 📋</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="[Teks Tautan](https://)" title="Link Tautan" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Tautan 🔗</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="![Keterangan Foto](https://)" title="Sisipkan Foto" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Foto 📷</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="\\\`\\\`\\\`javascript\\n// tulis kode disini\\n\\\`\\\`\\\`" title="Blok Kode" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-family: monospace;">Kode 💻</button>
+        </div>
+        
+        <textarea id="edit-content" class="input-control" required placeholder="Tulis deskripsi proyek lengkap menggunakan format Markdown..." style="height: 200px;">${proj.content || ''}</textarea>
+      </div>
+      <div class="form-group">
         <label class="form-label" for="edit-code">Kode Arduino C++ <span>*</span></label>
         <textarea id="edit-code" class="input-control" required placeholder="Tempel kode pemrograman robot Arduino Anda di sini..." style="font-family: monospace; font-size: 0.9rem;">${proj.code || ''}</textarea>
       </div>
     `;
   }
+
+  // Setup markdown formatting toolbar logic
+  setupMarkdownToolbar();
 
   dialog.showModal();
   document.body.classList.add('dialog-open');
@@ -1821,6 +2037,7 @@ function setupCmsTabs() {
         const authVal = document.getElementById('edit-author').value.trim();
         const excVal = document.getElementById('edit-excerpt').value.trim();
         const conVal = document.getElementById('edit-content').value.trim();
+        const headerImgVal = document.getElementById('edit-header-image').value.trim();
 
         if (mode === 'add') {
           const newId = blogArticles.length > 0 ? Math.max(...blogArticles.map(a => a.id)) + 1 : 1;
@@ -1835,7 +2052,8 @@ function setupCmsTabs() {
             author: authVal,
             date: dateStr,
             excerpt: excVal,
-            content: conVal
+            content: conVal,
+            headerImage: headerImgVal
           });
         } else if (mode === 'edit') {
           const id = parseInt(editorForm.getAttribute('data-id'));
@@ -1846,6 +2064,7 @@ function setupCmsTabs() {
             article.author = authVal;
             article.excerpt = excVal;
             article.content = conVal;
+            article.headerImage = headerImgVal;
           }
         }
         
@@ -1861,6 +2080,8 @@ function setupCmsTabs() {
         const compVal = document.getElementById('edit-components').value.trim();
         const specVal = document.getElementById('edit-specs').value.trim();
         const codeVal = document.getElementById('edit-code').value.trim();
+        const conVal = document.getElementById('edit-content').value.trim();
+        const headerImgVal = document.getElementById('edit-header-image').value.trim();
 
         if (mode === 'add') {
           const newId = portfolioProjects.length > 0 ? Math.max(...portfolioProjects.map(p => p.id)) + 1 : 1;
@@ -1872,7 +2093,9 @@ function setupCmsTabs() {
             creators: creatVal,
             components: compVal,
             specs: specVal,
-            code: codeVal
+            code: codeVal,
+            content: conVal,
+            headerImage: headerImgVal
           });
         } else if (mode === 'edit') {
           const id = parseInt(editorForm.getAttribute('data-id'));
@@ -1885,6 +2108,8 @@ function setupCmsTabs() {
             proj.components = compVal;
             proj.specs = specVal;
             proj.code = codeVal;
+            proj.content = conVal;
+            proj.headerImage = headerImgVal;
           }
         }
 

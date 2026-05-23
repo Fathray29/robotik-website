@@ -1176,6 +1176,229 @@ body.dialog-open {
 }
 
 /* ==========================================================================
+   FULL-SCREEN READER DIALOG SYSTEM (BLOG & PORTFOLIO)
+   ========================================================================== */
+#blog-detail-dialog,
+#portfolio-detail-dialog {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: #0b1120; /* deep dark background */
+}
+
+/* cover image banner */
+.dialog-header-banner {
+  height: 45vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* cover image gradient overlay */
+.dialog-header-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(11, 17, 32, 0.1) 0%, rgba(11, 17, 32, 0.6) 60%, #0b1120 100%);
+  pointer-events: none;
+}
+
+/* no image fallback style */
+.dialog-header-banner.no-image {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0b1120 100%);
+}
+
+.dialog-header-banner.no-image::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  filter: blur(40px);
+}
+
+/* floating glass close button */
+.dialog-close-bar.floating {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  margin: 0;
+}
+
+.dialog-close-bar.floating .btn-close {
+  background: rgba(11, 17, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  width: 48px;
+  height: 48px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-close-bar.floating .btn-close svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.dialog-close-bar.floating .btn-close:hover {
+  background: rgba(244, 63, 94, 0.8);
+  border-color: #FB7185;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.6);
+  transform: rotate(90deg) scale(1.05);
+}
+
+/* main centered reader body */
+.dialog-body-container {
+  max-width: 860px;
+  width: 90%;
+  margin: -8rem auto 4rem auto;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* beautiful glassmorphism title card */
+.dialog-title-card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.dialog-title-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+/* detailed rich text inside reader */
+.dialog-rich-text {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.85;
+  color: var(--text-light);
+  padding: 0 1rem;
+}
+
+.dialog-rich-text h1, 
+.dialog-rich-text h2, 
+.dialog-rich-text h3, 
+.dialog-rich-text h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.dialog-rich-text h1 { font-size: 2rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem; }
+.dialog-rich-text h2 { font-size: 1.65rem; }
+.dialog-rich-text h3 { font-size: 1.35rem; color: var(--accent-cyan); }
+
+.dialog-rich-text p {
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+}
+
+/* inline image within text block */
+.blog-img,
+.dialog-rich-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  margin: 2rem 0;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.blog-img:hover,
+.dialog-rich-text img:hover {
+  transform: scale(1.015);
+}
+
+.dialog-rich-text blockquote {
+  border-left: 4px solid var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.03);
+  padding: 1.25rem 1.75rem;
+  margin: 2rem 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
+  color: #e2e8f0;
+}
+
+.dialog-rich-text pre {
+  margin: 2rem 0;
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 10px rgba(0,0,0,0.8);
+}
+
+/* responsive media queries */
+@media (max-width: 768px) {
+  .dialog-header-banner {
+    height: 30vh;
+  }
+  .dialog-body-container {
+    margin-top: -4rem;
+    width: 95%;
+    gap: 1.5rem;
+  }
+  .dialog-title-card {
+    padding: 1.75rem;
+  }
+  .dialog-title-card h2.dialog-title {
+    font-size: 1.75rem !important;
+  }
+  .dialog-close-bar.floating {
+    top: 1rem;
+    right: 1rem;
+  }
+  .dialog-close-bar.floating .btn-close {
+    width: 40px;
+    height: 40px;
+  }
+  .dialog-close-bar.floating .btn-close svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ==========================================================================
    VIEW 3: PORTFOLIO PAGE (PROYEK)
    ========================================================================== */
 

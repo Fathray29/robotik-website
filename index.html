@@ -260,7 +260,7 @@
         <!-- Prestasi Section Marquee -->
         <div class="prestasi-section">
           <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
-            <h2>Prestasi Kejuaraan Terbaru</h2>
+            <h2>Galeri Penghargaan & Prestasi</h2>
           </div>
           
           <div class="marquee-container">
@@ -984,17 +984,17 @@
                 </div>
               </div>
 
-              <!-- Visual Card 4: Bagian Prestasi Kejuaraan Dinamis -->
+              <!-- Visual Card 4: Bagian Galeri Penghargaan & Prestasi Dinamis -->
               <div class="cms-form-card">
-                <h5 class="cms-form-card-title">🏆 Prestasi Kejuaraan Dinamis</h5>
-                <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala penghargaan kejuaraan ekskul secara dinamis tanpa batasan kuantitas.</p>
+                <h5 class="cms-form-card-title">🏆 Galeri Penghargaan & Prestasi Dinamis</h5>
+                <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala dan piagam penghargaan ekskul secara dinamis tanpa batasan kuantitas.</p>
                 
                 <div class="table-responsive-wrapper" style="margin-top: 1rem; margin-bottom: 1.5rem;">
                   <table class="cms-table" id="admin-achievements-table">
                     <thead>
                       <tr>
                         <th style="width: 50px;">No</th>
-                        <th>Judul Prestasi Kejuaraan</th>
+                        <th>Judul Penghargaan / Prestasi</th>
                         <th style="width: 120px; text-align: center;">Tahun</th>
                         <th style="width: 120px; text-align: center;">Tindakan</th>
                       </tr>
@@ -1006,7 +1006,7 @@
                 </div>
                 
                 <div style="display: flex; justify-content: flex-start; margin-bottom: 0;">
-                  <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah Prestasi Baru</button>
+                  <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah Penghargaan Baru</button>
                 </div>
               </div>
               
@@ -1254,7 +1254,7 @@
     </form>
   </dialog>
 
-  <!-- DIALOG KELOLA PRESTASI KEJUARAAN CMS -->
+  <!-- DIALOG KELOLA GALERI PENGHARGAAN & PRESTASI CMS -->
   <dialog id="custom-achievement-dialog" aria-labelledby="achievement-dialog-title" style="max-width: 500px; width: 95%;">
     <div class="dialog-close-bar">
       <button type="button" id="close-achievement-dialog-btn" class="btn-close" aria-label="Tutup Dialog Prestasi">
@@ -1264,24 +1264,24 @@
         </svg>
       </button>
     </div>
-    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Kelola Prestasi Kejuaraan</h2>
+    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Kelola Penghargaan & Prestasi</h2>
     
     <form id="custom-achievement-form">
       <input type="hidden" id="edit-achievement-idx" value="">
       
       <div class="form-group" style="margin-bottom: 1.25rem;">
-        <label class="form-label" for="achievement-title">Judul / Nama Prestasi Kejuaraan <span>*</span></label>
+        <label class="form-label" for="achievement-title">Judul / Nama Penghargaan atau Prestasi <span>*</span></label>
         <input type="text" id="achievement-title" class="input-control" required placeholder="Contoh: Juara 1 Nasional Kontes Robot Soccer">
       </div>
       
       <div class="form-group" style="margin-bottom: 1.25rem;">
-        <label class="form-label" for="achievement-year">Tahun Kejuaraan <span>*</span></label>
+        <label class="form-label" for="achievement-year">Tahun Penghargaan <span>*</span></label>
         <input type="text" id="achievement-year" class="input-control" required placeholder="Contoh: 2025" pattern="[0-9]{4}">
       </div>
       
       <div class="form-actions-row" style="margin-top: 2rem;">
         <button type="button" class="btn btn-secondary" id="btn-cancel-achievement-dialog">Batal</button>
-        <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan Prestasi 🏆</button>
+        <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan Penghargaan 🏆</button>
       </div>
     </form>
   </dialog>

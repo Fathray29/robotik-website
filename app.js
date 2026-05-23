@@ -1862,6 +1862,13 @@ function openCmsEditor(type, mode, id = null) {
         
         <!-- Markdown Helper Toolbar -->
         <div class="markdown-toolbar" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; background: rgba(2, 6, 23, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; border-radius: var(--radius-md);">
+          <button type="button" id="btn-cms-undo" class="btn btn-secondary btn-sm" title="Undo (Ctrl+Z / Cmd+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+            ↩️ Undo
+          </button>
+          <button type="button" id="btn-cms-redo" class="btn btn-secondary btn-sm" title="Redo (Ctrl+Y / Cmd+Shift+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+            ↪️ Redo
+          </button>
+          <span style="width: 1px; height: 20px; background: rgba(255,255,255,0.15); align-self: center; margin: 0 0.25rem;"></span>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="### " title="Judul H3" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Heading 🏷️</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="**" data-wrap="true" title="Teks Tebal" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">Tebal B</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
@@ -1931,6 +1938,13 @@ function openCmsEditor(type, mode, id = null) {
         
         <!-- Markdown Helper Toolbar -->
         <div class="markdown-toolbar" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; background: rgba(2, 6, 23, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; border-radius: var(--radius-md);">
+          <button type="button" id="btn-cms-undo" class="btn btn-secondary btn-sm" title="Undo (Ctrl+Z / Cmd+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+            ↩️ Undo
+          </button>
+          <button type="button" id="btn-cms-redo" class="btn btn-secondary btn-sm" title="Redo (Ctrl+Y / Cmd+Shift+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+            ↪️ Redo
+          </button>
+          <span style="width: 1px; height: 20px; background: rgba(255,255,255,0.15); align-self: center; margin: 0 0.25rem;"></span>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="### " title="Judul H3" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Heading 🏷️</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="**" data-wrap="true" title="Teks Tebal" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">Tebal B</button>
           <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
@@ -1955,6 +1969,9 @@ function openCmsEditor(type, mode, id = null) {
   // Setup local image compressor / uploader logic
   setupLocalImageUploader(currentItem);
 
+  // Setup CMS editor state history manager (Undo/Redo)
+  setupCmsHistory();
+
   dialog.showModal();
   document.body.classList.add('dialog-open');
 }
@@ -1967,6 +1984,11 @@ function setupMarkdownToolbar() {
   const buttons = document.querySelectorAll('.md-btn');
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
+      // Save any current unsaved typed text before markdown modification
+      if (saveHistoryDebounceTimer) {
+        captureCmsState(true);
+      }
+
       playRoboticSound('click');
       const insertText = btn.getAttribute('data-insert');
       const isWrap = btn.getAttribute('data-wrap') === 'true';
@@ -1988,9 +2010,194 @@ function setupMarkdownToolbar() {
         textarea.focus();
         textarea.setSelectionRange(start + insertText.length, start + insertText.length);
       }
+
+      // Save post-markdown-modification state immediately
+      captureCmsState(true);
     });
   });
 }
+
+// --- CMS EDITOR STATE HISTORY MANAGER (UNDO/REDO) ---
+let cmsHistoryStack = [];
+let cmsRedoStack = [];
+let lastSavedState = null;
+let saveHistoryDebounceTimer = null;
+let isRestoringCmsState = false;
+
+function getCmsEditorState() {
+  const state = {};
+  const inputs = document.querySelectorAll('#cms-editor-form [id^="edit-"]');
+  inputs.forEach(input => {
+    state[input.id] = input.value;
+  });
+  return state;
+}
+
+function restoreCmsEditorState(state) {
+  if (!state) return;
+  isRestoringCmsState = true;
+  Object.keys(state).forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.value = state[id];
+      // Trigger input event to update previews (like image preview)
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+  isRestoringCmsState = false;
+}
+
+function captureCmsState(force = false) {
+  const currentState = getCmsEditorState();
+  const currentStateStr = JSON.stringify(currentState);
+  
+  if (lastSavedState && lastSavedState === currentStateStr) {
+    return;
+  }
+  
+  if (force) {
+    if (saveHistoryDebounceTimer) {
+      clearTimeout(saveHistoryDebounceTimer);
+      saveHistoryDebounceTimer = null;
+    }
+    pushStateToHistory(currentState);
+  } else {
+    if (saveHistoryDebounceTimer) clearTimeout(saveHistoryDebounceTimer);
+    saveHistoryDebounceTimer = setTimeout(() => {
+      pushStateToHistory(currentState);
+      saveHistoryDebounceTimer = null;
+    }, 800); // 800ms debounce
+    updateUndoRedoButtons(); // Update to reflect potential pending change
+  }
+}
+
+function pushStateToHistory(state) {
+  const stateStr = JSON.stringify(state);
+  if (lastSavedState === stateStr) return;
+
+  cmsHistoryStack.push(state);
+  if (cmsHistoryStack.length > 50) {
+    cmsHistoryStack.shift();
+  }
+  cmsRedoStack = []; // Clear redo stack on new action
+  lastSavedState = stateStr;
+  
+  updateUndoRedoButtons();
+}
+
+function undoCms() {
+  if (saveHistoryDebounceTimer) {
+    captureCmsState(true); // Force save current unsaved typing before undoing
+  }
+
+  if (cmsHistoryStack.length <= 1) return; // Cannot undo further than initial state
+  
+  const poppedState = cmsHistoryStack.pop();
+  cmsRedoStack.push(poppedState);
+  
+  const targetState = cmsHistoryStack[cmsHistoryStack.length - 1];
+  restoreCmsEditorState(targetState);
+  
+  lastSavedState = JSON.stringify(targetState);
+  
+  updateUndoRedoButtons();
+  playRoboticSound('click');
+}
+
+function redoCms() {
+  if (cmsRedoStack.length === 0) return;
+  
+  const targetState = cmsRedoStack.pop();
+  cmsHistoryStack.push(targetState);
+  
+  restoreCmsEditorState(targetState);
+  lastSavedState = JSON.stringify(targetState);
+  
+  updateUndoRedoButtons();
+  playRoboticSound('click');
+}
+
+function updateUndoRedoButtons() {
+  const btnUndo = document.getElementById('btn-cms-undo');
+  const btnRedo = document.getElementById('btn-cms-redo');
+
+  if (btnUndo) {
+    const canUndo = cmsHistoryStack.length > 1 || saveHistoryDebounceTimer !== null;
+    btnUndo.disabled = !canUndo;
+    btnUndo.style.opacity = canUndo ? '1' : '0.4';
+    btnUndo.style.cursor = canUndo ? 'pointer' : 'not-allowed';
+  }
+
+  if (btnRedo) {
+    const canRedo = cmsRedoStack.length > 0;
+    btnRedo.disabled = !canRedo;
+    btnRedo.style.opacity = canRedo ? '1' : '0.4';
+    btnRedo.style.cursor = canRedo ? 'pointer' : 'not-allowed';
+  }
+}
+
+function setupCmsHistory() {
+  cmsHistoryStack = [];
+  cmsRedoStack = [];
+  lastSavedState = null;
+  if (saveHistoryDebounceTimer) {
+    clearTimeout(saveHistoryDebounceTimer);
+    saveHistoryDebounceTimer = null;
+  }
+
+  const form = document.getElementById('cms-editor-form');
+  if (!form) return;
+
+  // Capture initial state
+  const initialState = getCmsEditorState();
+  cmsHistoryStack.push(initialState);
+  lastSavedState = JSON.stringify(initialState);
+
+  // Monitor input events on the form
+  form.addEventListener('input', (e) => {
+    if (isRestoringCmsState) return;
+    if (e.target && e.target.id && e.target.id.startsWith('edit-')) {
+      captureCmsState(false);
+    }
+  });
+
+  // Bind click for Undo & Redo buttons
+  const btnUndo = document.getElementById('btn-cms-undo');
+  const btnRedo = document.getElementById('btn-cms-redo');
+
+  if (btnUndo) {
+    btnUndo.addEventListener('click', undoCms);
+  }
+  if (btnRedo) {
+    btnRedo.addEventListener('click', redoCms);
+  }
+
+  // Update initial visual state of buttons
+  updateUndoRedoButtons();
+}
+
+// Global keyboard shortcuts for CMS Undo/Redo
+window.addEventListener('keydown', (e) => {
+  const dialog = document.getElementById('cms-editor-dialog');
+  if (!dialog || !dialog.open) return;
+
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isCmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
+
+  if (isCmdOrCtrl && e.key.toLowerCase() === 'z') {
+    e.preventDefault();
+    if (e.shiftKey) {
+      // Redo: Cmd+Shift+Z
+      redoCms();
+    } else {
+      // Undo: Cmd+Z
+      undoCms();
+    }
+  } else if ((isCmdOrCtrl && e.key.toLowerCase() === 'y') || (isCmdOrCtrl && e.shiftKey && e.key.toLowerCase() === 'z')) {
+    e.preventDefault();
+    redoCms();
+  }
+});
 
 function closeCmsEditor() {
   playRoboticSound('click');
@@ -3302,7 +3509,7 @@ function setupLandingPageCMS() {
     if (!tableBody) return;
 
     if (!landingData.achievements || landingData.achievements.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tidak ada data prestasi kejuaraan. Silakan tambah baru.</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Tidak ada data penghargaan & prestasi. Silakan tambah baru.</td></tr>`;
       return;
     }
 
@@ -3341,7 +3548,7 @@ function setupLandingPageCMS() {
     tableBody.querySelectorAll('.delete-ach-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const idx = parseInt(btn.getAttribute('data-index'), 10);
-        if (confirm('Apakah Anda yakin ingin menghapus prestasi kejuaraan ini?')) {
+        if (confirm('Apakah Anda yakin ingin menghapus penghargaan & prestasi ini?')) {
           playRoboticSound('click');
           landingData.achievements.splice(idx, 1);
           saveData('robotik_landing', landingData);
@@ -3719,6 +3926,19 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCmsTabs();
   setupPendaftaranCMSAndCountdown();
   setupApplicantsFilterAndExport();
+
+  // --- QoL: Global Dialog Handlers (ESC and Backdrop Click) ---
+  document.querySelectorAll('dialog').forEach(dialog => {
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('dialog-open');
+    });
+    dialog.addEventListener('click', (e) => {
+      // e.target === dialog ensures it's the backdrop being clicked, not its contents
+      if (e.target === dialog) {
+        dialog.close();
+      }
+    });
+  });
 
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();

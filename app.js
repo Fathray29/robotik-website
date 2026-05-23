@@ -1488,9 +1488,24 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-content">Konten Lengkap (Format Markdown) <span>*</span></label>
+        
+        <!-- Markdown Helper Toolbar -->
+        <div class="markdown-toolbar" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; background: rgba(2, 6, 23, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; border-radius: var(--radius-md);">
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="### " title="Judul H3" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Heading 🏷️</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="**" data-wrap="true" title="Teks Tebal" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">Tebal B</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="- " title="Daftar List" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Daftar 📋</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="[Teks Tautan](https://)" title="Link Tautan" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Tautan 🔗</button>
+          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="\\\`\\\`\\\`javascript\\n// tulis kode disini\\n\\\`\\\`\\\`" title="Blok Kode" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-family: monospace;">Kode 💻</button>
+        </div>
+        
         <textarea id="edit-content" class="input-control" required placeholder="Tulis isi tulisan lengkap menggunakan format Markdown (misal: ### Judul, **tebal**, *miring*, - list, dll)..." style="height: 250px;">${article.content || ''}</textarea>
       </div>
     `;
+    
+    // Initialize markdown formatting toolbar logic
+    setupMarkdownToolbar();
+
   } else if (type === 'portfolio') {
     title.textContent = mode === 'add' ? 'Tambah Proyek Portfolio Baru' : 'Ubah Proyek Portfolio';
     const proj = mode === 'edit' ? portfolioProjects.find(p => p.id === id) : {};
@@ -1536,6 +1551,39 @@ function openCmsEditor(type, mode, id = null) {
 
   dialog.showModal();
   document.body.classList.add('dialog-open');
+}
+
+// Markdown formatting toolbar event bindings
+function setupMarkdownToolbar() {
+  const textarea = document.getElementById('edit-content');
+  if (!textarea) return;
+
+  const buttons = document.querySelectorAll('.md-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      playRoboticSound('click');
+      const insertText = btn.getAttribute('data-insert');
+      const isWrap = btn.getAttribute('data-wrap') === 'true';
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = textarea.value;
+
+      if (isWrap) {
+        // Wrap selected text
+        const selected = text.substring(start, end);
+        const replacement = insertText + (selected || btn.title) + insertText;
+        textarea.value = text.substring(0, start) + replacement + text.substring(end);
+        textarea.focus();
+        textarea.setSelectionRange(start + insertText.length, start + insertText.length + (selected || btn.title).length);
+      } else {
+        // Insert directly at cursor
+        textarea.value = text.substring(0, start) + insertText + text.substring(end);
+        textarea.focus();
+        textarea.setSelectionRange(start + insertText.length, start + insertText.length);
+      }
+    });
+  });
 }
 
 function closeCmsEditor() {

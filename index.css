@@ -308,6 +308,18 @@ a {
   box-shadow: var(--shadow-glow-yellow);
 }
 
+.nav-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  aspect-ratio: 1 / 1;
+}
+
+.nav-admin-btn svg {
+  display: block;
+}
+
 /* Audio Toggle Widget */
 .sound-toggle {
   background: rgba(255, 255, 255, 0.05);
@@ -2630,6 +2642,9 @@ select.input-control option {
     font-size: 0.85rem;
     white-space: nowrap;
     flex-shrink: 0;
+  }
+  .nav-admin-btn {
+    padding: 0.4rem !important;
   }
 
   /* Step tracker list */

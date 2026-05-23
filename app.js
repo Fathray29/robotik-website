@@ -1814,9 +1814,12 @@ function openCmsEditor(type, mode, id = null) {
   form.setAttribute('data-mode', mode);
   if (id) form.setAttribute('data-id', id);
 
+  let currentItem = {};
+
   if (type === 'blog') {
     title.textContent = mode === 'add' ? 'Tambah Artikel Blog Baru' : 'Ubah Artikel Blog';
     const article = mode === 'edit' ? (blogArticles.find(a => String(a.id) === String(id)) || {}) : {};
+    currentItem = article;
     
     container.innerHTML = `
       <div class="form-group">
@@ -1875,6 +1878,7 @@ function openCmsEditor(type, mode, id = null) {
   } else if (type === 'portfolio') {
     title.textContent = mode === 'add' ? 'Tambah Proyek Portfolio Baru' : 'Ubah Proyek Portfolio';
     const proj = mode === 'edit' ? (portfolioProjects.find(p => String(p.id) === String(id)) || {}) : {};
+    currentItem = proj;
 
     container.innerHTML = `
       <div class="form-group">
@@ -1949,7 +1953,7 @@ function openCmsEditor(type, mode, id = null) {
   setupMarkdownToolbar();
 
   // Setup local image compressor / uploader logic
-  setupLocalImageUploader(type === 'blog' ? article : proj);
+  setupLocalImageUploader(currentItem);
 
   dialog.showModal();
   document.body.classList.add('dialog-open');

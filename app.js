@@ -224,12 +224,12 @@ function saveData(key, data) {
 
 // --- CLOUD FIREBASE CONFIGURATION (DUAL-MODE HYBRID PERSISTENCE ENGINE) ---
 const firebaseConfig = {
-  apiKey: "PLACEHOLDER_API_KEY",
-  authDomain: "PLACEHOLDER_AUTH_DOMAIN",
-  projectId: "PLACEHOLDER_PROJECT_ID",
-  storageBucket: "PLACEHOLDER_STORAGE_BUCKET",
-  messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
-  appId: "PLACEHOLDER_APP_ID"
+  apiKey: "AIzaSyAQQctyhe_Z9HTiWQLt2MUuYeGMOCE1T5U",
+  authDomain: "website-motechart.firebaseapp.com",
+  projectId: "website-motechart",
+  storageBucket: "website-motechart.firebasestorage.app",
+  messagingSenderId: "469005681722",
+  appId: "1:469005681722:web:d21d38dae2aa6ef5bfe103"
 };
 
 let db = null;

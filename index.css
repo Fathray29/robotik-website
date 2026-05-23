@@ -447,6 +447,7 @@ a {
   position: relative;
   animation: robotHover 4s infinite ease-in-out;
   cursor: grab;
+  will-change: transform;
 }
 
 @keyframes robotHover {
@@ -688,6 +689,8 @@ a {
   gap: 3rem;
   white-space: nowrap;
   animation: marquee 25s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .marquee-content:hover {
@@ -2110,6 +2113,16 @@ select.input-control option {
 
   .marquee-content {
     animation-duration: 15s;
+  }
+
+  .bg-glow-spot {
+    filter: blur(50px) !important;
+    animation: none !important;
+  }
+
+  .glass-card {
+    backdrop-filter: blur(6px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(6px) saturate(150%) !important;
   }
 }
 

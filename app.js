@@ -4008,11 +4008,13 @@ function setupInteractiveDivisions() {
       graphicHtml = `
         <svg class="gear-svg" width="180" height="180" viewBox="0 0 220 220" fill="none" style="color: var(--accent-yellow);">
           <g class="gear-main">
+            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="12s" repeatCount="indefinite" />
             <circle cx="100" cy="100" r="45" stroke="currentColor" stroke-width="6" stroke-dasharray="10 5" />
             <circle cx="100" cy="100" r="25" stroke="currentColor" stroke-width="4" />
             <path d="M100 20 L100 40 M100 160 L100 180 M20 100 L40 100 M160 100 L180 100 M43.4 43.4 L57.6 57.6 M142.4 142.4 L156.6 156.6 M43.4 156.6 L57.6 142.4 M142.4 43.4 L156.6 57.6" stroke="currentColor" stroke-width="8" stroke-linecap="round" />
           </g>
           <g class="gear-sub">
+            <animateTransform attributeName="transform" type="rotate" from="0 155 145" to="-360 155 145" dur="8s" repeatCount="indefinite" />
             <circle cx="155" cy="145" r="25" stroke="currentColor" stroke-width="4" stroke-dasharray="6 3" />
             <circle cx="155" cy="145" r="12" stroke="currentColor" stroke-width="3" />
             <path d="M155 105 L155 117 M155 173 L155 185 M115 145 L127 145 M183 145 L195 145 M126.7 116.7 L135.2 125.2 M174.8 164.8 L183.3 173.3 M126.7 173.3 L135.2 164.8 M174.8 116.7 L183.3 125.2" stroke="currentColor" stroke-width="6" stroke-linecap="round" />

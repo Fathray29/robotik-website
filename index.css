@@ -856,23 +856,7 @@ a {
   filter: drop-shadow(0 0 15px currentColor);
 }
 
-/* Spin animation for mechanical gears */
-@keyframes gear-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-@keyframes gear-spin-rev {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
-}
-.gear-main {
-  animation: gear-spin 12s linear infinite;
-  transform-origin: 100px 100px;
-}
-.gear-sub {
-  animation: gear-spin-rev 8s linear infinite;
-  transform-origin: 155px 145px;
-}
+
 
 /* Circuit pulse animations */
 @keyframes pulse-node {

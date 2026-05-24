@@ -512,7 +512,13 @@ const INITIAL_LANDING_DATA = {
     { juara: 'Juara 2 Internasional ASEAN Line Follower', organizer: 'ASEAN Robotics Association', year: '2025' },
     { juara: 'Juara 1 Provinsi Lomba Karya Cipta IoT', organizer: 'Pemerintah Provinsi & Puspresnas', year: '2026' },
     { juara: 'Juara Umum Kompetisi Robotik Kreatif', organizer: 'Lembaga Ilmu Pengetahuan Indonesia', year: '2025' }
-  ]
+  ],
+  footerTagline: 'Wadah pengembangan inovasi, otomatisasi, dan kreativitas teknologi robotika masa depan bagi para remaja unggul.',
+  footerLocation: 'Lab Robotika, Gedung B Lantai 2',
+  footerEmail: 'robotik@motechart.sch.id',
+  footerInstagram: 'https://instagram.com',
+  footerGithub: 'https://github.com',
+  footerYoutube: 'https://youtube.com'
 };
 
 let landingData = loadData('robotik_landing', INITIAL_LANDING_DATA);
@@ -3519,6 +3525,21 @@ function renderLandingPage() {
     }
   }
 
+  // Populate / refresh the custom footer content dynamically
+  const footerTaglineEl = document.getElementById('footer-tagline-text');
+  const footerLocationEl = document.getElementById('footer-location-text');
+  const footerEmailEl = document.getElementById('footer-email-text');
+  const footerInstaEl = document.getElementById('footer-instagram-link');
+  const footerGithubEl = document.getElementById('footer-github-link');
+  const footerYoutubeEl = document.getElementById('footer-youtube-link');
+
+  if (footerTaglineEl) footerTaglineEl.textContent = landingData.footerTagline || '';
+  if (footerLocationEl) footerLocationEl.textContent = landingData.footerLocation || '';
+  if (footerEmailEl) footerEmailEl.textContent = landingData.footerEmail || '';
+  if (footerInstaEl) footerInstaEl.href = landingData.footerInstagram || 'https://instagram.com';
+  if (footerGithubEl) footerGithubEl.href = landingData.footerGithub || 'https://github.com';
+  if (footerYoutubeEl) footerYoutubeEl.href = landingData.footerYoutube || 'https://youtube.com';
+
   // Populate / refresh the interactive divisions panel
   if (typeof setupInteractiveDivisions === 'function') {
     setupInteractiveDivisions();
@@ -3650,6 +3671,13 @@ function setupLandingPageCMS() {
     const divMechInput = document.getElementById('cms-div-mech-desc');
     const divElecInput = document.getElementById('cms-div-elec-desc');
     const divProgInput = document.getElementById('cms-div-prog-desc');
+    
+    const footerTaglineInput = document.getElementById('cms-footer-tagline');
+    const footerLocationInput = document.getElementById('cms-footer-location');
+    const footerEmailInput = document.getElementById('cms-footer-email');
+    const footerInstagramInput = document.getElementById('cms-footer-instagram');
+    const footerGithubInput = document.getElementById('cms-footer-github');
+    const footerYoutubeInput = document.getElementById('cms-footer-youtube');
 
     if (heroTagInput) heroTagInput.value = landingData.heroTag || '';
     if (heroTitleInput) heroTitleInput.value = landingData.heroTitle || '';
@@ -3667,6 +3695,13 @@ function setupLandingPageCMS() {
     if (divMechInput) divMechInput.value = landingData.divMechDesc || '';
     if (divElecInput) divElecInput.value = landingData.divElecDesc || '';
     if (divProgInput) divProgInput.value = landingData.divProgDesc || '';
+    
+    if (footerTaglineInput) footerTaglineInput.value = landingData.footerTagline || '';
+    if (footerLocationInput) footerLocationInput.value = landingData.footerLocation || '';
+    if (footerEmailInput) footerEmailInput.value = landingData.footerEmail || '';
+    if (footerInstagramInput) footerInstagramInput.value = landingData.footerInstagram || '';
+    if (footerGithubInput) footerGithubInput.value = landingData.footerGithub || '';
+    if (footerYoutubeInput) footerYoutubeInput.value = landingData.footerYoutube || '';
 
     renderAdminAchievementsTable();
   }
@@ -3685,6 +3720,13 @@ function setupLandingPageCMS() {
     const divMechInput = document.getElementById('cms-div-mech-desc');
     const divElecInput = document.getElementById('cms-div-elec-desc');
     const divProgInput = document.getElementById('cms-div-prog-desc');
+    
+    const footerTaglineInput = document.getElementById('cms-footer-tagline');
+    const footerLocationInput = document.getElementById('cms-footer-location');
+    const footerEmailInput = document.getElementById('cms-footer-email');
+    const footerInstagramInput = document.getElementById('cms-footer-instagram');
+    const footerGithubInput = document.getElementById('cms-footer-github');
+    const footerYoutubeInput = document.getElementById('cms-footer-youtube');
 
     // Collect Misi list
     const updatedMisi = [];
@@ -3703,14 +3745,20 @@ function setupLandingPageCMS() {
       divMechDesc: divMechInput ? divMechInput.value.trim() : '',
       divElecDesc: divElecInput ? divElecInput.value.trim() : '',
       divProgDesc: divProgInput ? divProgInput.value.trim() : '',
-      achievements: landingData.achievements || []
+      achievements: landingData.achievements || [],
+      footerTagline: footerTaglineInput ? footerTaglineInput.value.trim() : '',
+      footerLocation: footerLocationInput ? footerLocationInput.value.trim() : '',
+      footerEmail: footerEmailInput ? footerEmailInput.value.trim() : '',
+      footerInstagram: footerInstagramInput ? footerInstagramInput.value.trim() : '',
+      footerGithub: footerGithubInput ? footerGithubInput.value.trim() : '',
+      footerYoutube: footerYoutubeInput ? footerYoutubeInput.value.trim() : ''
     };
 
     saveData('robotik_landing', landingData);
     renderLandingPage();
 
     playRoboticSound('success');
-    alert('Konten landing page berhasil diperbarui! 🚀');
+    alert('Konten landing page & footer berhasil diperbarui! 🚀');
   });
 
   // Expose populate function to window for database reset triggers

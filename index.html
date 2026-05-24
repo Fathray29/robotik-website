@@ -721,8 +721,11 @@
             </div>
           </div>
 
-          <!-- CMS Navigation Tabs -->
-          <div class="cms-tabs-bar" role="tablist" aria-label="Kelola Konten">
+          <!-- CMS Dashboard Grid Layout -->
+          <div class="cms-dashboard-layout">
+            
+            <!-- Left Sidebar: CMS Navigation Tabs Dock -->
+            <div class="cms-tabs-bar" role="tablist" aria-label="Kelola Konten">
             <button type="button" class="cms-tab-btn active" data-cms-target="cms-blog-view" role="tab" aria-selected="true">
               📰 Kelola Blog
             </button>
@@ -740,7 +743,10 @@
             </button>
           </div>
 
-          <!-- Tab Content 1: BLOG CMS -->
+          <!-- Right Content Area -->
+          <div class="cms-content-area">
+
+            <!-- Tab Content 1: BLOG CMS -->
           <div id="cms-blog-view" class="cms-view-content active" role="tabpanel">
             <div class="table-header-control">
               <h4>Daftar Artikel Blog</h4>
@@ -1005,7 +1011,10 @@
             </form>
           </div>
 
-        </div>
+        </div> <!-- End of .cms-content-area -->
+      </div> <!-- End of .cms-dashboard-layout -->
+
+    </div>
       </section>
 
       <!-- ==========================================

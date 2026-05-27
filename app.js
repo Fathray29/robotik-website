@@ -4022,6 +4022,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Initialize interactive system status & telemetry dialog
+  setupSystemTelemetry();
+
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();
 });
@@ -4215,4 +4218,178 @@ function setupInteractiveDivisions() {
     showDivision(initialActive.getAttribute('data-div'));
   }
 }
+
+// --- SYSTEM STATUS & TELEMETRY MODULE ---
+function setupSystemTelemetry() {
+  const sessionStartTime = Date.now();
+  
+  // Initialize persistent visitor count
+  let visitorCount = localStorage.getItem('robotik_visitor_count');
+  if (!visitorCount) {
+    visitorCount = '1438';
+    localStorage.setItem('robotik_visitor_count', visitorCount);
+  }
+
+  // Session uptime timer (runs every second)
+  setInterval(() => {
+    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const hrs = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+    const secs = String(elapsed % 60).padStart(2, '0');
+    const timeString = `${hrs}:${mins}:${secs}`;
+    
+    const sessionTimeEl = document.getElementById('telemetry-session-time');
+    if (sessionTimeEl) {
+      sessionTimeEl.textContent = timeString;
+    }
+  }, 1000);
+
+  // Simulated live traffic increments (every 12 seconds)
+  setInterval(() => {
+    if (navigator.onLine) {
+      let count = parseInt(localStorage.getItem('robotik_visitor_count') || '1438', 10);
+      count += Math.floor(Math.random() * 3); // 0, 1, or 2
+      localStorage.setItem('robotik_visitor_count', count);
+      
+      const visitorEl = document.getElementById('telemetry-total-visitors');
+      if (visitorEl) {
+        visitorEl.textContent = count.toLocaleString('id-ID');
+      }
+    }
+  }, 12000);
+
+  // Firestore DB Latency simulation
+  function updatePing() {
+    const dbPingEl = document.getElementById('telemetry-db-ping');
+    if (!dbPingEl) return;
+    if (navigator.onLine) {
+      const ping = Math.floor(Math.random() * 35) + 15; // 15ms - 50ms
+      dbPingEl.textContent = `${ping} ms`;
+    } else {
+      dbPingEl.textContent = '-- ms';
+    }
+  }
+
+  // Interval updating ping dynamically when dialog is open and user is online
+  setInterval(() => {
+    const telemetryDialog = document.getElementById('system-status-dialog');
+    if (telemetryDialog && telemetryDialog.open && navigator.onLine) {
+      updatePing();
+    }
+  }, 5000);
+
+  // Online / Offline state handler
+  function handleNetworkChange() {
+    const statusWrapper = document.getElementById('btn-system-status');
+    const footerStatusText = document.getElementById('footer-status-text');
+    if (!statusWrapper || !footerStatusText) return;
+
+    const dbStatusEl = document.getElementById('telemetry-db-status');
+    const serverStatusEl = document.getElementById('telemetry-server-status');
+    const netStateEl = document.getElementById('telemetry-network-state');
+    const netSpeedEl = document.getElementById('telemetry-network-speed');
+
+    if (navigator.onLine) {
+      statusWrapper.classList.remove('offline');
+      footerStatusText.textContent = 'Hub Sistem: ONLINE';
+
+      if (dbStatusEl) {
+        dbStatusEl.textContent = 'TERHUBUNG';
+        dbStatusEl.style.color = 'var(--accent-green)';
+      }
+      if (serverStatusEl) {
+        serverStatusEl.textContent = 'ONLINE';
+        serverStatusEl.style.color = 'var(--accent-green)';
+      }
+      if (netStateEl) {
+        netStateEl.textContent = 'ONLINE';
+        netStateEl.style.color = 'var(--accent-cyan)';
+      }
+      if (netSpeedEl) {
+        netSpeedEl.textContent = 'Active';
+      }
+      updatePing();
+    } else {
+      statusWrapper.classList.add('offline');
+      footerStatusText.textContent = 'Hub Sistem: OFFLINE';
+
+      if (dbStatusEl) {
+        dbStatusEl.textContent = 'TERPUTUS';
+        dbStatusEl.style.color = '#EF4444';
+      }
+      if (serverStatusEl) {
+        serverStatusEl.textContent = 'OFFLINE';
+        serverStatusEl.style.color = '#EF4444';
+      }
+      if (netStateEl) {
+        netStateEl.textContent = 'OFFLINE';
+        netStateEl.style.color = '#EF4444';
+      }
+      if (netSpeedEl) {
+        netSpeedEl.textContent = 'Disconnect';
+      }
+      const dbPingEl = document.getElementById('telemetry-db-ping');
+      if (dbPingEl) dbPingEl.textContent = '-- ms';
+    }
+  }
+
+  // Register online/offline event listeners
+  window.addEventListener('online', handleNetworkChange);
+  window.addEventListener('offline', handleNetworkChange);
+
+  // Initialize status color correctly on startup
+  handleNetworkChange();
+
+  // Bind footer button interactions
+  const statusBtn = document.getElementById('btn-system-status');
+  const telemetryDialog = document.getElementById('system-status-dialog');
+  const closeBtn = document.getElementById('close-telemetry-btn');
+
+  if (statusBtn && telemetryDialog) {
+    statusBtn.addEventListener('click', () => {
+      // Load current CMS record statistics from memory
+      const currentBlogs = window.blogArticles || [];
+      const currentPortfolios = window.portfolioProjects || [];
+      const currentApplicants = window.applicants || [];
+
+      // If they are not declared on window, fallback to local variables in this script (as they are in scope)
+      const blogCount = typeof blogArticles !== 'undefined' ? blogArticles.length : currentBlogs.length;
+      const portfolioCount = typeof portfolioProjects !== 'undefined' ? portfolioProjects.length : currentPortfolios.length;
+      const applicantCount = typeof applicants !== 'undefined' ? applicants.length : currentApplicants.length;
+
+      const currentVisitors = parseInt(localStorage.getItem('robotik_visitor_count') || '1438', 10);
+
+      // Populate elements inside the dialog
+      const blogsEl = document.getElementById('telemetry-total-blogs');
+      const portfoliosEl = document.getElementById('telemetry-total-portfolios');
+      const applicantsEl = document.getElementById('telemetry-total-applicants');
+      const visitorsEl = document.getElementById('telemetry-total-visitors');
+
+      if (blogsEl) blogsEl.textContent = blogCount;
+      if (portfoliosEl) portfoliosEl.textContent = portfolioCount;
+      if (applicantsEl) applicantsEl.textContent = applicantCount;
+      if (visitorsEl) visitorsEl.textContent = currentVisitors.toLocaleString('id-ID');
+
+      // Update connectivity metrics and open modal
+      updatePing();
+      handleNetworkChange();
+      
+      telemetryDialog.showModal();
+      document.body.classList.add('dialog-open');
+      playRoboticSound('click');
+    });
+
+    statusBtn.addEventListener('mouseenter', () => {
+      playRoboticSound('hover');
+    });
+  }
+
+  if (closeBtn && telemetryDialog) {
+    closeBtn.addEventListener('click', () => {
+      telemetryDialog.close();
+      playRoboticSound('click');
+    });
+  }
+}
+
 

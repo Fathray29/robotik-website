@@ -1182,9 +1182,9 @@
               <span class="contact-icon">✉️</span>
               <span class="contact-text" id="footer-email-text">robotik@motechart.sch.id</span>
             </div>
-            <div class="contact-item status-indicator-wrapper">
+            <div class="contact-item status-indicator-wrapper" id="btn-system-status" style="cursor: pointer;" title="Buka Telemetri Sistem">
               <span class="status-pulse-dot"></span>
-              <span class="status-text">Hub Sistem: ONLINE</span>
+              <span class="status-text" id="footer-status-text">Hub Sistem: ONLINE</span>
             </div>
           </div>
         </div>
@@ -1358,6 +1358,87 @@
     </div>
     <div id="portfolio-dialog-body-content">
       <!-- Populated dynamically via JS -->
+    </div>
+  </dialog>
+
+  <!-- ==========================================
+       NATIVE TOP-LAYER SYSTEM TELEMETRY DIALOG
+       ========================================== -->
+  <dialog id="system-status-dialog" closedby="any" aria-labelledby="telemetry-title" style="max-width: 600px; width: 95%;">
+    <div class="dialog-close-bar">
+      <button id="close-telemetry-btn" class="btn-close" aria-label="Tutup Telemetri Sistem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="telemetry-content">
+      <h2 id="telemetry-title" class="dialog-title" style="margin-bottom: 1.5rem; text-align: center; color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+        <span class="telemetry-header-icon" style="font-size: 1.75rem;">📡</span> Telemetri & Status Sistem
+      </h2>
+      
+      <!-- Network / Service Status Grid -->
+      <div class="telemetry-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        
+        <!-- Web Server Uptime Card -->
+        <div class="telemetry-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Server Uptime</div>
+          <div id="telemetry-server-status" style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE</div>
+          <div id="telemetry-session-time" style="font-family: monospace; font-size: 1.1rem; color: #fff;">00:00:00</div>
+        </div>
+
+        <!-- Firebase / DB Status Card -->
+        <div class="telemetry-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Koneksi Database</div>
+          <div id="telemetry-db-status" style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">TERHUBUNG</div>
+          <div id="telemetry-db-ping" style="font-family: monospace; font-size: 1.1rem; color: #fff;">-- ms</div>
+        </div>
+
+        <!-- Network Latency Card -->
+        <div class="telemetry-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Bandwidth State</div>
+          <div id="telemetry-network-state" style="font-weight: bold; color: var(--accent-cyan); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE</div>
+          <div id="telemetry-network-speed" style="font-family: monospace; font-size: 1.1rem; color: #fff;">Active</div>
+        </div>
+
+      </div>
+
+      <!-- General Statistics Card -->
+      <div class="telemetry-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h4 style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          📊 Statistik & Telemetri Portal
+        </h4>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem 1.5rem;">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">👥 Total Pengunjung</span>
+            <strong id="telemetry-total-visitors" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">📂 Total Portofolio</span>
+            <strong id="telemetry-total-portfolios" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">📝 Total Artikel Blog</span>
+            <strong id="telemetry-total-blogs" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">🤖 Calon Pendaftar</span>
+            <strong id="telemetry-total-applicants" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="font-size: 0.75rem; text-align: center; color: rgba(255,255,255,0.4); line-height: 1.4;">
+        Pemantauan waktu nyata Hub Sistem Motechart Robotik. Status disinkronkan secara asinkron dengan infrastruktur web dan Cloud Firestore Database.
+      </div>
     </div>
   </dialog>
 

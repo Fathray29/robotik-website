@@ -4226,7 +4226,7 @@ function setupSystemTelemetry() {
   // Initialize persistent visitor count
   let visitorCount = localStorage.getItem('robotik_visitor_count');
   if (!visitorCount) {
-    visitorCount = '1438';
+    visitorCount = '1';
     localStorage.setItem('robotik_visitor_count', visitorCount);
   }
 
@@ -4246,7 +4246,7 @@ function setupSystemTelemetry() {
           } else {
             // Seed the initial value if document does not exist
             visitorDocRef.set({
-              count: 1438
+              count: 1
             }).then(() => {
               sessionStorage.setItem('robotik_visited_session', 'true');
             });
@@ -4260,7 +4260,7 @@ function setupSystemTelemetry() {
       db.collection('telemetry').doc('visitors').onSnapshot(doc => {
         if (doc.exists) {
           const data = doc.data();
-          const cloudCount = data.count || 1438;
+          const cloudCount = data.count || 1;
           localStorage.setItem('robotik_visitor_count', cloudCount);
           
           const visitorEl = document.getElementById('telemetry-total-visitors');
@@ -4293,7 +4293,7 @@ function setupSystemTelemetry() {
   // Simulated live traffic increments fallback (only when offline or not using Firebase)
   setInterval(() => {
     if (navigator.onLine && !(useFirebase && db)) {
-      let count = parseInt(localStorage.getItem('robotik_visitor_count') || '1438', 10);
+      let count = parseInt(localStorage.getItem('robotik_visitor_count') || '1', 10);
       count += Math.floor(Math.random() * 3); // 0, 1, or 2
       localStorage.setItem('robotik_visitor_count', count);
       
@@ -4403,7 +4403,7 @@ function setupSystemTelemetry() {
       const portfolioCount = typeof portfolioProjects !== 'undefined' ? portfolioProjects.length : currentPortfolios.length;
       const applicantCount = typeof applicants !== 'undefined' ? applicants.length : currentApplicants.length;
 
-      const currentVisitors = parseInt(localStorage.getItem('robotik_visitor_count') || '1438', 10);
+      const currentVisitors = parseInt(localStorage.getItem('robotik_visitor_count') || '1', 10);
 
       // Populate elements inside the dialog
       const blogsEl = document.getElementById('telemetry-total-blogs');

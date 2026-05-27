@@ -4230,6 +4230,52 @@ function setupSystemTelemetry() {
     localStorage.setItem('robotik_visitor_count', visitorCount);
   }
 
+  // Cloud Firestore global visitors integration (Real-Time Synchronized)
+  if (useFirebase && db) {
+    try {
+      // 1. Session check to prevent spamming count on refresh
+      if (!sessionStorage.getItem('robotik_visited_session')) {
+        const visitorDocRef = db.collection('telemetry').doc('visitors');
+        visitorDocRef.get().then(doc => {
+          if (doc.exists) {
+            visitorDocRef.update({
+              count: firebase.firestore.FieldValue.increment(1)
+            }).then(() => {
+              sessionStorage.setItem('robotik_visited_session', 'true');
+            });
+          } else {
+            // Seed the initial value if document does not exist
+            visitorDocRef.set({
+              count: 1438
+            }).then(() => {
+              sessionStorage.setItem('robotik_visited_session', 'true');
+            });
+          }
+        }).catch(err => {
+          console.warn("Motechart Cloud Engine: Could not fetch/increment visitor count:", err);
+        });
+      }
+
+      // 2. Subscribe to real-time updates for global synchronization
+      db.collection('telemetry').doc('visitors').onSnapshot(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const cloudCount = data.count || 1438;
+          localStorage.setItem('robotik_visitor_count', cloudCount);
+          
+          const visitorEl = document.getElementById('telemetry-total-visitors');
+          if (visitorEl) {
+            visitorEl.textContent = cloudCount.toLocaleString('id-ID');
+          }
+        }
+      }, err => {
+        console.warn("Motechart Cloud Engine: Real-time visitors listener failed:", err);
+      });
+    } catch (e) {
+      console.error("Motechart Cloud Engine: Visitors Firestore integration error:", e);
+    }
+  }
+
   // Session uptime timer (runs every second)
   setInterval(() => {
     const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
@@ -4244,9 +4290,9 @@ function setupSystemTelemetry() {
     }
   }, 1000);
 
-  // Simulated live traffic increments (every 12 seconds)
+  // Simulated live traffic increments fallback (only when offline or not using Firebase)
   setInterval(() => {
-    if (navigator.onLine) {
+    if (navigator.onLine && !(useFirebase && db)) {
       let count = parseInt(localStorage.getItem('robotik_visitor_count') || '1438', 10);
       count += Math.floor(Math.random() * 3); // 0, 1, or 2
       localStorage.setItem('robotik_visitor_count', count);

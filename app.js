@@ -4,6 +4,10 @@
  * Blog filters, Portfolio details, Multi-step Registration Form, and LocalStorage CMS.
  */
 
+// --- VERCEL WEB ANALYTICS ---
+import { inject } from '@vercel/analytics';
+inject();
+
 // --- INITIAL DEFAULT DATA (FALLBACK) ---
 const INITIAL_BLOG_ARTICLES = [
   {

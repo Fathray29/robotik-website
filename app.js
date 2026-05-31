@@ -197,7 +197,7 @@ const INITIAL_APPLICANTS = [
     id: 'ROBO-826315',
     nama: 'Rian Hidayat',
     kelas: 'XI',
-    nisn: '0087654321',
+    email: 'rian.hidayat@gmail.com',
     noHp: '081234567890',
     laptop: 'Ya',
     divisi: ['Programming & Algoritma', 'Mechanics & Desain 3D'],
@@ -209,7 +209,7 @@ const INITIAL_APPLICANTS = [
     id: 'ROBO-214953',
     nama: 'Maya Safitri',
     kelas: 'X',
-    nisn: '0098765432',
+    email: 'maya.safitri@gmail.com',
     noHp: '085712345678',
     laptop: 'Ya',
     divisi: ['Electronics & IoT'],
@@ -221,7 +221,7 @@ const INITIAL_APPLICANTS = [
     id: 'ROBO-539201',
     nama: 'Aditya Pratama',
     kelas: 'XII',
-    nisn: '0076543210',
+    email: 'aditya.pratama@gmail.com',
     noHp: '089912345678',
     laptop: 'Tidak',
     divisi: ['Mechanics & Desain 3D'],
@@ -1352,10 +1352,10 @@ function setupRegistrationForm() {
       pattern: /^[a-zA-Z\s]{2,50}$/,
       errorMessage: 'Nama lengkap wajib diisi (minimal 2 huruf, hanya huruf alfabet dan spasi).'
     },
-    'nisn': {
+    'email': {
       required: true,
-      pattern: /^\d{10}$/,
-      errorMessage: 'NISN harus berupa 10 digit angka numerik.'
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      errorMessage: 'Alamat email tidak valid (contoh: nama@domain.com).'
     },
     'no_hp': {
       required: true,
@@ -1449,7 +1449,7 @@ function setupRegistrationForm() {
     
     if (stepNum === 1) {
       const f1 = document.getElementById('nama_lengkap');
-      const f2 = document.getElementById('nisn');
+      const f2 = document.getElementById('email');
       const f3 = document.getElementById('no_hp');
       
       const v1 = validateField(f1);
@@ -1547,7 +1547,7 @@ function setupRegistrationForm() {
   function populateConfirmation() {
     const nama = document.getElementById('nama_lengkap').value;
     const kelas = document.querySelector('input[name="kelas"]:checked')?.value || '-';
-    const nisn = document.getElementById('nisn').value;
+    const email = document.getElementById('email').value;
     const noHp = document.getElementById('no_hp').value;
     const laptop = document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak';
     
@@ -1574,7 +1574,7 @@ function setupRegistrationForm() {
     summaryContainer.innerHTML = `
       <div class="summary-item"><strong>Nama Lengkap:</strong> <span>${nama}</span></div>
       <div class="summary-item"><strong>Kelas:</strong> <span>Kelas ${kelas}</span></div>
-      <div class="summary-item"><strong>NISN:</strong> <span>${nisn}</span></div>
+      <div class="summary-item"><strong>Email:</strong> <span>${email}</span></div>
       <div class="summary-item"><strong>No. WhatsApp:</strong> <span>${noHp}</span></div>
       <div class="summary-item"><strong>Punya Laptop:</strong> <span>${laptop}</span></div>
       <div class="summary-item block"><strong>Motivasi:</strong> <p>${motivasi}</p></div>
@@ -1629,7 +1629,7 @@ function setupRegistrationForm() {
       // Sanitize registration input values
       const namaSiswa = sanitizeInput(rawNama);
       const noHpSiswa = sanitizeInput(rawNoHp);
-      const nisnSiswa = sanitizeInput(document.getElementById('nisn').value);
+      const emailSiswa = sanitizeInput(document.getElementById('email').value);
       const motivasiSiswa = sanitizeInput(document.getElementById('motivasi').value);
 
       // Populate review pending elements
@@ -1673,7 +1673,7 @@ function setupRegistrationForm() {
         id: regId,
         nama: namaSiswa,
         kelas: kelasSiswa,
-        nisn: nisnSiswa,
+        email: emailSiswa,
         noHp: noHpSiswa,
         laptop: document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak',
         divisi: [],
@@ -3945,7 +3945,7 @@ function exportApplicantsToCsv() {
     return;
   }
 
-  const headers = ['No', 'ID Pendaftaran', 'Nama Lengkap', 'Kelas', 'NISN', 'No. WhatsApp', 'Minat Divisi', 'Motivasi', 'Tanggal Daftar', 'Status'];
+  const headers = ['No', 'ID Pendaftaran', 'Nama Lengkap', 'Kelas', 'Email', 'No. WhatsApp', 'Minat Divisi', 'Motivasi', 'Tanggal Daftar', 'Status'];
   
   const rows = applicants.map((app, index) => {
     const joinedDivisions = Array.isArray(app.divisi) ? app.divisi.join(', ') : app.divisi;
@@ -3954,7 +3954,7 @@ function exportApplicantsToCsv() {
       app.id || '',
       app.nama || '',
       app.kelas || '',
-      app.nisn || '',
+      app.email || '',
       app.noHp || '',
       joinedDivisions || '',
       (app.motivasi || '').replace(/\r?\n/g, ' '),

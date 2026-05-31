@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- SEO Optimization -->
   <title>Motechart Robotik - Ekstrakurikuler Robotik Sekolah Unggulan</title>
-  <meta name="description" content="Situs Resmi Ekstrakurikuler Motechart Robotik. Bergabunglah bersama kami untuk merancang, memprogram, dan membangun teknologi masa depan. Pendaftaran dibuka!">
-  <meta name="keywords" content="robotik, ekstrakurikuler sekolah, arduino, pemrograman, mekanik, elektronika, IoT, pendaftaran ekskul, motechart">
+  <meta name="description"
+    content="Situs Resmi Ekstrakurikuler Motechart Robotik. Bergabunglah bersama kami untuk merancang, memprogram, dan membangun teknologi masa depan. Pendaftaran dibuka!">
+  <meta name="keywords"
+    content="robotik, ekstrakurikuler sekolah, arduino, pemrograman, mekanik, elektronika, IoT, pendaftaran ekskul, motechart">
   <meta name="author" content="Motechart Robotik Team">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='100' height='100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFEFA6'/><stop offset='50%25' stop-color='%23E5C158'/><stop offset='100%25' stop-color='%23805C15'/></linearGradient><linearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='50%25' stop-color='%23AEAEB2'/><stop offset='100%25' stop-color='%233A3A3C'/></linearGradient><radialGradient id='c' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%2300F0FF'/><stop offset='100%25' stop-color='%23083344'/></radialGradient></defs><circle cx='100' cy='100' r='95' fill='%230B1120' stroke='%23FACC15' stroke-width='4'/><g transform='translate(64,108)'><circle cx='0' cy='0' r='14' fill='url(%23s)'/><circle cx='0' cy='0' r='8' fill='url(%23c)'/><circle cx='0' cy='0' r='4' fill='%23000'/></g><g transform='translate(136,108)'><circle cx='0' cy='0' r='14' fill='url(%23s)'/><circle cx='0' cy='0' r='8' fill='url(%23c)'/><circle cx='0' cy='0' r='4' fill='%23000'/></g><g transform='translate(100,150)'><circle cx='0' cy='0' r='19' fill='url(%23s)'/></g><path d='M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z' stroke='url(%23g)' stroke-width='4.5' fill='none'/><circle cx='100' cy='150' r='6' fill='url(%23g)'/></svg>">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='100' height='100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFEFA6'/><stop offset='50%25' stop-color='%23E5C158'/><stop offset='100%25' stop-color='%23805C15'/></linearGradient><linearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='50%25' stop-color='%23AEAEB2'/><stop offset='100%25' stop-color='%233A3A3C'/></linearGradient><radialGradient id='c' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%2300F0FF'/><stop offset='100%25' stop-color='%23083344'/></radialGradient></defs><circle cx='100' cy='100' r='95' fill='%230B1120' stroke='%23FACC15' stroke-width='4'/><g transform='translate(64,108)'><circle cx='0' cy='0' r='14' fill='url(%23s)'/><circle cx='0' cy='0' r='8' fill='url(%23c)'/><circle cx='0' cy='0' r='4' fill='%23000'/></g><g transform='translate(136,108)'><circle cx='0' cy='0' r='14' fill='url(%23s)'/><circle cx='0' cy='0' r='8' fill='url(%23c)'/><circle cx='0' cy='0' r='4' fill='%23000'/></g><g transform='translate(100,150)'><circle cx='0' cy='0' r='19' fill='url(%23s)'/></g><path d='M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z' stroke='url(%23g)' stroke-width='4.5' fill='none'/><circle cx='100' cy='150' r='6' fill='url(%23g)'/></svg>">
 
   <!-- Core stylesheets -->
   <link rel="stylesheet" href="./index.css">
@@ -18,6 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
 
   <!-- Background visual circuit layout & glows -->
@@ -28,7 +33,8 @@
 
   <svg class="bg-circuit-lines" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <!-- Robotic circuit traces in yellow and cyan -->
-    <path d="M 50,100 L 150,200 L 300,200 L 350,250 M 800,100 L 900,200 L 1050,200" stroke="rgba(6, 182, 212, 0.15)" stroke-width="2" fill="none" />
+    <path d="M 50,100 L 150,200 L 300,200 L 350,250 M 800,100 L 900,200 L 1050,200" stroke="rgba(6, 182, 212, 0.15)"
+      stroke-width="2" fill="none" />
     <path d="M 100,500 L 200,600 L 200,700 L 250,750" stroke="rgba(250, 204, 21, 0.12)" stroke-width="2" fill="none" />
     <path d="M 1100,600 L 1000,700 L 850,700 L 800,750" stroke="rgba(6, 182, 212, 0.15)" stroke-width="2" fill="none" />
     <circle cx="350" cy="250" r="4" fill="#06B6D4" />
@@ -39,9 +45,11 @@
   <!-- NAVIGATION HEADER -->
   <header class="main-header">
     <div class="container header-container">
-      <a href="#home" class="brand" onclick="window.appNavigate('view-home'); return false;" aria-label="Motechart Robotik Home">
+      <a href="#home" class="brand" onclick="window.appNavigate('view-home'); return false;"
+        aria-label="Motechart Robotik Home">
         <!-- High-fidelity custom brand logo in SVG representing Motechart Robotik -->
-        <svg class="brand-logo-svg" width="40" height="40" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="brand-logo-svg" width="40" height="40" viewBox="0 0 200 200" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="gold-grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#FFEFA6" />
@@ -127,17 +135,25 @@
           </g>
           <!-- Golden Mask / Shield Shape -->
           <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z" stroke="url(#gold-grad-header)" stroke-width="4.5" />
-            <path d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z" stroke="url(#gold-grad-header)" stroke-width="3" />
-            <path d="M 100,61 L 51,61 L 51,117 L 58,133 L 74,106 L 78,106 L 100,106 L 122,106 L 126,106 L 142,133 L 149,117 L 149,61 Z" stroke="url(#gold-grad-header)" stroke-width="2" />
-            <path d="M 100,69 L 59,69 L 59,113 L 73,105 L 100,105 L 127,105 L 141,113 L 141,69 Z" stroke="url(#gold-grad-header)" stroke-width="1.5" />
+            <path
+              d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
+              stroke="url(#gold-grad-header)" stroke-width="4.5" />
+            <path
+              d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z"
+              stroke="url(#gold-grad-header)" stroke-width="3" />
+            <path
+              d="M 100,61 L 51,61 L 51,117 L 58,133 L 74,106 L 78,106 L 100,106 L 122,106 L 126,106 L 142,133 L 149,117 L 149,61 Z"
+              stroke="url(#gold-grad-header)" stroke-width="2" />
+            <path d="M 100,69 L 59,69 L 59,113 L 73,105 L 100,105 L 127,105 L 141,113 L 141,69 Z"
+              stroke="url(#gold-grad-header)" stroke-width="1.5" />
             <path d="M 94,45 L 94,142" stroke="url(#gold-grad-header)" stroke-width="2" />
             <path d="M 100,45 L 100,142" stroke="url(#gold-grad-header)" stroke-width="2.5" />
             <path d="M 106,45 L 106,142" stroke="url(#gold-grad-header)" stroke-width="2" />
           </g>
           <!-- Golden Rivet -->
           <circle cx="100" cy="150" r="7" fill="url(#gold-grad-header)" stroke="#4A3515" stroke-width="1" />
-          <path d="M 96.5,146.5 L 103.5,153.5 M 103.5,146.5 L 96.5,153.5" stroke="#1E1303" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M 96.5,146.5 L 103.5,153.5 M 103.5,146.5 L 96.5,153.5" stroke="#1E1303" stroke-width="1.5"
+            stroke-linecap="round" />
         </svg>
         <span class="brand-text">MOTECHART ROBOTIK</span>
       </a>
@@ -148,7 +164,13 @@
           <li><a href="#blog" class="nav-link" data-target="view-blog">Blog</a></li>
           <li><a href="#portfolio" class="nav-link" data-target="view-portfolio">Portfolio</a></li>
           <li><a href="#pendaftaran" class="nav-link" data-target="view-pendaftaran">Pendaftaran</a></li>
-          <li><a href="#admin" class="nav-link nav-admin-btn" data-target="view-admin" title="Dashboard Admin CMS" aria-label="Dashboard Admin CMS"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="admin-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></a></li>
+          <li><a href="#admin" class="nav-link nav-admin-btn" data-target="view-admin" title="Dashboard Admin CMS"
+              aria-label="Dashboard Admin CMS"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                class="admin-icon">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg></a></li>
         </ul>
       </nav>
     </div>
@@ -162,21 +184,23 @@
            1. HOME VIEW (BERANDA)
            ========================================== -->
       <section id="view-home" class="page-view active" aria-labelledby="home-title">
-        
+
         <!-- Hero Section -->
         <div class="hero-grid">
           <div class="hero-content">
             <span class="hero-tag" id="home-hero-tag">Ekstrakurikuler Unggulan</span>
             <h1 id="home-title" class="hero-title">Rancang Masa Depanmu Bersama <span>Robotik</span>!</h1>
             <p class="hero-description" id="home-hero-desc">
-              Eksplorasi kreativitas tanpa batas. Kembangkan keahlian mekanika tangguh, sirkuit elektronika cerdas, dan pemrograman algoritma tingkat tinggi untuk menciptakan robot-robot inovatif masa depan.
+              Eksplorasi kreativitas tanpa batas. Kembangkan keahlian mekanika tangguh, sirkuit elektronika cerdas, dan
+              pemrograman algoritma tingkat tinggi untuk menciptakan robot-robot inovatif masa depan.
             </p>
             <div class="hero-actions">
               <button class="btn btn-yellow" onclick="window.appNavigate('view-pendaftaran')">Daftar Sekarang</button>
-              <button class="btn btn-secondary" onclick="window.appNavigate('view-portfolio')">Lihat Galeri Karya</button>
+              <button class="btn btn-secondary" onclick="window.appNavigate('view-portfolio')">Lihat Galeri
+                Karya</button>
             </div>
           </div>
-          
+
           <div class="hero-robot-wrapper">
             <!-- Dynamic 3D-Like CSS Animated Robotic Mascot -->
             <div class="robot-mascot" aria-hidden="true" title="Robot Motechart Mascot">
@@ -197,8 +221,10 @@
           <div class="visi-misi-grid">
             <div class="glass-card">
               <h2 class="vm-title"><span>🎯</span> Visi Kami</h2>
-              <p id="home-visi-text" style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
-                Menjadi pusat pengembangan teknologi robotika remaja yang unggul, adaptif, inovatif, dan berprestasi global berlandaskan kerja sama tim dan integritas sains.
+              <p id="home-visi-text"
+                style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                Menjadi pusat pengembangan teknologi robotika remaja yang unggul, adaptif, inovatif, dan berprestasi
+                global berlandaskan kerja sama tim dan integritas sains.
               </p>
             </div>
             <div class="glass-card">
@@ -218,7 +244,7 @@
           <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
             <h2>Divisi Keahlian Kami</h2>
           </div>
-          
+
           <div class="divisi-split-panel">
             <!-- Left Side: Navigasi Instrumen Vertikal -->
             <div class="divisi-nav-panel">
@@ -230,7 +256,7 @@
                   <span class="btn-title">Mekanik (Mechanics)</span>
                 </div>
               </button>
-              
+
               <button type="button" class="divisi-nav-btn" data-div="electronics">
                 <div class="nav-btn-indicator"></div>
                 <div class="nav-btn-icon">⚡</div>
@@ -239,7 +265,7 @@
                   <span class="btn-title">Elektronik (Electronics)</span>
                 </div>
               </button>
-              
+
               <button type="button" class="divisi-nav-btn" data-div="programming">
                 <div class="nav-btn-indicator"></div>
                 <div class="nav-btn-icon">💻</div>
@@ -249,7 +275,7 @@
                 </div>
               </button>
             </div>
-            
+
             <!-- Right Side: Card Detail & Preview Grafis -->
             <div class="divisi-detail-panel" id="divisi-detail-container">
               <!-- Rendered dynamically via JS -->
@@ -263,7 +289,7 @@
           <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
             <h2>Galeri Penghargaan & Prestasi</h2>
           </div>
-          
+
           <div class="achievements-grid" id="home-achievements-grid">
             <!-- Rendered dynamically via JS as Glassmorphic Grid Cards -->
           </div>
@@ -283,20 +309,26 @@
         <div class="blog-controls">
           <!-- Search input box -->
           <div class="search-wrapper">
-            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="blog-search" class="search-input" placeholder="Cari tutorial atau berita robotik..." aria-label="Cari artikel">
+            <input type="text" id="blog-search" class="search-input" placeholder="Cari tutorial atau berita robotik..."
+              aria-label="Cari artikel">
           </div>
 
           <!-- Category filter buttons -->
           <div class="blog-filters" role="tablist" aria-label="Kategori Artikel">
-            <button class="blog-filter-btn active" data-category="all" role="tab" aria-selected="true">Semua Kategori</button>
+            <button class="blog-filter-btn active" data-category="all" role="tab" aria-selected="true">Semua
+              Kategori</button>
             <button class="blog-filter-btn" data-category="arduino" role="tab" aria-selected="false">Arduino</button>
-            <button class="blog-filter-btn" data-category="tutorial" role="tab" aria-selected="false">Tutorial Perakitan</button>
-            <button class="blog-filter-btn" data-category="iot" role="tab" aria-selected="false">IoT (Internet of Things)</button>
-            <button class="blog-filter-btn" data-category="kompetisi" role="tab" aria-selected="false">Tips Kompetisi</button>
+            <button class="blog-filter-btn" data-category="tutorial" role="tab" aria-selected="false">Tutorial
+              Perakitan</button>
+            <button class="blog-filter-btn" data-category="iot" role="tab" aria-selected="false">IoT (Internet of
+              Things)</button>
+            <button class="blog-filter-btn" data-category="kompetisi" role="tab" aria-selected="false">Tips
+              Kompetisi</button>
           </div>
         </div>
 
@@ -324,24 +356,30 @@
       <section id="view-pendaftaran" class="page-view" aria-labelledby="pendaftaran-title">
         <div class="page-title-section">
           <h1 id="pendaftaran-title">Formulir Penerimaan Anggota</h1>
-          <p>Bergabunglah dengan Motechart Robotik Club. Lengkapi formulir pendaftaran 3 langkah berikut</p>
+          <p>Untuk mendaftar menjadi bagian dari Ekstrakurikuler Robotik, silahkan ikuti alur pendaftaran berikut:</p>
         </div>
 
         <div class="reg-layout">
 
           <!-- CONTAINER UNTUK PENDAFTARAN DITUTUP (COUNTDOWN) -->
-          <div class="glass-card" id="reg-closed-container" style="display: none; text-align: center; padding: 3rem; margin-bottom: 2rem;">
-            <div class="pulsing-radar-icon" aria-hidden="true" style="margin: 0 auto 2rem auto; border-color: var(--accent-yellow); background: rgba(245, 158, 11, 0.1);">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)" stroke-width="2.5">
+          <div class="glass-card" id="reg-closed-container"
+            style="display: none; text-align: center; padding: 3rem; margin-bottom: 2rem;">
+            <div class="pulsing-radar-icon" aria-hidden="true"
+              style="margin: 0 auto 2rem auto; border-color: var(--accent-yellow); background: rgba(245, 158, 11, 0.1);">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)"
+                stroke-width="2.5">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
             </div>
-            <h2 style="font-size: 2rem; color: var(--accent-yellow); margin-bottom: 1rem;">Pendaftaran Saat Ini Ditutup</h2>
-            <p style="max-width: 600px; margin: 0 auto 2rem auto; color: var(--text-muted);" id="reg-closed-message">Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul. Tunggu hingga pendaftaran dibuka kembali dalam:</p>
-            
+            <h2 style="font-size: 2rem; color: var(--accent-yellow); margin-bottom: 1rem;">Pendaftaran Saat Ini Ditutup
+            </h2>
+            <p style="max-width: 600px; margin: 0 auto 2rem auto; color: var(--text-muted);" id="reg-closed-message">
+              Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul. Tunggu hingga pendaftaran
+              dibuka kembali dalam:</p>
+
             <div class="countdown-grid" id="reg-countdown-timer">
               <div class="countdown-item">
                 <span class="countdown-val" id="cd-days">00</span>
@@ -361,7 +399,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Navigation Steps Progress Bar -->
           <div class="progress-bar-container">
             <ol class="step-tracker-list" aria-label="Tahapan Pendaftaran">
@@ -383,14 +421,17 @@
           <!-- Pendaftaran Form Container -->
           <div class="glass-card" id="reg-form-container">
             <form id="robotics-reg-form" autocomplete="on" novalidate>
-              
+
               <!-- LANGKAH 1: DATA DIRI -->
               <div class="form-step-content active" id="form-step-1">
-                <h3 style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Langkah 1: Identitas Calon Anggota</h3>
-                
+                <h3
+                  style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                  Langkah 1: Identitas Calon Anggota</h3>
+
                 <div class="form-group">
                   <label class="form-label" for="nama_lengkap">Nama Lengkap Siswa <span>*</span></label>
-                  <input type="text" id="nama_lengkap" name="nama_lengkap" class="input-control" required placeholder="Contoh: Muhammad Farhan" autocomplete="name">
+                  <input type="text" id="nama_lengkap" name="nama_lengkap" class="input-control" required
+                    placeholder="Contoh: Muhammad Farhan" autocomplete="name">
                   <span class="hint-text">Gunakan nama lengkap sesuai akta kelahiran untuk pencetakan Kartu ID.</span>
                 </div>
 
@@ -414,14 +455,17 @@
 
                 <div class="form-group">
                   <label class="form-label" for="nisn">Nomor Induk Siswa Nasional (NISN) <span>*</span></label>
-                  <input type="text" id="nisn" name="nisn" class="input-control" required placeholder="Contoh: 0081234567" inputmode="numeric" pattern="\d{10}">
+                  <input type="text" id="nisn" name="nisn" class="input-control" required
+                    placeholder="Contoh: 0081234567" inputmode="numeric" pattern="\d{10}">
                   <span class="hint-text">Persyaratan administratif resmi (10 digit angka numerik).</span>
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="no_hp">Nomor WhatsApp / Ponsel Aktif <span>*</span></label>
-                  <input type="tel" id="no_hp" name="no_hp" class="input-control" required placeholder="Contoh: 081234567890" autocomplete="tel">
-                  <span class="hint-text">Digunakan untuk koordinasi jadwal kegiatan latihan ekskul (contoh: 08...).</span>
+                  <input type="tel" id="no_hp" name="no_hp" class="input-control" required
+                    placeholder="Contoh: 081234567890" autocomplete="tel">
+                  <span class="hint-text">Digunakan untuk koordinasi jadwal kegiatan latihan ekskul (contoh:
+                    08...).</span>
                 </div>
 
                 <div class="form-actions-row">
@@ -432,14 +476,20 @@
 
               <!-- LANGKAH 2: MINAT & DIVISI -->
               <div class="form-step-content" id="form-step-2">
-                <h3 style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Langkah 2: Pemetaan Keahlian & Minat</h3>
+                <h3
+                  style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                  Langkah 2: Pemetaan Keahlian & Minat</h3>
 
 
 
                 <div class="form-group">
-                  <label class="form-label" for="motivasi">Tulis Motivasi Bergabung Ekskul Robotik <span>*</span> <span id="char-count" style="font-size: 0.8rem; font-weight: normal; margin-left: 5px;">(minimal 20 karakter)</span></label>
-                  <textarea id="motivasi" name="motivasi" class="input-control" required placeholder="Mengapa Anda tertarik dengan robotik? Apa yang ingin Anda capai atau ciptakan..."></textarea>
-                  <span class="hint-text">Isian ini memicu kecerdasan buatan menyarankan kecocokan rekomendasi divisi secara langsung.</span>
+                  <label class="form-label" for="motivasi">Tulis Motivasi Bergabung Ekskul Robotik <span>*</span> <span
+                      id="char-count" style="font-size: 0.8rem; font-weight: normal; margin-left: 5px;">(minimal 20
+                      karakter)</span></label>
+                  <textarea id="motivasi" name="motivasi" class="input-control" required
+                    placeholder="Mengapa Anda tertarik dengan robotik? Apa yang ingin Anda capai atau ciptakan..."></textarea>
+                  <span class="hint-text">Isian ini memicu kecerdasan buatan menyarankan kecocokan rekomendasi divisi
+                    secara langsung.</span>
                 </div>
 
                 <div class="form-group">
@@ -454,11 +504,14 @@
                       <label for="laptop_tidak" class="custom-radio-label">Tidak Punya</label>
                     </div>
                   </div>
-                  <span class="hint-text">Laptop pribadi sangat disarankan untuk latihan coding mandiri, namun lab sekolah menyediakan komputer lengkap.</span>
+                  <span class="hint-text">Laptop pribadi sangat disarankan untuk latihan coding mandiri, namun lab
+                    sekolah menyediakan komputer lengkap.</span>
                 </div>
 
                 <!-- Wadah Pertanyaan Tambahan (Kustom) Dinamis -->
-                <div id="custom-questions-injected-container" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; border-top: 1px dashed var(--border-glass); padding-top: 1.5rem;"></div>
+                <div id="custom-questions-injected-container"
+                  style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; border-top: 1px dashed var(--border-glass); padding-top: 1.5rem;">
+                </div>
 
                 <div class="form-actions-row">
                   <button type="button" class="btn btn-secondary" id="btn-prev-2">← Langkah Sebelumnya</button>
@@ -468,8 +521,11 @@
 
               <!-- LANGKAH 3: KONFIRMASI -->
               <div class="form-step-content" id="form-step-3">
-                <h3 style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Langkah 3: Konfirmasi Validasi Data</h3>
-                <p class="hint-text" style="margin-top: -1.5rem; margin-bottom: 2rem;">Periksa kembali keakuratan seluruh data pendaftaran Anda sebelum menekan tombol Kirim Enkripsi di bawah.</p>
+                <h3
+                  style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                  Langkah 3: Konfirmasi Validasi Data</h3>
+                <p class="hint-text" style="margin-top: -1.5rem; margin-bottom: 2rem;">Periksa kembali keakuratan
+                  seluruh data pendaftaran Anda sebelum menekan tombol Kirim Enkripsi di bawah.</p>
 
                 <!-- Dynamic populated summary card -->
                 <div class="confirmation-card">
@@ -489,44 +545,58 @@
 
           <!-- LAYAR SUKSES PENDAFTARAN -->
           <div class="glass-card success-card" id="reg-success-card">
-            
+
             <!-- A. TAMPILAN STATUS PENINJAUAN (PENDING REVIEW) -->
             <div id="review-pending-wrapper">
               <div class="pulsing-radar-icon" aria-hidden="true">
                 <div class="radar-ping"></div>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
               </div>
-              
+
               <h2>Pendaftaran Berhasil! Lanjut ke Proses Selanjutnya 🚀</h2>
               <p class="status-panel">Status: <span class="status-badge status-pending">Menunggu Persetujuan</span></p>
 
               <!-- UNIQUE ID DISPLAY CARD -->
-              <div class="unique-id-display" style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; padding: 1.25rem 1.5rem; margin: 1.5rem auto; max-width: 400px; text-align: center; box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);">
-                <span style="color: var(--text-muted); font-size: 0.85rem; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">ID Pendaftaran Khusus Anda</span>
-                <strong id="registered-student-id" style="font-family: monospace; font-size: 1.8rem; color: var(--accent-cyan); letter-spacing: 2px; text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);">ROBO-XXXXXX</strong>
+              <div class="unique-id-display"
+                style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; padding: 1.25rem 1.5rem; margin: 1.5rem auto; max-width: 400px; text-align: center; box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);">
+                <span
+                  style="color: var(--text-muted); font-size: 0.85rem; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">ID
+                  Pendaftaran Khusus Anda</span>
+                <strong id="registered-student-id"
+                  style="font-family: monospace; font-size: 1.8rem; color: var(--accent-cyan); letter-spacing: 2px; text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);">ROBO-XXXXXX</strong>
                 <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 0 0; line-height: 1.4;">
                   Simpan ID khusus ini untuk mengecek status pendaftaran Anda secara mandiri di kolom status di bawah.
                 </p>
               </div>
-              
-              <p style="margin-top: 1.5rem;">Halo <strong id="registered-student-name">Robotikawan</strong>, Anda <strong>berhasil mendaftar</strong> ke ekstrakurikuler Motechart Robotik! Data Anda telah terenkripsi dengan aman di database admin. Untuk <strong>lanjut ke proses selanjutnya</strong>, silakan segera bergabung ke Grup WhatsApp resmi koordinasi calon anggota di bawah ini.</p>
-              
+
+              <p style="margin-top: 1.5rem;">Halo <strong id="registered-student-name">Robotikawan</strong>, Anda
+                <strong>berhasil mendaftar</strong> ke ekstrakurikuler Motechart Robotik! Data Anda telah terenkripsi
+                dengan aman di database admin. Untuk <strong>lanjut ke proses selanjutnya</strong>, silakan segera
+                bergabung ke Grup WhatsApp resmi koordinasi calon anggota di bawah ini.
+              </p>
+
               <!-- WhatsApp Group Invitation Card -->
               <div class="wa-group-card">
                 <div class="wa-icon-box">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    <path
+                      d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                    </path>
                   </svg>
                 </div>
                 <div class="wa-details">
                   <h4 id="success-wa-title">Grup WhatsApp Resmi Calon Anggota</h4>
-                  <p id="success-wa-desc">Harap bergabung ke grup koordinasi calon anggota baru di bawah ini untuk mendapatkan info jadwal wawancara, tes masuk, dan demonstrasi alat robotika:</p>
-                  <a id="success-wa-link" href="https://chat.whatsapp.com/mock-motechart-robotik" target="_blank" rel="noopener noreferrer" class="btn btn-wa-group">
+                  <p id="success-wa-desc">Harap bergabung ke grup koordinasi calon anggota baru di bawah ini untuk
+                    mendapatkan info jadwal wawancara, tes masuk, dan demonstrasi alat robotika:</p>
+                  <a id="success-wa-link" href="https://chat.whatsapp.com/mock-motechart-robotik" target="_blank"
+                    rel="noopener noreferrer" class="btn btn-wa-group">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12.031 2C6.51 2 2.03 6.48 2.03 12c0 2.159.57 4.259 1.66 6.13l-1.77 6.47 6.63-1.74c1.88 1.02 4 1.56 6.13 1.56 5.52 0 10-4.48 10-10S17.551 2 12.031 2zm6.39 14.19c-.27.76-1.55 1.48-2.15 1.56-.54.07-1.24.1-3.64-.89-3.07-1.26-5.05-4.38-5.2-4.58-.15-.2-1.2-1.6-1.2-3.06 0-1.46.76-2.17 1.03-2.46.27-.3.59-.37.79-.37.2 0 .4.01.57.02.18.01.41-.07.65.5.24.58.82 2.02.9 2.17.08.16.14.35.03.56-.11.22-.26.47-.38.61-.13.14-.26.3-.11.56.15.26.68 1.12 1.46 1.82.99.9 1.83 1.18 2.09 1.31.26.13.41.11.56-.06.15-.18.66-.76.84-.96.18-.2.37-.16.63-.07.26.09 1.66.78 1.95.92.29.14.48.22.56.35.07.13.07.76-.2 1.52z"/>
+                      <path
+                        d="M12.031 2C6.51 2 2.03 6.48 2.03 12c0 2.159.57 4.259 1.66 6.13l-1.77 6.47 6.63-1.74c1.88 1.02 4 1.56 6.13 1.56 5.52 0 10-4.48 10-10S17.551 2 12.031 2zm6.39 14.19c-.27.76-1.55 1.48-2.15 1.56-.54.07-1.24.1-3.64-.89-3.07-1.26-5.05-4.38-5.2-4.58-.15-.2-1.2-1.6-1.2-3.06 0-1.46.76-2.17 1.03-2.46.27-.3.59-.37.79-.37.2 0 .4.01.57.02.18.01.41-.07.65.5.24.58.82 2.02.9 2.17.08.16.14.35.03.56-.11.22-.26.47-.38.61-.13.14-.26.3-.11.56.15.26.68 1.12 1.46 1.82.99.9 1.83 1.18 2.09 1.31.26.13.41.11.56-.06.15-.18.66-.76.84-.96.18-.2.37-.16.63-.07.26.09 1.66.78 1.95.92.29.14.48.22.56.35.07.13.07.76-.2 1.52z" />
                     </svg>
                     Gabung Grup WhatsApp Calon Anggota 🚀
                   </a>
@@ -536,21 +606,25 @@
 
             <!-- B. TAMPILAN KARTU ANGGOTA YANG DISETUJUI (APPROVED) -->
             <div id="card-approved-wrapper" style="display: none;">
-              <div class="success-icon-wrapper" aria-hidden="true" style="border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.1);">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <div class="success-icon-wrapper" aria-hidden="true"
+                style="border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.1);">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              
+
               <h2 style="color: var(--accent-cyan);">Pendaftaran Disetujui! 🎉</h2>
-              <p>Selamat! Data pendaftaran Anda telah secara resmi disetujui oleh admin Motechart Robotik. Berikut adalah Kartu Anggota Digital eksklusif Anda:</p>
-              
+              <p>Selamat! Data pendaftaran Anda telah secara resmi disetujui oleh admin Motechart Robotik. Berikut
+                adalah Kartu Anggota Digital eksklusif Anda:</p>
+
               <!-- Sleek Futuristic Robotics Student Card -->
               <div class="robot-student-card">
                 <div class="card-header">
                   <span class="card-title">MOTECHART ROBOTIK MEMBER</span>
                   <!-- High-fidelity custom brand logo in SVG representing Motechart Robotik -->
-                  <svg class="card-logo" width="24" height="24" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke: currentColor;">
+                  <svg class="card-logo" width="24" height="24" viewBox="0 0 200 200" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" style="stroke: currentColor;">
                     <defs>
                       <linearGradient id="gold-grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="#FFEFA6" />
@@ -589,8 +663,12 @@
                     </g>
                     <!-- Golden Mask / Shield Shape -->
                     <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z" stroke="url(#gold-grad-card)" stroke-width="5" fill="none" />
-                      <path d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z" stroke="url(#gold-grad-card)" stroke-width="3" fill="none" />
+                      <path
+                        d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
+                        stroke="url(#gold-grad-card)" stroke-width="5" fill="none" />
+                      <path
+                        d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z"
+                        stroke="url(#gold-grad-card)" stroke-width="3" fill="none" />
                     </g>
                     <!-- Golden Rivet -->
                     <circle cx="100" cy="150" r="6" fill="url(#gold-grad-card)" />
@@ -648,14 +726,21 @@
           </div>
 
           <!-- STATUS CHECKER SECTION -->
-          <div class="glass-card" id="status-checker-section" style="margin-top: 3rem; padding: 2.5rem; text-align: center;">
-            <h3 style="font-size: 1.5rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">🔍 Cek Status Pendaftaran Calon Anggota</h3>
+          <div class="glass-card" id="status-checker-section"
+            style="margin-top: 3rem; padding: 2.5rem; text-align: center;">
+            <h3 style="font-size: 1.5rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">🔍 Cek Status Pendaftaran
+              Calon Anggota</h3>
             <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem auto; font-size: 0.95rem;">
-              Sudah mendaftar sebelumnya? Masukkan ID Unik Anda (contoh: <code>ROBO-123456</code>) untuk mengecek status persetujuan keanggotaan Anda secara langsung.
+              Sudah mendaftar sebelumnya? Masukkan ID Unik Anda (contoh: <code>ROBO-123456</code>) untuk mengecek status
+              persetujuan keanggotaan Anda secara langsung.
             </p>
-            <div style="display: flex; gap: 1rem; max-width: 500px; margin: 0 auto; justify-content: center; align-items: center; flex-wrap: wrap;">
-              <input type="text" id="status-check-id-input" class="input-control" placeholder="Masukkan ID Unik (ROBO-XXXXXX)" style="max-width: 320px; text-align: center; font-weight: bold; letter-spacing: 1px;">
-              <button type="button" class="btn btn-cyan" id="btn-check-status" style="white-space: nowrap;">Periksa Status ⚡</button>
+            <div
+              style="display: flex; gap: 1rem; max-width: 500px; margin: 0 auto; justify-content: center; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="status-check-id-input" class="input-control"
+                placeholder="Masukkan ID Unik (ROBO-XXXXXX)"
+                style="max-width: 320px; text-align: center; font-weight: bold; letter-spacing: 1px;">
+              <button type="button" class="btn btn-cyan" id="btn-check-status" style="white-space: nowrap;">Periksa
+                Status ⚡</button>
             </div>
           </div>
 
@@ -675,7 +760,8 @@
         <!-- A. GERBANG LOGIN ADMIN -->
         <div id="admin-login-section" class="glass-card login-card-container">
           <div class="login-header">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)" stroke-width="2" style="margin-bottom: 1rem;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)" stroke-width="2"
+              style="margin-bottom: 1rem;">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
@@ -688,15 +774,19 @@
 
             <div class="form-group">
               <label class="form-label" for="admin_username">Username Admin <span>*</span></label>
-              <input type="text" id="admin_username" name="admin_username" class="input-control" required placeholder="admin" autocomplete="username">
+              <input type="text" id="admin_username" name="admin_username" class="input-control" required
+                placeholder="admin" autocomplete="username">
             </div>
 
             <div class="form-group password-group">
               <label class="form-label" for="admin_password">Password <span>*</span></label>
               <div class="password-input-wrapper">
-                <input type="password" id="admin_password" name="admin_password" class="input-control" required placeholder="••••••••" autocomplete="current-password">
-                <button type="button" id="toggle-admin-password" class="password-toggle-btn" aria-label="Tampilkan Password" aria-pressed="false">
-                  <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <input type="password" id="admin_password" name="admin_password" class="input-control" required
+                  placeholder="••••••••" autocomplete="current-password">
+                <button type="button" id="toggle-admin-password" class="password-toggle-btn"
+                  aria-label="Tampilkan Password" aria-pressed="false">
+                  <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
@@ -716,342 +806,377 @@
               <h3>Selamat Datang, Administrator</h3>
             </div>
             <div class="panel-actions-row">
-              <button type="button" id="btn-reset-db" class="btn btn-secondary" style="border-color: rgba(250, 204, 21, 0.3); color: #FACC15;">Reset Database 🔄</button>
+              <button type="button" id="btn-reset-db" class="btn btn-secondary"
+                style="border-color: rgba(250, 204, 21, 0.3); color: #FACC15;">Reset Database 🔄</button>
               <button type="button" id="btn-admin-logout" class="btn btn-outline-cyan">Logout Keluar 🚪</button>
             </div>
           </div>
 
           <!-- CMS Dashboard Grid Layout -->
           <div class="cms-dashboard-layout">
-            
+
             <!-- Left Sidebar: CMS Navigation Tabs Dock -->
             <div class="cms-tabs-bar" role="tablist" aria-label="Kelola Konten">
-            <button type="button" class="cms-tab-btn active" data-cms-target="cms-blog-view" role="tab" aria-selected="true">
-              📰 Kelola Blog
-            </button>
-            <button type="button" class="cms-tab-btn" data-cms-target="cms-portfolio-view" role="tab" aria-selected="false">
-              🤖 Kelola Portfolio
-            </button>
-            <button type="button" class="cms-tab-btn" data-cms-target="cms-applicants-view" role="tab" aria-selected="false">
-              📋 Kelola Pendaftar
-            </button>
-            <button type="button" class="cms-tab-btn" data-cms-target="cms-settings-view" role="tab" aria-selected="false">
-              ⚙️ Pengaturan Pendaftaran
-            </button>
-            <button type="button" class="cms-tab-btn" data-cms-target="cms-landing-view" role="tab" aria-selected="false">
-              🖥️ Kelola Landing Page
-            </button>
-          </div>
-
-          <!-- Right Content Area -->
-          <div class="cms-content-area">
-
-            <!-- Tab Content 1: BLOG CMS -->
-          <div id="cms-blog-view" class="cms-view-content active" role="tabpanel">
-            <div class="table-header-control">
-              <h4>Daftar Artikel Blog</h4>
-              <button type="button" id="btn-add-blog" class="btn btn-cyan btn-sm">Tambah Artikel Baru ➕</button>
+              <button type="button" class="cms-tab-btn active" data-cms-target="cms-blog-view" role="tab"
+                aria-selected="true">
+                📰 Kelola Blog
+              </button>
+              <button type="button" class="cms-tab-btn" data-cms-target="cms-portfolio-view" role="tab"
+                aria-selected="false">
+                🤖 Kelola Portfolio
+              </button>
+              <button type="button" class="cms-tab-btn" data-cms-target="cms-applicants-view" role="tab"
+                aria-selected="false">
+                📋 Kelola Pendaftar
+              </button>
+              <button type="button" class="cms-tab-btn" data-cms-target="cms-settings-view" role="tab"
+                aria-selected="false">
+                ⚙️ Pengaturan Pendaftaran
+              </button>
+              <button type="button" class="cms-tab-btn" data-cms-target="cms-landing-view" role="tab"
+                aria-selected="false">
+                🖥️ Kelola Landing Page
+              </button>
             </div>
-            <div class="table-responsive-wrapper">
-              <table class="cms-table">
-                <thead>
-                  <tr>
-                    <th style="width: 50px;">No</th>
-                    <th>Judul Artikel</th>
-                    <th style="width: 150px;">Kategori</th>
-                    <th style="width: 150px;">Tanggal</th>
-                    <th style="width: 150px;">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-blog-table-body">
-                  <!-- Populated dynamically via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Tab Content 2: PORTFOLIO CMS -->
-          <div id="cms-portfolio-view" class="cms-view-content" role="tabpanel">
-            <div class="table-header-control">
-              <h4>Daftar Proyek Portfolio</h4>
-              <button type="button" id="btn-add-portfolio" class="btn btn-cyan btn-sm">Tambah Proyek Baru ➕</button>
-            </div>
-            <div class="table-responsive-wrapper">
-              <table class="cms-table">
-                <thead>
-                  <tr>
-                    <th style="width: 50px;">No</th>
-                    <th>Judul Proyek</th>
-                    <th style="width: 200px;">Kategori</th>
-                    <th style="width: 150px;">Status</th>
-                    <th style="width: 150px;">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-portfolio-table-body">
-                  <!-- Populated dynamically via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
+            <!-- Right Content Area -->
+            <div class="cms-content-area">
 
-          <!-- Tab Content 3: APPLICANTS CMS -->
-          <div id="cms-applicants-view" class="cms-view-content" role="tabpanel">
-            <div class="table-header-control" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-              <h4>Daftar Calon Pendaftar</h4>
-              <div class="filter-group" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-                <input type="text" id="search-applicants" class="input-control" placeholder="Cari nama pendaftar..." style="width: 200px; padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; margin: 0;">
-                <select id="filter-applicant-status" class="input-control" style="appearance: auto; width: 140px; padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; margin: 0; padding-right: 1.5rem;">
-                  <option value="ALL">Semua Status</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Diterima">Diterima</option>
-                  <option value="Ditolak">Ditolak</option>
-                </select>
-                <button type="button" id="btn-export-applicants-csv" class="btn btn-cyan btn-sm" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; font-size: 0.85rem; min-height: auto; margin: 0;">
-                  Ekspor CSV 📊
-                </button>
-              </div>
-            </div>
-            <div class="table-responsive-wrapper">
-              <table class="cms-table">
-                <thead>
-                  <tr>
-                    <th style="width: 50px;">No</th>
-                    <th>Nama Calon Anggota</th>
-                    <th style="width: 100px;">Kelas</th>
-                    <th style="width: 140px;">No. WhatsApp</th>
-                    <th style="width: 180px;">Minat Divisi</th>
-                    <th style="width: 130px;">Tanggal Daftar</th>
-                    <th style="width: 120px;">Status</th>
-                    <th style="width: 260px;">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-applicants-table-body">
-                  <!-- Populated dynamically via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Tab Content 4: REGISTRATION SETTINGS CMS -->
-          <div id="cms-settings-view" class="cms-view-content" role="tabpanel">
-            <div class="table-header-control" style="margin-bottom: 2rem;">
-              <h4>Pengaturan Kontrol Pendaftaran & Pertanyaan Kustom ⚙️</h4>
-            </div>
-            
-            <form id="cms-reg-settings-form" style="margin-bottom: 3rem;">
-              <!-- Visual Card 1: Status & Waktu Pendaftaran -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">🔌 Status & Waktu Pendaftaran</h5>
-                <div class="cms-form-grid">
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="reg-status-toggle">Status Pendaftaran Ekskul <span>*</span></label>
-                    <select id="reg-status-toggle" class="input-control">
-                      <option value="open">Buka (Tampilkan Form Pendaftaran)</option>
-                      <option value="closed">Tutup (Tampilkan Countdown Timer)</option>
-                    </select>
-                    <span class="hint-text">Jika ditutup, halaman pendaftaran akan digantikan oleh hitung mundur.</span>
-                  </div>
-                  
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="reg-countdown-target">Target Waktu Pembukaan Kembali</label>
-                    <input type="datetime-local" id="reg-countdown-target" class="input-control">
-                    <span class="hint-text">Hanya digunakan jika status pendaftaran adalah "Tutup".</span>
-                  </div>
+              <!-- Tab Content 1: BLOG CMS -->
+              <div id="cms-blog-view" class="cms-view-content active" role="tabpanel">
+                <div class="table-header-control">
+                  <h4>Daftar Artikel Blog</h4>
+                  <button type="button" id="btn-add-blog" class="btn btn-cyan btn-sm">Tambah Artikel Baru ➕</button>
                 </div>
-              </div>
-
-              <!-- Visual Card 2: WhatsApp Banner Configuration -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">💬 Konfigurasi Banner Undangan WhatsApp</h5>
-                <div class="cms-form-grid">
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="reg-wa-title">Judul Banner WhatsApp <span>*</span></label>
-                    <input type="text" id="reg-wa-title" class="input-control" required placeholder="Grup WhatsApp Resmi Calon Anggota">
-                    <span class="hint-text">Judul utama banner di layar sukses & cek status.</span>
-                  </div>
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="reg-wa-link">Tautan Grup WhatsApp <span>*</span></label>
-                    <input type="url" id="reg-wa-link" class="input-control" required placeholder="https://chat.whatsapp.com/...">
-                    <span class="hint-text">Tautan undangan grup WhatsApp resmi koordinasi.</span>
-                  </div>
-                </div>
-                <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 0;">
-                  <label class="form-label" for="reg-wa-desc">Deskripsi Banner WhatsApp <span>*</span></label>
-                  <textarea id="reg-wa-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Harap bergabung ke grup koordinasi calon anggota baru di bawah ini..."></textarea>
-                  <span class="hint-text">Deskripsi petunjuk tindakan bagi calon anggota baru.</span>
-                </div>
-              </div>
-              
-              <div style="display: flex; justify-content: flex-end;">
-                <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konfigurasi Pendaftaran 💾</button>
-              </div>
-            </form>
-
-            <div class="cms-form-card">
-              <div class="table-header-control" style="margin-bottom: 1.5rem;">
-                <h5 class="cms-form-card-title" style="margin-bottom: 0;">📋 Pertanyaan Tambahan (Kustom Form)</h5>
-                <button type="button" id="btn-add-custom-question" class="btn btn-cyan btn-sm">Tambah Pertanyaan Baru ➕</button>
-              </div>
-              
-              <div class="table-responsive-wrapper">
-                <table class="cms-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 50px;">No</th>
-                      <th>Label Pertanyaan</th>
-                      <th style="width: 150px;">Tipe Input</th>
-                      <th>Opsi Pilihan</th>
-                      <th style="width: 100px;">Required?</th>
-                      <th style="width: 150px;">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody id="admin-questions-table-body">
-                    <!-- Populated dynamically via JS -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tab Content 5: LANDING PAGE CMS -->
-          <div id="cms-landing-view" class="cms-view-content" role="tabpanel">
-            <div class="table-header-control" style="margin-bottom: 2rem;">
-              <h4>Kelola Konten Landing Page & Prestasi 🖥️</h4>
-            </div>
-            
-            <form id="cms-landing-form" style="margin-bottom: 3rem;">
-              
-              <!-- Visual Card 1: Bagian Hero -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">✨ Bagian Hero</h5>
-                <div class="form-group">
-                  <label class="form-label" for="cms-hero-tag">Tagline Hero <span>*</span></label>
-                  <input type="text" id="cms-hero-tag" class="input-control" required placeholder="Contoh: Ekstrakurikuler Unggulan">
-                </div>
-                
-                <div class="form-group">
-                  <label class="form-label" for="cms-hero-title">Judul Hero (Mendukung tag HTML &lt;span&gt;...&lt;/span&gt;) <span>*</span></label>
-                  <input type="text" id="cms-hero-title" class="input-control" required placeholder="Contoh: Rancang Masa Depanmu Bersama &lt;span&gt;Robotik&lt;/span&gt;!">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="cms-hero-desc">Deskripsi Hero <span>*</span></label>
-                  <textarea id="cms-hero-desc" class="input-control" required style="height: 100px; resize: vertical;" placeholder="Deskripsi mengenai ekskul..."></textarea>
-                </div>
-              </div>
-
-              <!-- Visual Card 2: Bagian Visi & Misi -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">🎯 Bagian Visi & Misi</h5>
-                <div class="form-group">
-                  <label class="form-label" for="cms-visi-text">Visi Ekskul <span>*</span></label>
-                  <textarea id="cms-visi-text" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Visi ekskul robotik..."></textarea>
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Misi Ekskul (4 Butir Misi Utama) <span>*</span></label>
-                  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <input type="text" id="cms-misi-item-1" class="input-control" required placeholder="Misi ke-1">
-                    <input type="text" id="cms-misi-item-2" class="input-control" required placeholder="Misi ke-2">
-                    <input type="text" id="cms-misi-item-3" class="input-control" required placeholder="Misi ke-3">
-                    <input type="text" id="cms-misi-item-4" class="input-control" required placeholder="Misi ke-4">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Visual Card 3: Bagian Deskripsi Divisi Keahlian -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">⚡ Bagian Divisi Keahlian</h5>
-                <div class="form-group">
-                  <label class="form-label" for="cms-div-mech-desc">Deskripsi Divisi Mekanik <span>*</span></label>
-                  <textarea id="cms-div-mech-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Mekanika..."></textarea>
-                </div>
-                
-                <div class="form-group">
-                  <label class="form-label" for="cms-div-elec-desc">Deskripsi Divisi Elektronik <span>*</span></label>
-                  <textarea id="cms-div-elec-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Elektronika..."></textarea>
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="cms-div-prog-desc">Deskripsi Divisi Pemrograman <span>*</span></label>
-                  <textarea id="cms-div-prog-desc" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Pemrograman..."></textarea>
-                </div>
-              </div>
-
-              <!-- Visual Card 4: Bagian Galeri Penghargaan & Prestasi Dinamis -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">🏆 Galeri Penghargaan & Prestasi Dinamis</h5>
-                <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala dan piagam penghargaan ekskul secara dinamis tanpa batasan kuantitas.</p>
-                
-                <div class="table-responsive-wrapper" style="margin-top: 1rem; margin-bottom: 1.5rem;">
-                  <table class="cms-table" id="admin-achievements-table">
+                <div class="table-responsive-wrapper">
+                  <table class="cms-table">
                     <thead>
                       <tr>
                         <th style="width: 50px;">No</th>
-                        <th>Juara / Prestasi</th>
-                        <th>Penyelenggara</th>
-                        <th style="width: 80px; text-align: center;">Tahun</th>
-                        <th style="width: 120px; text-align: center;">Tindakan</th>
+                        <th>Judul Artikel</th>
+                        <th style="width: 150px;">Kategori</th>
+                        <th style="width: 150px;">Tanggal</th>
+                        <th style="width: 150px;">Aksi</th>
                       </tr>
                     </thead>
-                    <tbody id="admin-achievements-table-body">
-                      <!-- Rendered dynamically via JS -->
+                    <tbody id="admin-blog-table-body">
+                      <!-- Populated dynamically via JS -->
                     </tbody>
                   </table>
                 </div>
-                
-                <div style="display: flex; justify-content: flex-start; margin-bottom: 0;">
-                  <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah Penghargaan Baru</button>
+              </div>
+
+              <!-- Tab Content 2: PORTFOLIO CMS -->
+              <div id="cms-portfolio-view" class="cms-view-content" role="tabpanel">
+                <div class="table-header-control">
+                  <h4>Daftar Proyek Portfolio</h4>
+                  <button type="button" id="btn-add-portfolio" class="btn btn-cyan btn-sm">Tambah Proyek Baru ➕</button>
+                </div>
+                <div class="table-responsive-wrapper">
+                  <table class="cms-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px;">No</th>
+                        <th>Judul Proyek</th>
+                        <th style="width: 200px;">Kategori</th>
+                        <th style="width: 150px;">Status</th>
+                        <th style="width: 150px;">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-portfolio-table-body">
+                      <!-- Populated dynamically via JS -->
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              <!-- Visual Card 5: Bagian Kaki Halaman (Footer) -->
-              <div class="cms-form-card">
-                <h5 class="cms-form-card-title">👣 Bagian Kaki Halaman (Footer)</h5>
-                
-                <div class="form-group">
-                  <label class="form-label" for="cms-footer-tagline">Tagline/Motto Footer <span>*</span></label>
-                  <textarea id="cms-footer-tagline" class="input-control" required style="height: 80px; resize: vertical;" placeholder="Tagline di footer..."></textarea>
+              <!-- Tab Content 3: APPLICANTS CMS -->
+              <div id="cms-applicants-view" class="cms-view-content" role="tabpanel">
+                <div class="table-header-control"
+                  style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                  <h4>Daftar Calon Pendaftar</h4>
+                  <div class="filter-group" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                    <input type="text" id="search-applicants" class="input-control" placeholder="Cari nama pendaftar..."
+                      style="width: 200px; padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; margin: 0;">
+                    <select id="filter-applicant-status" class="input-control"
+                      style="appearance: auto; width: 140px; padding: 0.4rem 0.8rem; font-size: 0.85rem; height: auto; margin: 0; padding-right: 1.5rem;">
+                      <option value="ALL">Semua Status</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Diterima">Diterima</option>
+                      <option value="Ditolak">Ditolak</option>
+                    </select>
+                    <button type="button" id="btn-export-applicants-csv" class="btn btn-cyan btn-sm"
+                      style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; font-size: 0.85rem; min-height: auto; margin: 0;">
+                      Ekspor CSV 📊
+                    </button>
+                  </div>
                 </div>
-                
-                <div class="cms-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="cms-footer-location">Lokasi Lab <span>*</span></label>
-                    <input type="text" id="cms-footer-location" class="input-control" required placeholder="Contoh: Lab Robotika, Gedung B Lantai 2">
-                  </div>
-                  
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="cms-footer-email">Email Kontak <span>*</span></label>
-                    <input type="email" id="cms-footer-email" class="input-control" required placeholder="Contoh: robotik@motechart.sch.id">
-                  </div>
+                <div class="table-responsive-wrapper">
+                  <table class="cms-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px;">No</th>
+                        <th>Nama Calon Anggota</th>
+                        <th style="width: 100px;">Kelas</th>
+                        <th style="width: 140px;">No. WhatsApp</th>
+                        <th style="width: 180px;">Minat Divisi</th>
+                        <th style="width: 130px;">Tanggal Daftar</th>
+                        <th style="width: 120px;">Status</th>
+                        <th style="width: 260px;">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-applicants-table-body">
+                      <!-- Populated dynamically via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab Content 4: REGISTRATION SETTINGS CMS -->
+              <div id="cms-settings-view" class="cms-view-content" role="tabpanel">
+                <div class="table-header-control" style="margin-bottom: 2rem;">
+                  <h4>Pengaturan Kontrol Pendaftaran & Pertanyaan Kustom ⚙️</h4>
                 </div>
 
-                <div class="cms-form-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0;">
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="cms-footer-instagram">Link Instagram</label>
-                    <input type="url" id="cms-footer-instagram" class="input-control" placeholder="URL Instagram">
+                <form id="cms-reg-settings-form" style="margin-bottom: 3rem;">
+                  <!-- Visual Card 1: Status & Waktu Pendaftaran -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">🔌 Status & Waktu Pendaftaran</h5>
+                    <div class="cms-form-grid">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="reg-status-toggle">Status Pendaftaran Ekskul
+                          <span>*</span></label>
+                        <select id="reg-status-toggle" class="input-control">
+                          <option value="open">Buka (Tampilkan Form Pendaftaran)</option>
+                          <option value="closed">Tutup (Tampilkan Countdown Timer)</option>
+                        </select>
+                        <span class="hint-text">Jika ditutup, halaman pendaftaran akan digantikan oleh hitung
+                          mundur.</span>
+                      </div>
+
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="reg-countdown-target">Target Waktu Pembukaan Kembali</label>
+                        <input type="datetime-local" id="reg-countdown-target" class="input-control">
+                        <span class="hint-text">Hanya digunakan jika status pendaftaran adalah "Tutup".</span>
+                      </div>
+                    </div>
                   </div>
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="cms-footer-github">Link GitHub</label>
-                    <input type="url" id="cms-footer-github" class="input-control" placeholder="URL GitHub">
+
+                  <!-- Visual Card 2: WhatsApp Banner Configuration -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">💬 Konfigurasi Banner Undangan WhatsApp</h5>
+                    <div class="cms-form-grid">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="reg-wa-title">Judul Banner WhatsApp <span>*</span></label>
+                        <input type="text" id="reg-wa-title" class="input-control" required
+                          placeholder="Grup WhatsApp Resmi Calon Anggota">
+                        <span class="hint-text">Judul utama banner di layar sukses & cek status.</span>
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="reg-wa-link">Tautan Grup WhatsApp <span>*</span></label>
+                        <input type="url" id="reg-wa-link" class="input-control" required
+                          placeholder="https://chat.whatsapp.com/...">
+                        <span class="hint-text">Tautan undangan grup WhatsApp resmi koordinasi.</span>
+                      </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 0;">
+                      <label class="form-label" for="reg-wa-desc">Deskripsi Banner WhatsApp <span>*</span></label>
+                      <textarea id="reg-wa-desc" class="input-control" required style="height: 80px; resize: vertical;"
+                        placeholder="Harap bergabung ke grup koordinasi calon anggota baru di bawah ini..."></textarea>
+                      <span class="hint-text">Deskripsi petunjuk tindakan bagi calon anggota baru.</span>
+                    </div>
                   </div>
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="cms-footer-youtube">Link YouTube</label>
-                    <input type="url" id="cms-footer-youtube" class="input-control" placeholder="URL YouTube">
+
+                  <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konfigurasi
+                      Pendaftaran 💾</button>
+                  </div>
+                </form>
+
+                <div class="cms-form-card">
+                  <div class="table-header-control" style="margin-bottom: 1.5rem;">
+                    <h5 class="cms-form-card-title" style="margin-bottom: 0;">📋 Pertanyaan Tambahan (Kustom Form)</h5>
+                    <button type="button" id="btn-add-custom-question" class="btn btn-cyan btn-sm">Tambah Pertanyaan
+                      Baru ➕</button>
+                  </div>
+
+                  <div class="table-responsive-wrapper">
+                    <table class="cms-table">
+                      <thead>
+                        <tr>
+                          <th style="width: 50px;">No</th>
+                          <th>Label Pertanyaan</th>
+                          <th style="width: 150px;">Tipe Input</th>
+                          <th>Opsi Pilihan</th>
+                          <th style="width: 100px;">Required?</th>
+                          <th style="width: 150px;">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-questions-table-body">
+                        <!-- Populated dynamically via JS -->
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
-              
-              <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
-                <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konten Landing Page 💾</button>
+
+              <!-- Tab Content 5: LANDING PAGE CMS -->
+              <div id="cms-landing-view" class="cms-view-content" role="tabpanel">
+                <div class="table-header-control" style="margin-bottom: 2rem;">
+                  <h4>Kelola Konten Landing Page & Prestasi 🖥️</h4>
+                </div>
+
+                <form id="cms-landing-form" style="margin-bottom: 3rem;">
+
+                  <!-- Visual Card 1: Bagian Hero -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">✨ Bagian Hero</h5>
+                    <div class="form-group">
+                      <label class="form-label" for="cms-hero-tag">Tagline Hero <span>*</span></label>
+                      <input type="text" id="cms-hero-tag" class="input-control" required
+                        placeholder="Contoh: Ekstrakurikuler Unggulan">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="cms-hero-title">Judul Hero (Mendukung tag HTML
+                        &lt;span&gt;...&lt;/span&gt;) <span>*</span></label>
+                      <input type="text" id="cms-hero-title" class="input-control" required
+                        placeholder="Contoh: Rancang Masa Depanmu Bersama &lt;span&gt;Robotik&lt;/span&gt;!">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label" for="cms-hero-desc">Deskripsi Hero <span>*</span></label>
+                      <textarea id="cms-hero-desc" class="input-control" required
+                        style="height: 100px; resize: vertical;" placeholder="Deskripsi mengenai ekskul..."></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Visual Card 2: Bagian Visi & Misi -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">🎯 Bagian Visi & Misi</h5>
+                    <div class="form-group">
+                      <label class="form-label" for="cms-visi-text">Visi Ekskul <span>*</span></label>
+                      <textarea id="cms-visi-text" class="input-control" required
+                        style="height: 80px; resize: vertical;" placeholder="Visi ekskul robotik..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label">Misi Ekskul (4 Butir Misi Utama) <span>*</span></label>
+                      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <input type="text" id="cms-misi-item-1" class="input-control" required placeholder="Misi ke-1">
+                        <input type="text" id="cms-misi-item-2" class="input-control" required placeholder="Misi ke-2">
+                        <input type="text" id="cms-misi-item-3" class="input-control" required placeholder="Misi ke-3">
+                        <input type="text" id="cms-misi-item-4" class="input-control" required placeholder="Misi ke-4">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Visual Card 3: Bagian Deskripsi Divisi Keahlian -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">⚡ Bagian Divisi Keahlian</h5>
+                    <div class="form-group">
+                      <label class="form-label" for="cms-div-mech-desc">Deskripsi Divisi Mekanik <span>*</span></label>
+                      <textarea id="cms-div-mech-desc" class="input-control" required
+                        style="height: 80px; resize: vertical;" placeholder="Mekanika..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="cms-div-elec-desc">Deskripsi Divisi Elektronik
+                        <span>*</span></label>
+                      <textarea id="cms-div-elec-desc" class="input-control" required
+                        style="height: 80px; resize: vertical;" placeholder="Elektronika..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label" for="cms-div-prog-desc">Deskripsi Divisi Pemrograman
+                        <span>*</span></label>
+                      <textarea id="cms-div-prog-desc" class="input-control" required
+                        style="height: 80px; resize: vertical;" placeholder="Pemrograman..."></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Visual Card 4: Bagian Galeri Penghargaan & Prestasi Dinamis -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">🏆 Galeri Penghargaan & Prestasi Dinamis</h5>
+                    <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala dan piagam
+                      penghargaan ekskul secara dinamis tanpa batasan kuantitas.</p>
+
+                    <div class="table-responsive-wrapper" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                      <table class="cms-table" id="admin-achievements-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>Juara / Prestasi</th>
+                            <th>Penyelenggara</th>
+                            <th style="width: 80px; text-align: center;">Tahun</th>
+                            <th style="width: 120px; text-align: center;">Tindakan</th>
+                          </tr>
+                        </thead>
+                        <tbody id="admin-achievements-table-body">
+                          <!-- Rendered dynamically via JS -->
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-start; margin-bottom: 0;">
+                      <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah
+                        Penghargaan Baru</button>
+                    </div>
+                  </div>
+
+                  <!-- Visual Card 5: Bagian Kaki Halaman (Footer) -->
+                  <div class="cms-form-card">
+                    <h5 class="cms-form-card-title">👣 Bagian Kaki Halaman (Footer)</h5>
+
+                    <div class="form-group">
+                      <label class="form-label" for="cms-footer-tagline">Tagline/Motto Footer <span>*</span></label>
+                      <textarea id="cms-footer-tagline" class="input-control" required
+                        style="height: 80px; resize: vertical;" placeholder="Tagline di footer..."></textarea>
+                    </div>
+
+                    <div class="cms-form-grid"
+                      style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="cms-footer-location">Lokasi Lab <span>*</span></label>
+                        <input type="text" id="cms-footer-location" class="input-control" required
+                          placeholder="Contoh: Lab Robotika, Gedung B Lantai 2">
+                      </div>
+
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="cms-footer-email">Email Kontak <span>*</span></label>
+                        <input type="email" id="cms-footer-email" class="input-control" required
+                          placeholder="Contoh: robotik@motechart.sch.id">
+                      </div>
+                    </div>
+
+                    <div class="cms-form-grid"
+                      style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0;">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="cms-footer-instagram">Link Instagram</label>
+                        <input type="url" id="cms-footer-instagram" class="input-control" placeholder="URL Instagram">
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="cms-footer-github">Link GitHub</label>
+                        <input type="url" id="cms-footer-github" class="input-control" placeholder="URL GitHub">
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="cms-footer-youtube">Link YouTube</label>
+                        <input type="url" id="cms-footer-youtube" class="input-control" placeholder="URL YouTube">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konten Landing
+                      Page 💾</button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
 
-        </div> <!-- End of .cms-content-area -->
-      </div> <!-- End of .cms-dashboard-layout -->
+            </div> <!-- End of .cms-content-area -->
+          </div> <!-- End of .cms-dashboard-layout -->
 
-    </div>
+        </div>
       </section>
 
       <!-- ==========================================
@@ -1066,13 +1191,14 @@
             </svg>
           </button>
         </div>
-        <h2 id="cms-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Ubah Konten</h2>
-        
+        <h2 id="cms-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Ubah
+          Konten</h2>
+
         <form id="cms-editor-form" novalidate>
           <div id="cms-form-fields-container">
             <!-- Dynamically populated via JS -->
           </div>
-          
+
           <div class="form-actions-row" style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
             <button type="button" class="btn btn-secondary" id="cms-editor-cancel">Batal</button>
             <button type="submit" class="btn btn-cyan">Simpan Konten 💾</button>
@@ -1087,11 +1213,12 @@
   <footer class="main-footer">
     <div class="container">
       <div class="footer-grid">
-        
+
         <!-- Column 1: Brand Info -->
         <div class="footer-col brand-col">
           <div class="footer-logo">
-            <svg class="footer-logo-svg" width="36" height="36" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="footer-logo-svg" width="36" height="36" viewBox="0 0 200 200" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="gold-grad-footer" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#FFEFA6" />
@@ -1128,48 +1255,80 @@
                 <circle cx="0" cy="0" r="19" fill="url(#silver-grad-footer)" stroke="#1E293B" stroke-width="0.5" />
               </g>
               <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z" stroke="url(#gold-grad-footer)" stroke-width="4.5" />
-                <path d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z" stroke="url(#gold-grad-footer)" stroke-width="3" />
+                <path
+                  d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
+                  stroke="url(#gold-grad-footer)" stroke-width="4.5" />
+                <path
+                  d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z"
+                  stroke="url(#gold-grad-footer)" stroke-width="3" />
               </g>
             </svg>
             <span class="footer-logo-text">MOTECHART ROBOTIK</span>
           </div>
-          <p class="footer-tagline" id="footer-tagline-text">Wadah pengembangan inovasi, otomatisasi, dan kreativitas teknologi robotika masa depan bagi para remaja unggul.</p>
+          <p class="footer-tagline" id="footer-tagline-text">Wadah pengembangan inovasi, otomatisasi, dan kreativitas
+            teknologi robotika masa depan bagi para remaja unggul.</p>
           <div class="footer-socials">
-            <a href="https://instagram.com" id="footer-instagram-link" class="social-icon" target="_blank" aria-label="Instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <a href="https://instagram.com" id="footer-instagram-link" class="social-icon" target="_blank"
+              aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
             </a>
-            <a href="https://github.com" id="footer-github-link" class="social-icon" target="_blank" aria-label="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <a href="https://github.com" id="footer-github-link" class="social-icon" target="_blank"
+              aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                </path>
+              </svg>
             </a>
-            <a href="https://youtube.com" id="footer-youtube-link" class="social-icon" target="_blank" aria-label="YouTube">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+            <a href="https://youtube.com" id="footer-youtube-link" class="social-icon" target="_blank"
+              aria-label="YouTube">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
+                </path>
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+              </svg>
             </a>
           </div>
         </div>
-        
+
         <!-- Column 2: Quick Links -->
         <div class="footer-col links-col">
           <h4 class="footer-col-title">Navigasi Cepat</h4>
           <ul class="footer-col-links">
             <li><a href="#home" onclick="window.appNavigate('view-home'); return false;">Beranda (Home)</a></li>
             <li><a href="#blog" onclick="window.appNavigate('view-blog'); return false;">Blog Informasi</a></li>
-            <li><a href="#portfolio" onclick="window.appNavigate('view-portfolio'); return false;">Galeri Portfolio</a></li>
-            <li><a href="#pendaftaran" onclick="window.appNavigate('view-pendaftaran'); return false;">Pendaftaran Siswa</a></li>
+            <li><a href="#portfolio" onclick="window.appNavigate('view-portfolio'); return false;">Galeri Portfolio</a>
+            </li>
+            <li><a href="#pendaftaran" onclick="window.appNavigate('view-pendaftaran'); return false;">Pendaftaran
+                Siswa</a></li>
             <li><a href="#admin" onclick="window.appNavigate('view-admin'); return false;">Admin Dashboard</a></li>
           </ul>
         </div>
-        
+
         <!-- Column 3: Divisions -->
         <div class="footer-col divisions-col">
           <h4 class="footer-col-title">Divisi Keahlian</h4>
           <ul class="footer-col-links">
-            <li><a href="#divisi" onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">🦾 Mekanik (CAD Design)</a></li>
-            <li><a href="#divisi" onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">⚡ Elektronik (IoT Circuits)</a></li>
-            <li><a href="#divisi" onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">💻 Pemrograman (C++ Code)</a></li>
+            <li><a href="#divisi"
+                onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">🦾
+                Mekanik (CAD Design)</a></li>
+            <li><a href="#divisi"
+                onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">⚡
+                Elektronik (IoT Circuits)</a></li>
+            <li><a href="#divisi"
+                onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">💻
+                Pemrograman (C++ Code)</a></li>
           </ul>
         </div>
-        
+
         <!-- Column 4: Contact & Tech Status -->
         <div class="footer-col contact-col">
           <h4 class="footer-col-title">Info Hub</h4>
@@ -1182,28 +1341,32 @@
               <span class="contact-icon">✉️</span>
               <span class="contact-text" id="footer-email-text">robotik@motechart.sch.id</span>
             </div>
-            <div class="contact-item status-indicator-wrapper" id="btn-system-status" style="cursor: pointer;" title="Buka Telemetri Sistem">
+            <div class="contact-item status-indicator-wrapper" id="btn-system-status" style="cursor: pointer;"
+              title="Buka Telemetri Sistem">
               <span class="status-pulse-dot"></span>
               <span class="status-text" id="footer-status-text">Hub Sistem: ONLINE</span>
             </div>
           </div>
         </div>
-        
+
       </div>
-      
+
       <!-- Footer Bottom Divider and copyright -->
       <div class="footer-bottom">
         <div class="footer-copyright">
           <p>&copy; 2026 Motechart Robotik Club. Didesain dengan 💛, 💙, dan 🤍 untuk Masa Depan.</p>
-          <p style="font-size: 0.75rem; color: rgba(255,255,255,0.25); margin-top: 0.35rem;">Seluruh hak cipta dilindungi. Program Kerja Ekstrakurikuler Bidang Sains & Teknologi.</p>
+          <p style="font-size: 0.75rem; color: rgba(255,255,255,0.25); margin-top: 0.35rem;">Seluruh hak cipta
+            dilindungi. Program Kerja Ekstrakurikuler Bidang Sains & Teknologi.</p>
         </div>
-        <button type="button" id="btn-back-to-top" class="back-to-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" aria-label="Kembali ke Atas">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <button type="button" id="btn-back-to-top" class="back-to-top-btn"
+          onclick="window.scrollTo({top: 0, behavior: 'smooth'});" aria-label="Kembali ke Atas">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"></polyline>
           </svg>
         </button>
       </div>
-      
+
     </div>
   </footer>
 
@@ -1217,8 +1380,9 @@
         </svg>
       </button>
     </div>
-    <h2 id="preview-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-cyan); text-align: center;">Kartu Anggota Digital</h2>
-    
+    <h2 id="preview-dialog-title" class="dialog-title"
+      style="margin-bottom: 1.5rem; color: var(--accent-cyan); text-align: center;">Kartu Anggota Digital</h2>
+
     <div id="admin-card-preview-container" style="display: flex; justify-content: center; margin-bottom: 1rem;">
       <!-- Populated dynamically by rendering the robot-student-card visual -->
     </div>
@@ -1234,8 +1398,9 @@
         </svg>
       </button>
     </div>
-    <h2 id="status-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-cyan); text-align: center;">Hasil Cek Status Pendaftaran</h2>
-    
+    <h2 id="status-dialog-title" class="dialog-title"
+      style="margin-bottom: 1.5rem; color: var(--accent-cyan); text-align: center;">Hasil Cek Status Pendaftaran</h2>
+
     <div id="student-status-content-container">
       <!-- Populated dynamically via JS based on user status -->
     </div>
@@ -1251,16 +1416,18 @@
         </svg>
       </button>
     </div>
-    <h2 id="question-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Tambah Pertanyaan Baru</h2>
-    
+    <h2 id="question-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">
+      Tambah Pertanyaan Baru</h2>
+
     <form id="custom-question-form">
       <input type="hidden" id="edit-question-id" value="">
-      
+
       <div class="form-group" style="margin-bottom: 1.25rem;">
         <label class="form-label" for="question-label">Label Pertanyaan / Teks Soal <span>*</span></label>
-        <input type="text" id="question-label" class="input-control" required placeholder="Contoh: Apakah Anda pernah membuat program Arduino?">
+        <input type="text" id="question-label" class="input-control" required
+          placeholder="Contoh: Apakah Anda pernah membuat program Arduino?">
       </div>
-      
+
       <div class="form-group" style="margin-bottom: 1.25rem;">
         <label class="form-label" for="question-type">Tipe Pertanyaan <span>*</span></label>
         <select id="question-type" class="input-control" required>
@@ -1269,20 +1436,21 @@
           <option value="select">Pilihan Menu (Dropdown Select)</option>
         </select>
       </div>
-      
+
       <div class="form-group" id="question-options-group" style="display: none; margin-bottom: 1.25rem;">
         <label class="form-label" for="question-options">Opsi Pilihan (Koma-dipisahkan) <span>*</span></label>
-        <input type="text" id="question-options" class="input-control" placeholder="Contoh: Belum pernah, Pernah dasar, Pernah mahir">
+        <input type="text" id="question-options" class="input-control"
+          placeholder="Contoh: Belum pernah, Pernah dasar, Pernah mahir">
         <span class="hint-text">Pisahkan opsi dengan tanda koma ( , ). Contoh: Ya, Tidak</span>
       </div>
-      
+
       <div class="form-group" style="margin-bottom: 1.25rem;">
         <div class="custom-checkbox-wrapper" style="margin-top: 1rem;">
           <input type="checkbox" id="question-required" checked>
           <label for="question-required" class="custom-checkbox-label">Wajib Diisi (Required)?</label>
         </div>
       </div>
-      
+
       <div class="form-actions-row" style="margin-top: 2rem;">
         <button type="button" class="btn btn-secondary" id="btn-cancel-question-dialog">Batal</button>
         <button type="submit" class="btn btn-cyan" id="btn-save-question">Simpan Pertanyaan ⚡</button>
@@ -1291,7 +1459,8 @@
   </dialog>
 
   <!-- DIALOG KELOLA GALERI PENGHARGAAN & PRESTASI CMS -->
-  <dialog id="custom-achievement-dialog" aria-labelledby="achievement-dialog-title" style="max-width: 500px; width: 95%;">
+  <dialog id="custom-achievement-dialog" aria-labelledby="achievement-dialog-title"
+    style="max-width: 500px; width: 95%;">
     <div class="dialog-close-bar">
       <button type="button" id="close-achievement-dialog-btn" class="btn-close" aria-label="Tutup Dialog Prestasi">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1300,26 +1469,31 @@
         </svg>
       </button>
     </div>
-    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Kelola Penghargaan & Prestasi</h2>
-    
+    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">
+      Kelola Penghargaan & Prestasi</h2>
+
     <form id="custom-achievement-form">
       <input type="hidden" id="edit-achievement-idx" value="">
-      
+
       <div class="form-group" style="margin-bottom: 1.25rem;">
         <label class="form-label" for="achievement-juara">Juara / Nama Prestasi <span>*</span></label>
-        <textarea id="achievement-juara" class="input-control" required placeholder="Contoh: Juara 1 Nasional&#10;Kontes Robot Soccer" style="height: 80px; resize: vertical;"></textarea>
+        <textarea id="achievement-juara" class="input-control" required
+          placeholder="Contoh: Juara 1 Nasional&#10;Kontes Robot Soccer"
+          style="height: 80px; resize: vertical;"></textarea>
       </div>
-      
+
       <div class="form-group" style="margin-bottom: 1.25rem;">
         <label class="form-label" for="achievement-organizer">Penyelenggara <span>*</span></label>
-        <input type="text" id="achievement-organizer" class="input-control" required placeholder="Contoh: Puspresnas Kemendikbudristek">
+        <input type="text" id="achievement-organizer" class="input-control" required
+          placeholder="Contoh: Puspresnas Kemendikbudristek">
       </div>
-      
+
       <div class="form-group" style="margin-bottom: 1.25rem;">
         <label class="form-label" for="achievement-year">Tahun Penghargaan <span>*</span></label>
-        <input type="text" id="achievement-year" class="input-control" required placeholder="Contoh: 2025" pattern="[0-9]{4}">
+        <input type="text" id="achievement-year" class="input-control" required placeholder="Contoh: 2025"
+          pattern="[0-9]{4}">
       </div>
-      
+
       <div class="form-actions-row" style="margin-top: 2rem;">
         <button type="button" class="btn btn-secondary" id="btn-cancel-achievement-dialog">Batal</button>
         <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan Penghargaan 🏆</button>
@@ -1364,7 +1538,8 @@
   <!-- ==========================================
        NATIVE TOP-LAYER SYSTEM TELEMETRY DIALOG
        ========================================== -->
-  <dialog id="system-status-dialog" closedby="any" aria-labelledby="telemetry-title" style="max-width: 600px; width: 95%;">
+  <dialog id="system-status-dialog" closedby="any" aria-labelledby="telemetry-title"
+    style="max-width: 600px; width: 95%;">
     <div class="dialog-close-bar">
       <button id="close-telemetry-btn" class="btn-close" aria-label="Tutup Telemetri Sistem">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1373,71 +1548,100 @@
         </svg>
       </button>
     </div>
-    
+
     <div class="telemetry-content">
-      <h2 id="telemetry-title" class="dialog-title" style="margin-bottom: 1.5rem; text-align: center; color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+      <h2 id="telemetry-title" class="dialog-title"
+        style="margin-bottom: 1.5rem; text-align: center; color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
         <span class="telemetry-header-icon" style="font-size: 1.75rem;">📡</span> Telemetri & Status Sistem
       </h2>
-      
+
       <!-- Network / Service Status Grid -->
-      <div class="telemetry-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-        
+      <div class="telemetry-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+
         <!-- Web Server Uptime Card -->
-        <div class="telemetry-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
-          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Server Uptime</div>
-          <div id="telemetry-server-status" style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE</div>
-          <div id="telemetry-session-time" style="font-family: monospace; font-size: 1.1rem; color: #fff;">00:00:00</div>
+        <div class="telemetry-card"
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
+          <div
+            style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+            Server Uptime</div>
+          <div id="telemetry-server-status"
+            style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE
+          </div>
+          <div id="telemetry-session-time" style="font-family: monospace; font-size: 1.1rem; color: #fff;">00:00:00
+          </div>
         </div>
 
         <!-- Firebase / DB Status Card -->
-        <div class="telemetry-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
-          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Koneksi Database</div>
-          <div id="telemetry-db-status" style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">TERHUBUNG</div>
+        <div class="telemetry-card"
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
+          <div
+            style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+            Koneksi Database</div>
+          <div id="telemetry-db-status"
+            style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">TERHUBUNG
+          </div>
           <div id="telemetry-db-ping" style="font-family: monospace; font-size: 1.1rem; color: #fff;">-- ms</div>
         </div>
 
         <!-- Network Latency Card -->
-        <div class="telemetry-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
-          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Bandwidth State</div>
-          <div id="telemetry-network-state" style="font-weight: bold; color: var(--accent-cyan); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE</div>
+        <div class="telemetry-card"
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
+          <div
+            style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+            Bandwidth State</div>
+          <div id="telemetry-network-state"
+            style="font-weight: bold; color: var(--accent-cyan); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE
+          </div>
           <div id="telemetry-network-speed" style="font-family: monospace; font-size: 1.1rem; color: #fff;">Active</div>
         </div>
 
       </div>
 
       <!-- General Statistics Card -->
-      <div class="telemetry-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
-        <h4 style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+      <div class="telemetry-card"
+        style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h4
+          style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
           📊 Statistik & Telemetri Portal
         </h4>
-        
+
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem 1.5rem;">
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
             <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">👥 Total Pengunjung</span>
-            <strong id="telemetry-total-visitors" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+            <strong id="telemetry-total-visitors"
+              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
           </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
             <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">📂 Total Portofolio</span>
-            <strong id="telemetry-total-portfolios" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+            <strong id="telemetry-total-portfolios"
+              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
           </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
             <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">📝 Total Artikel Blog</span>
-            <strong id="telemetry-total-blogs" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+            <strong id="telemetry-total-blogs"
+              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
           </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
             <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">🤖 Calon Pendaftar</span>
-            <strong id="telemetry-total-applicants" style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
+            <strong id="telemetry-total-applicants"
+              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
           </div>
 
         </div>
       </div>
 
       <div style="font-size: 0.75rem; text-align: center; color: rgba(255,255,255,0.4); line-height: 1.4;">
-        Pemantauan waktu nyata Hub Sistem Motechart Robotik. Status disinkronkan secara asinkron dengan infrastruktur web dan Cloud Firestore Database.
+        Pemantauan waktu nyata Hub Sistem Motechart Robotik. Status disinkronkan secara asinkron dengan infrastruktur
+        web dan Cloud Firestore Database.
       </div>
     </div>
   </dialog>
@@ -1445,4 +1649,5 @@
   <!-- App scripts logic -->
   <script src="./app.js" type="module"></script>
 </body>
+
 </html>

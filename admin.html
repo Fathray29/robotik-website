@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMS Admin - Motechart Robotik</title>
-  
+
   <link rel="stylesheet" href="./index.css">
-  
+
   <!-- Firebase Compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -77,7 +77,8 @@
               stroke="url(#gold-grad-admin)" stroke-width="4.5" fill="none" />
             <circle cx="100" cy="150" r="6" fill="url(#gold-grad-admin)" />
           </svg>
-          <h1 style="font-size: 2.25rem; font-family: var(--font-heading); font-weight: 800; letter-spacing: 2px; color: var(--text-white); margin: 0;">
+          <h1
+            style="font-size: 2.25rem; font-family: var(--font-heading); font-weight: 800; letter-spacing: 2px; color: var(--text-white); margin: 0;">
             MOTECHART <span style="color: var(--accent-yellow);">ADMIN</span>
           </h1>
         </div>
@@ -123,7 +124,7 @@
 
           <button type="submit" class="btn btn-yellow btn-block">Masuk Dashboard 🔐</button>
         </form>
-        
+
         <div style="text-align: center; margin-top: 1.5rem;">
           <a href="./index.html" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.9rem;">
             ← Kembali ke Portal Utama
@@ -139,7 +140,8 @@
             <h3>Selamat Datang, Administrator</h3>
           </div>
           <div class="panel-actions-row">
-            <a href="./index.html" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; border-color: rgba(255,255,255,0.15);">
+            <a href="./index.html" class="btn btn-secondary"
+              style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; border-color: rgba(255,255,255,0.15);">
               ← Portal Utama
             </a>
             <button type="button" id="btn-reset-db" class="btn btn-secondary"
@@ -155,27 +157,58 @@
           <div class="cms-tabs-bar" role="tablist" aria-label="Kelola Konten">
             <button type="button" class="cms-tab-btn active" data-cms-target="cms-blog-view" role="tab"
               aria-selected="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
               Kelola Blog
             </button>
             <button type="button" class="cms-tab-btn" data-cms-target="cms-portfolio-view" role="tab"
               aria-selected="false">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <circle cx="12" cy="5" r="2"></circle>
+                <path d="M12 7v4"></path>
+                <line x1="8" y1="16" x2="8" y2="16"></line>
+                <line x1="16" y1="16" x2="16" y2="16"></line>
+              </svg>
               Kelola Portfolio
             </button>
             <button type="button" class="cms-tab-btn" data-cms-target="cms-applicants-view" role="tab"
               aria-selected="false">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
               Kelola Pendaftar
             </button>
             <button type="button" class="cms-tab-btn" data-cms-target="cms-settings-view" role="tab"
               aria-selected="false">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+              </svg>
               Pengaturan Pendaftaran
             </button>
             <button type="button" class="cms-tab-btn" data-cms-target="cms-landing-view" role="tab"
               aria-selected="false">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
               Kelola Landing Page
             </button>
           </div>
@@ -187,7 +220,8 @@
             <div id="cms-blog-view" class="cms-view-content active" role="tabpanel">
               <div class="table-header-control">
                 <h4>Daftar Artikel Blog</h4>
-                <button type="button" id="btn-add-blog" class="btn btn-cyan btn-glow btn-sm">Tambah Artikel Baru ➕</button>
+                <button type="button" id="btn-add-blog" class="btn btn-cyan btn-glow btn-sm">Tambah Artikel Baru
+                  ➕</button>
               </div>
               <div class="table-responsive-wrapper">
                 <table class="cms-table">
@@ -211,7 +245,8 @@
             <div id="cms-portfolio-view" class="cms-view-content" role="tabpanel">
               <div class="table-header-control">
                 <h4>Daftar Proyek Portfolio</h4>
-                <button type="button" id="btn-add-portfolio" class="btn btn-cyan btn-glow btn-sm">Tambah Proyek Baru ➕</button>
+                <button type="button" id="btn-add-portfolio" class="btn btn-cyan btn-glow btn-sm">Tambah Proyek Baru
+                  ➕</button>
               </div>
               <div class="table-responsive-wrapper">
                 <table class="cms-table">
@@ -380,15 +415,16 @@
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label" for="cms-hero-title">Judul Hero (Mendukung tag HTML &lt;span&gt;...&lt;/span&gt;) <span>*</span></label>
+                    <label class="form-label" for="cms-hero-title">Judul Hero (Mendukung tag HTML
+                      &lt;span&gt;...&lt;/span&gt;) <span>*</span></label>
                     <input type="text" id="cms-hero-title" class="input-control" required
                       placeholder="Contoh: Rancang Masa Depanmu Bersama &lt;span&gt;Robotik&lt;/span&gt;!">
                   </div>
 
                   <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="cms-hero-desc">Deskripsi Hero <span>*</span></label>
-                    <textarea id="cms-hero-desc" class="input-control" required
-                      style="height: 100px; resize: vertical;" placeholder="Deskripsi mengenai ekskul..."></textarea>
+                    <textarea id="cms-hero-desc" class="input-control" required style="height: 100px; resize: vertical;"
+                      placeholder="Deskripsi mengenai ekskul..."></textarea>
                   </div>
                 </div>
 
@@ -397,8 +433,8 @@
                   <h5 class="cms-form-card-title">🎯 Bagian Visi & Misi</h5>
                   <div class="form-group">
                     <label class="form-label" for="cms-visi-text">Visi Ekskul <span>*</span></label>
-                    <textarea id="cms-visi-text" class="input-control" required
-                      style="height: 80px; resize: vertical;" placeholder="Visi ekskul robotik..."></textarea>
+                    <textarea id="cms-visi-text" class="input-control" required style="height: 80px; resize: vertical;"
+                      placeholder="Visi ekskul robotik..."></textarea>
                   </div>
 
                   <div class="form-group" style="margin-bottom: 0;">
@@ -428,7 +464,8 @@
                   </div>
 
                   <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="cms-div-prog-desc">Deskripsi Divisi Pemrograman <span>*</span></label>
+                    <label class="form-label" for="cms-div-prog-desc">Deskripsi Divisi Pemrograman
+                      <span>*</span></label>
                     <textarea id="cms-div-prog-desc" class="input-control" required
                       style="height: 80px; resize: vertical;" placeholder="Pemrograman..."></textarea>
                   </div>
@@ -437,7 +474,8 @@
                 <!-- Achievements Section -->
                 <div class="cms-form-card">
                   <h5 class="cms-form-card-title">🏆 Galeri Penghargaan & Prestasi Dinamis</h5>
-                  <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala dan piagam penghargaan ekskul secara dinamis.</p>
+                  <p class="hint-text" style="margin-bottom: 1.5rem;">Kelola daftar seluruh piala dan piagam penghargaan
+                    ekskul secara dinamis.</p>
 
                   <div class="table-responsive-wrapper" style="margin-top: 1rem; margin-bottom: 1.5rem;">
                     <table class="cms-table" id="admin-achievements-table">
@@ -457,7 +495,8 @@
                   </div>
 
                   <div style="display: flex; justify-content: flex-start; margin-bottom: 0;">
-                    <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah Penghargaan Baru</button>
+                    <button type="button" class="btn btn-outline-cyan btn-sm" id="btn-add-custom-achievement">+ Tambah
+                      Penghargaan Baru</button>
                   </div>
                 </div>
 
@@ -504,7 +543,8 @@
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
-                  <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konten Landing Page 💾</button>
+                  <button type="submit" class="btn btn-cyan btn-glow" style="min-width: 220px;">Simpan Konten Landing
+                    Page 💾</button>
                 </div>
               </form>
             </div>
@@ -528,7 +568,8 @@
         </svg>
       </button>
     </div>
-    <h2 id="cms-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Ubah Konten</h2>
+    <h2 id="cms-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Ubah
+      Konten</h2>
 
     <form id="cms-editor-form" novalidate>
       <div id="cms-form-fields-container">
@@ -570,7 +611,8 @@
         </svg>
       </button>
     </div>
-    <h2 id="question-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Tambah Pertanyaan Baru</h2>
+    <h2 id="question-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">
+      Tambah Pertanyaan Baru</h2>
 
     <form id="custom-question-form">
       <input type="hidden" id="edit-question-id" value="">
@@ -622,7 +664,8 @@
         </svg>
       </button>
     </div>
-    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">Kelola Penghargaan & Prestasi</h2>
+    <h2 id="achievement-dialog-title" class="dialog-title" style="margin-bottom: 1.5rem; color: var(--accent-yellow);">
+      Kelola Penghargaan & Prestasi</h2>
 
     <form id="custom-achievement-form">
       <input type="hidden" id="edit-achievement-idx" value="">

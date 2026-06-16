@@ -148,7 +148,7 @@ function checkLoginState() {
     populateLandingCmsInputs();
     renderDashboardOverview();
   } else {
-    loginSection.style.display = 'block';
+    loginSection.style.display = 'flex';
     panelSection.style.display = 'none';
   }
 }

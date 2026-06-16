@@ -47,7 +47,7 @@ function setupRouter() {
           countdownTargetInput.value = regSettings.countdownTarget || '';
         }
       } else {
-        loginSection.style.display = 'block';
+        loginSection.style.display = 'flex';
         panelSection.style.display = 'none';
       }
     }

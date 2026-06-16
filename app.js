@@ -1006,10 +1006,9 @@ async function initializeCloudDataSync() {
     console.log("Motechart Cloud Engine: Initiating data sync from Firebase Firestore...");
     await syncLandingDataFromFirestore();
     await syncRegSettingsFromFirestore();
-    await syncApplicantsFromFirestore();
     
-    // Setup real-time dynamic listener for admin applicants list
-    setupRealTimeApplicantsSync();
+    // Privacy Fix: Removed syncApplicantsFromFirestore() and setupRealTimeApplicantsSync() 
+    // from the public frontend so we don't leak all PII to unauthorized users.
     
     // Re-render components with newly synced cloud data
     renderLandingPage();
@@ -1884,10 +1883,36 @@ function updateCountdownTimer() {
   }
 }
 
-function checkApplicantStatus(id) {
-  const applicant = applicants.find(a => a.id.toUpperCase() === id.trim().toUpperCase());
+async function checkApplicantStatus(id) {
   const contentContainer = document.getElementById('student-status-content-container');
   if (!contentContainer) return;
+
+  const btnCheckStatus = document.getElementById('btn-check-status');
+  if (btnCheckStatus) {
+    btnCheckStatus.disabled = true;
+    btnCheckStatus.textContent = 'Memeriksa...';
+  }
+
+  let applicant = null;
+  
+  if (useFirebase && db) {
+    try {
+      const docRef = await db.collection('applicants').doc(id.trim().toUpperCase()).get();
+      if (docRef.exists) {
+        applicant = docRef.data();
+      }
+    } catch (e) {
+      console.error("Gagal memeriksa status Pendaftaran:", e);
+    }
+  } else {
+    // Fallback for local storage mode
+    applicant = applicants.find(a => a.id.toUpperCase() === id.trim().toUpperCase());
+  }
+
+  if (btnCheckStatus) {
+    btnCheckStatus.disabled = false;
+    btnCheckStatus.textContent = 'Cek Status Pendaftaran';
+  }
 
   if (!applicant) {
     playRoboticSound('error');
@@ -1983,7 +2008,7 @@ function setupStatusChecker() {
   const closeStudentStatusBtn = document.getElementById('close-status-dialog-btn');
 
   if (btnCheckStatus && inputCheckStatus) {
-    const handleCheck = () => {
+    const handleCheck = async () => {
       const id = inputCheckStatus.value.trim();
       if (!id) {
         alert('Silakan masukkan ID Pendaftaran Anda terlebih dahulu.');
@@ -1991,7 +2016,7 @@ function setupStatusChecker() {
         return;
       }
       playRoboticSound('click');
-      checkApplicantStatus(id);
+      await checkApplicantStatus(id);
     };
 
     btnCheckStatus.addEventListener('click', handleCheck);

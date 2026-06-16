@@ -6,8 +6,7 @@ import {
   escapeHtml, 
   parseMarkdownToHtml,
   setupRealTimeApplicantsSync,
-  generateSecureToken,
-  verifySecureToken,
+
   getLoginRateLimit,
   recordFailedLogin,
   resetLoginRateLimit,
@@ -18,17 +17,7 @@ import {
   INITIAL_LANDING_DATA
 } from './shared.js';
 
-// --- CONFIG & CONSTANTS ---
-const ADMIN_PASS_HASH = '7094bc26dc244ec1bbef932b02a6fe1b2c629f334e3212621188674058c6bd11'; // SHA-256 for 'motechart2026'
-
-// --- HELPER CRYPTO FUNCTION ---
-async function sha256(message) {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-}
+// --- FIREBASE ADMIN AUTH ---
 
 // --- CMS AUTHENTICATION ---
 let lockoutTimerInterval = null;
@@ -129,21 +118,14 @@ function setupCmsAuthentication() {
 
       const user = document.getElementById('admin_username').value.trim();
       const pass = document.getElementById('admin_password').value.trim();
-      const inputHash = await sha256(pass);
 
-      if (user === 'admin' && inputHash === ADMIN_PASS_HASH) {
+      try {
+        await state.auth.signInWithEmailAndPassword(user, pass);
         playRoboticSound('success');
         resetLoginRateLimit();
         clearLockoutTimer();
-
-        // Generate secure HMAC session token instead of a simple 'true' flag
-        const secureToken = await generateSecureToken(ADMIN_PASS_HASH);
-        sessionStorage.setItem('robotik_admin_session', secureToken);
-        // Remove legacy flag if present
-        sessionStorage.removeItem('robotik_admin_logged');
-
-        showAdminPanel();
-      } else {
+        // UI transition handled by onAuthStateChanged
+      } catch (err) {
         playRoboticSound('error');
         const result = recordFailedLogin();
         if (errMsg) {
@@ -154,9 +136,9 @@ function setupCmsAuthentication() {
           } else {
             const remaining = 5 - result.attempts;
             if (remaining > 0) {
-              errMsg.textContent = `Kombinasi Username atau Password salah! (${remaining} percobaan tersisa sebelum lockout)`;
+              errMsg.textContent = `Login gagal: ${err.message}. (${remaining} percobaan tersisa sebelum lockout)`;
             } else {
-              errMsg.textContent = 'Kombinasi Username atau Password salah!';
+              errMsg.textContent = `Login gagal: ${err.message}`;
             }
           }
           errMsg.style.display = 'block';
@@ -166,10 +148,11 @@ function setupCmsAuthentication() {
   }
 
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
       playRoboticSound('click');
-      sessionStorage.removeItem('robotik_admin_session');
-      sessionStorage.removeItem('robotik_admin_logged');
+      if (state.auth) {
+        await state.auth.signOut();
+      }
       window.location.href = './index.html';
     });
   }
@@ -217,35 +200,30 @@ function clearLockoutTimer() {
   if (submitBtn) submitBtn.disabled = false;
 }
 
-// --- SECURE LOGIN STATE CHECK (async, HMAC-verified) ---
-async function checkLoginState() {
+// --- SECURE LOGIN STATE CHECK (Firebase Auth) ---
+function setupAuthStateListener() {
   const loginSection = document.getElementById('admin-login-section');
   const panelSection = document.getElementById('admin-panel-section');
 
-  // Check new secure token first
-  const secureToken = sessionStorage.getItem('robotik_admin_session');
-  const isValid = await verifySecureToken(secureToken, ADMIN_PASS_HASH);
-
-  // Also handle legacy flag migration: remove if present but don't trust it
-  if (sessionStorage.getItem('robotik_admin_logged')) {
-    sessionStorage.removeItem('robotik_admin_logged');
-  }
-
-  if (isValid) {
-    loginSection.style.display = 'none';
-    panelSection.style.display = 'block';
-    renderAdminBlogTable();
-    renderAdminPortfolioTable();
-    renderAdminApplicantsTable();
-    populateRegSettingsCmsInputs();
-    renderAdminQuestionsTable();
-    populateLandingCmsInputs();
-    renderDashboardOverview();
+  if (state.auth) {
+    state.auth.onAuthStateChanged((user) => {
+      if (user) {
+        loginSection.style.display = 'none';
+        panelSection.style.display = 'block';
+        renderAdminBlogTable();
+        renderAdminPortfolioTable();
+        renderAdminApplicantsTable();
+        populateRegSettingsCmsInputs();
+        renderAdminQuestionsTable();
+        populateLandingCmsInputs();
+        renderDashboardOverview();
+      } else {
+        loginSection.style.display = 'flex';
+        panelSection.style.display = 'none';
+      }
+    });
   } else {
-    // Clear invalid/expired token
-    sessionStorage.removeItem('robotik_admin_session');
-    loginSection.style.display = 'flex';
-    panelSection.style.display = 'none';
+    console.error("Firebase Auth is not initialized.");
   }
 }
 
@@ -1844,7 +1822,7 @@ function setupInteractiveCircuit() {
 // --- BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', async () => {
   // Check login state first (async: verifies HMAC session token)
-  await checkLoginState();
+  setupAuthStateListener();
   setupCmsAuthentication();
   setupCmsTabs();
   setupLocalImageUploader();

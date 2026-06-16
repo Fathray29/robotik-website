@@ -369,14 +369,16 @@ const firebaseConfig = {
 };
 
 let db = null;
+let auth = null;
 let useFirebase = false;
 
 if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER_PROJECT_ID') {
   try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    auth = firebase.auth();
     useFirebase = true;
-    console.log("Motechart Cloud Engine: Firebase Firestore initialized successfully! ☁️");
+    console.log("Motechart Cloud Engine: Firebase Firestore & Auth initialized successfully! ☁️");
   } catch (e) {
     console.error("Motechart Cloud Engine: Firebase initialization failed:", e);
   }
@@ -392,7 +394,8 @@ export const state = {
   landingData: loadData('robotik_landing', INITIAL_LANDING_DATA),
   soundMuted: false,
   useFirebase: useFirebase,
-  db: db
+  db: db,
+  auth: auth
 };
 
 
@@ -690,45 +693,8 @@ export function sanitizeHeroHtml(html) {
 }
 
 // --- SECURE SESSION TOKEN MANAGEMENT ---
-/**
- * Generates an HMAC-like secure session token derived from the password hash.
- * This prevents session spoofing by making the token unforgeable without the password.
- */
-export async function generateSecureToken(passwordHash) {
-  const timestamp = Date.now();
-  const payload = `${passwordHash}:${timestamp}:robotik_session`;
-  const encoder = new TextEncoder();
-  const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(payload));
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const token = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return JSON.stringify({ token, timestamp });
-}
 
-/**
- * Verifies a stored session token is valid and not expired.
- * @param {string} storedToken - JSON string with token and timestamp
- * @param {string} passwordHash - The expected admin password hash
- * @param {number} maxAgeMs - Maximum session age in milliseconds (default: 2 hours)
- * @returns {Promise<boolean>} - Whether the session is valid
- */
-export async function verifySecureToken(storedToken, passwordHash, maxAgeMs = 2 * 60 * 60 * 1000) {
-  if (!storedToken) return false;
-  try {
-    const { token, timestamp } = JSON.parse(storedToken);
-    if (!token || !timestamp) return false;
-    // Check session expiry
-    if (Date.now() - timestamp > maxAgeMs) return false;
-    // Recompute expected token
-    const payload = `${passwordHash}:${timestamp}:robotik_session`;
-    const encoder = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(payload));
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const expectedToken = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return token === expectedToken;
-  } catch (e) {
-    return false;
-  }
-}
+
 
 // --- LOGIN RATE LIMITER ---
 const LOGIN_STORAGE_KEY = 'robotik_login_attempts';

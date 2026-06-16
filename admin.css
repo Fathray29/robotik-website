@@ -3,19 +3,19 @@
    Premium Sleek Dark Mode with Glassmorphism
    ========================================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 :root {
-  /* Color Palette */
-  --bg-dark: #050505;          /* OLED Black */
-  --bg-darker: #000000;        /* Deep Black */
-  --sidebar-bg: rgba(5, 5, 5, 0.85);
-  --topbar-bg: rgba(5, 5, 5, 0.75);
-  --card-bg: rgba(20, 20, 20, 0.5); 
+  /* Original Slate Color Palette */
+  --bg-dark: #0f172a;          /* Slate 900 */
+  --bg-darker: #020617;        /* Slate 950 */
+  --sidebar-bg: rgba(15, 23, 42, 0.85);
+  --topbar-bg: rgba(15, 23, 42, 0.75);
+  --card-bg: rgba(30, 41, 59, 0.5); 
   
-  --accent-cyan: #00E5FF;      /* Bright Cyan */
-  --accent-cyan-hover: #00BFFF;
-  --accent-cyan-glow: rgba(0, 229, 255, 0.3);
+  --accent-cyan: #06b6d4;      /* Cyan 500 */
+  --accent-cyan-hover: #0891b2;
+  --accent-cyan-glow: rgba(6, 182, 212, 0.3);
   
   --accent-yellow: #FFD500;    /* Bright Yellow */
   --accent-yellow-hover: #EAB308;
@@ -25,8 +25,8 @@
   --accent-red: #ef4444;       
   
   --text-main: #f8fafc;        
-  --text-muted: #94a3b8;       
-  --border-color: rgba(255, 255, 255, 0.1);
+  --text-muted: #9ca3af;       
+  --border-color: rgba(255, 255, 255, 0.15);
   --border-light: rgba(255, 255, 255, 0.05);
 
   /* Layout Metrics */
@@ -35,7 +35,8 @@
   
   /* Fonts */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-heading: 'Space Grotesk', sans-serif;
+  --font-heading: 'Bebas Neue', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
 
 * {
@@ -183,12 +184,14 @@ body {
 }
 
 .login-header h2 {
-  font-size: 1.8rem;
+  font-size: 3.5rem;
   color: var(--text-main);
   margin-bottom: 0.25rem;
   font-family: var(--font-heading);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 0.9;
 }
 
 .login-header p {
@@ -253,11 +256,12 @@ body {
 .form-label {
   display: block;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-weight: 700;
   color: var(--text-muted);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
 }
 
 .form-label span {
@@ -320,14 +324,38 @@ body {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: none;
-  font-family: var(--font-heading);
+  border: 2px solid transparent;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   text-decoration: none;
+  position: relative;
+  z-index: 1;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, #A281FF, #EB8280, #EBBF9A, #89D0FF);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -2;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background-color: inherit;
+  border-radius: 2px;
+  z-index: -1;
+  transition: background-color 0.3s ease;
 }
 
 .btn-block { width: 100%; }
@@ -452,8 +480,11 @@ body {
   background: transparent;
   border: none;
   width: 100%;
-  font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   text-align: left;
 }
 
@@ -503,10 +534,12 @@ body {
 }
 
 .topbar-left h2 {
-  font-size: 1.25rem;
+  font-size: 2rem;
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .topbar-right {

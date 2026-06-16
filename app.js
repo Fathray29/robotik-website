@@ -4,8 +4,7 @@ import {
   playRoboticSound, 
   sanitizeInput, 
   escapeHtml, 
-  parseMarkdownToHtml, 
-  initializeCloudDataSync 
+  parseMarkdownToHtml 
 } from './shared.js';
 
 // Central shared state shortcuts

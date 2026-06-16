@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Security Headers -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; font-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; font-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- SEO Optimization -->
@@ -485,7 +485,36 @@
                   style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
                   Langkah 2: Pemetaan Keahlian & Minat</h3>
 
-
+                <div class="form-group">
+                  <span class="form-label">Divisi Keahlian Yang Diminati <span>*</span></span>
+                  <div class="checkbox-group-container">
+                    <div class="custom-checkbox-wrapper" id="wrapper-mechanics">
+                      <input type="checkbox" id="divisi_mechanics" name="divisi" value="Mechanics & Desain 3D" checked>
+                      <label for="divisi_mechanics" class="custom-checkbox-label">
+                        <span style="font-size: 2.25rem;" aria-hidden="true">🦾</span>
+                        <h4>Mekanik</h4>
+                        <p>CAD, Chassis, 3D Printing</p>
+                      </label>
+                    </div>
+                    <div class="custom-checkbox-wrapper" id="wrapper-electronics">
+                      <input type="checkbox" id="divisi_electronics" name="divisi" value="Electronics & IoT">
+                      <label for="divisi_electronics" class="custom-checkbox-label">
+                        <span style="font-size: 2.25rem;" aria-hidden="true">⚡</span>
+                        <h4>Elektronik</h4>
+                        <p>Mikrokontroler, Sirkuit, Sensor</p>
+                      </label>
+                    </div>
+                    <div class="custom-checkbox-wrapper" id="wrapper-programming">
+                      <input type="checkbox" id="divisi_programming" name="divisi" value="Programming & Algoritma">
+                      <label for="divisi_programming" class="custom-checkbox-label">
+                        <span style="font-size: 2.25rem;" aria-hidden="true">💻</span>
+                        <h4>Pemrograman</h4>
+                        <p>Arduino C++, Python, Logika PID</p>
+                      </label>
+                    </div>
+                  </div>
+                  <span class="hint-text">Pilih minimal satu divisi (boleh lebih dari satu) yang paling Anda minati.</span>
+                </div>
 
                 <div class="form-group">
                   <label class="form-label" for="motivasi">Tulis Motivasi Bergabung Ekskul Robotik <span>*</span> <span

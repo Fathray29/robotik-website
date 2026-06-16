@@ -119,6 +119,15 @@ function setupCmsAuthentication() {
       const user = document.getElementById('admin_username').value.trim();
       const pass = document.getElementById('admin_password').value.trim();
 
+      if (!state.auth) {
+        playRoboticSound('error');
+        if (errMsg) {
+          errMsg.textContent = '❌ Firebase Authentication tidak aktif atau gagal diinisialisasi.';
+          errMsg.style.display = 'block';
+        }
+        return;
+      }
+
       try {
         await state.auth.signInWithEmailAndPassword(user, pass);
         playRoboticSound('success');
@@ -1140,12 +1149,15 @@ function setupCmsHistory() {
   cmsHistoryStack.push(initialState);
   lastSavedState = JSON.stringify(initialState);
 
-  form.addEventListener('input', (e) => {
-    if (isRestoringCmsState) return;
-    if (e.target && e.target.id && e.target.id.startsWith('edit-')) {
-      captureCmsState(false);
-    }
-  });
+  if (!form.dataset.listenerAttached) {
+    form.addEventListener('input', (e) => {
+      if (isRestoringCmsState) return;
+      if (e.target && e.target.id && e.target.id.startsWith('edit-')) {
+        captureCmsState(false);
+      }
+    });
+    form.dataset.listenerAttached = 'true';
+  }
 
   const btnUndo = document.getElementById('btn-cms-undo');
   const btnRedo = document.getElementById('btn-cms-redo');

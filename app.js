@@ -7,7 +7,6 @@ import {
   parseMarkdownToHtml,
   sanitizeUrl,
   sanitizeHeroHtml,
-  verifySecureToken,
   checkFormRateLimit,
   recordFormSubmission
 } from './shared.js';
@@ -644,6 +643,27 @@ function setupRegistrationForm() {
             charCount.style.color = '#FACC15';
           }
         }
+
+        // Real-time dynamic AI recommendation for divisions
+        const val = input.value.toLowerCase();
+        document.querySelectorAll('.custom-checkbox-wrapper').forEach(el => el.classList.remove('recommended'));
+        
+        const keywordsMechanics = ['3d', 'cad', 'sasis', 'desain', 'mekanik', 'chassis', 'akrilik', 'bodi', 'struktur', 'physics', 'fisik', 'rangka'];
+        const keywordsElectronics = ['sirkuit', 'sensor', 'arduino', 'solder', 'kabel', 'elektronik', 'baterai', 'hardware', 'pcb', 'arus', 'tegangan', 'daya'];
+        const keywordsProgramming = ['program', 'coding', 'software', 'python', 'c++', 'algoritma', 'pid', 'code', 'pemrogram', 'iot', 'logic', 'logika'];
+        
+        if (keywordsMechanics.some(kw => val.includes(kw))) {
+          const el = document.getElementById('wrapper-mechanics');
+          if (el) el.classList.add('recommended');
+        }
+        if (keywordsElectronics.some(kw => val.includes(kw))) {
+          const el = document.getElementById('wrapper-electronics');
+          if (el) el.classList.add('recommended');
+        }
+        if (keywordsProgramming.some(kw => val.includes(kw))) {
+          const el = document.getElementById('wrapper-programming');
+          if (el) el.classList.add('recommended');
+        }
       }
     });
   });
@@ -714,8 +734,15 @@ function setupRegistrationForm() {
       const motivasi = document.getElementById('motivasi');
       const vMotiv = validateField(motivasi);
       
-      stepValid = vMotiv;
-
+      // Enforce at least one division selected
+      const checkedDivisi = document.querySelectorAll('input[name="divisi"]:checked');
+      let divisionValid = true;
+      if (checkedDivisi.length === 0) {
+        divisionValid = false;
+        alert('Silakan pilih minimal satu divisi keahlian.');
+      }
+      
+      stepValid = vMotiv && divisionValid;
       // Validasi pertanyaan kustom yang wajib diisi (required)
       let customValid = true;
       if (regSettings.customQuestions) {
@@ -803,8 +830,8 @@ function setupRegistrationForm() {
     const email = document.getElementById('email').value;
     const noHp = document.getElementById('no_hp').value;
     const laptop = document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak';
-    
-
+    const checkedDiv = Array.from(document.querySelectorAll('input[name="divisi"]:checked')).map(cb => cb.value);
+    const divisiStr = checkedDiv.join(', ') || '-';
 
     const motivasi = document.getElementById('motivasi').value;
     const summaryContainer = document.getElementById('confirmation-summary');
@@ -830,6 +857,7 @@ function setupRegistrationForm() {
       <div class="summary-item"><strong>Email:</strong> <span>${escapeHtml(email)}</span></div>
       <div class="summary-item"><strong>No. WhatsApp:</strong> <span>${escapeHtml(noHp)}</span></div>
       <div class="summary-item"><strong>Punya Laptop:</strong> <span>${escapeHtml(laptop)}</span></div>
+      <div class="summary-item"><strong>Divisi Diminati:</strong> <span>${escapeHtml(divisiStr)}</span></div>
       <div class="summary-item block"><strong>Motivasi:</strong> <p>${escapeHtml(motivasi)}</p></div>
       ${customSummaryHtml}
     `;
@@ -940,7 +968,7 @@ function setupRegistrationForm() {
         email: emailSiswa,
         noHp: noHpSiswa,
         laptop: document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak',
-        divisi: [],
+        divisi: Array.from(document.querySelectorAll('input[name="divisi"]:checked')).map(cb => cb.value),
         motivasi: motivasiSiswa,
         tanggalDaftar: new Date().toISOString().split('T')[0],
         status: 'Pending',
@@ -2003,9 +2031,9 @@ async function checkApplicantStatus(id) {
 
 function setupStatusChecker() {
   const btnCheckStatus = document.getElementById('btn-check-status');
-  const inputCheckStatus = document.getElementById('check-reg-id');
+  const inputCheckStatus = document.getElementById('status-check-id-input');
   const studentStatusDialog = document.getElementById('student-status-dialog');
-  const closeStudentStatusBtn = document.getElementById('close-status-dialog-btn');
+  const closeStudentStatusBtn = document.getElementById('close-student-status-btn');
 
   if (btnCheckStatus && inputCheckStatus) {
     const handleCheck = async () => {

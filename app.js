@@ -2037,3 +2037,82 @@ function setupStatusChecker() {
     });
   }
 }
+
+// --- UX ENHANCEMENTS (Modern UI) ---
+function setupUXEnhancements() {
+  // 1. Sticky Header Blur Effect on Scroll
+  const header = document.querySelector('.main-header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+  }
+
+  // 2. Mouse Glow Tracking on Glass Cards
+  const cards = document.querySelectorAll('.glass-card');
+  document.addEventListener('mousemove', (e) => {
+    for (const card of cards) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // Set CSS variables for the mouse position
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  });
+
+  // Modify CSS to use these variables for the inner glow
+  const style = document.createElement('style');
+  style.textContent = `
+    .glass-card::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: inherit;
+      background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(0, 229, 255, 0.06), transparent 40%);
+      pointer-events: none;
+      z-index: -1;
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+    .glass-card:hover::after {
+      opacity: 1;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // 3. Scroll Intersection Observer for Fade-in Animations
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+  
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Automatically add fade-in-up class to headings, cards, and sections that don't have it yet
+  const animatedElements = document.querySelectorAll('.glass-card, .hero-content > *, .section-subtitle-center, .divisi-nav-btn');
+  animatedElements.forEach((el, index) => {
+    el.classList.add('fade-in-up');
+    // Add staggered delay
+    if (index % 3 === 1) el.classList.add('delay-100');
+    if (index % 3 === 2) el.classList.add('delay-200');
+    observer.observe(el);
+  });
+}
+
+// Call the UX setup on load
+window.addEventListener('DOMContentLoaded', () => {
+  setupUXEnhancements();
+});

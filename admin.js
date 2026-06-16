@@ -146,6 +146,7 @@ function checkLoginState() {
     populateRegSettingsCmsInputs();
     renderAdminQuestionsTable();
     populateLandingCmsInputs();
+    renderDashboardOverview();
   } else {
     loginSection.style.display = 'block';
     panelSection.style.display = 'none';
@@ -167,6 +168,7 @@ function showAdminPanel() {
     populateRegSettingsCmsInputs();
     renderAdminQuestionsTable();
     populateLandingCmsInputs();
+    renderDashboardOverview();
   };
 
   if (document.startViewTransition) {
@@ -178,7 +180,9 @@ function showAdminPanel() {
 
 // --- CMS TAB SYSTEM ---
 function setupCmsTabs() {
-  const tabs = document.querySelectorAll('.cms-tab-btn');
+  const tabs = document.querySelectorAll('.nav-item');
+  const topbarTitle = document.getElementById('topbar-title');
+  
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       playRoboticSound('click');
@@ -186,13 +190,28 @@ function setupCmsTabs() {
       tab.classList.add('active');
 
       const target = tab.getAttribute('data-cms-target');
-      document.querySelectorAll('.cms-view-content').forEach(view => {
+      document.querySelectorAll('.cms-view').forEach(view => {
         view.classList.remove('active');
       });
       document.getElementById(target).classList.add('active');
+      
+      if (topbarTitle) {
+        topbarTitle.textContent = tab.textContent.trim();
+      }
+      
+      if (window.innerWidth <= 768) {
+        document.getElementById('admin-sidebar').classList.remove('show');
+      }
     });
     tab.addEventListener('mouseenter', () => playRoboticSound('hover'));
   });
+  
+  const mobileToggle = document.getElementById('mobile-toggle-btn');
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', () => {
+      document.getElementById('admin-sidebar').classList.toggle('show');
+    });
+  }
 
   const btnAddBlog = document.getElementById('btn-add-blog');
   const btnAddPortfolio = document.getElementById('btn-add-portfolio');
@@ -314,6 +333,35 @@ function setupCmsTabs() {
 
       closeCmsEditor();
     });
+  }
+}
+
+// --- DASHBOARD OVERVIEW ---
+function renderDashboardOverview() {
+  const totalApps = document.getElementById('stat-total-applicants');
+  const pendApps = document.getElementById('stat-pending-applicants');
+  const totalArt = document.getElementById('stat-total-articles');
+  const totalProj = document.getElementById('stat-total-projects');
+  
+  if (totalApps) totalApps.textContent = state.applicants.length;
+  if (pendApps) pendApps.textContent = state.applicants.filter(a => a.status === 'Pending').length;
+  if (totalArt) totalArt.textContent = state.blogArticles.length;
+  if (totalProj) totalProj.textContent = state.portfolioProjects.length;
+  
+  const recentTable = document.getElementById('overview-recent-applicants-table');
+  if (recentTable) {
+    const recent = state.applicants.filter(a => a.status === 'Pending').slice(0, 5);
+    if (recent.length === 0) {
+      recentTable.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding:1rem;">Tidak ada pendaftar baru yang menunggu persetujuan.</td></tr>';
+    } else {
+      recentTable.innerHTML = recent.map(app => `
+        <tr>
+          <td style="font-weight:600;">${escapeHtml(app.nama)}</td>
+          <td>${escapeHtml(app.kelas)}</td>
+          <td><span class="status-badge status-pending">Menunggu Persetujuan</span></td>
+        </tr>
+      `).join('');
+    }
   }
 }
 

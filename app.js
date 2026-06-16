@@ -4,7 +4,12 @@ import {
   playRoboticSound, 
   sanitizeInput, 
   escapeHtml, 
-  parseMarkdownToHtml 
+  parseMarkdownToHtml,
+  sanitizeUrl,
+  sanitizeHeroHtml,
+  verifySecureToken,
+  checkFormRateLimit,
+  recordFormSubmission
 } from './shared.js';
 
 // Central shared state shortcuts
@@ -25,31 +30,10 @@ function setupRouter() {
     const activeView = document.querySelector('.page-view.active');
     if (activeView && activeView.id === targetViewId) return;
 
-    // Secure verification hook for admin dashboard
+    // Admin is now handled by admin.html with HMAC session tokens.
     if (targetViewId === 'view-admin') {
-      const isLogged = sessionStorage.getItem('robotik_admin_logged') === 'true';
-      const loginSection = document.getElementById('admin-login-section');
-      const panelSection = document.getElementById('admin-panel-section');
-      
-      if (isLogged) {
-        loginSection.style.display = 'none';
-        panelSection.style.display = 'block';
-        renderAdminBlogTable();
-        renderAdminPortfolioTable();
-      // renderAdminApplicantsTable();
-        if (typeof renderAdminQuestionsTable === 'function') {
-          renderAdminQuestionsTable();
-        }
-        const statusToggle = document.getElementById('reg-status-toggle');
-        const countdownTargetInput = document.getElementById('reg-countdown-target');
-        if (statusToggle && countdownTargetInput) {
-          statusToggle.value = regSettings.isOpen ? 'open' : 'closed';
-          countdownTargetInput.value = regSettings.countdownTarget || '';
-        }
-      } else {
-        loginSection.style.display = 'flex';
-        panelSection.style.display = 'none';
-      }
+      window.location.href = './admin.html';
+      return;
     }
 
     const performTransition = () => {
@@ -90,7 +74,7 @@ function setupRouter() {
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const target = link.getAttribute('data-target');
-      if (!target) return; // Allow normal navigation (like admin.html)
+      if (!target) return;
       e.preventDefault();
       navigateTo(target);
     });
@@ -122,7 +106,8 @@ function renderPublicArticles() {
   const blogContainer = document.getElementById('blog-grid');
   if (!blogContainer) return;
 
-  const filtered = blogArticles.filter(article => {
+
+    const filtered = blogArticles.filter(article => {
     const matchesCategory = activeCategory === 'all' || article.category === activeCategory;
     const matchesSearch = article.title.toLowerCase().includes(searchQuery) ||
                           article.excerpt.toLowerCase().includes(searchQuery);
@@ -143,13 +128,13 @@ function renderPublicArticles() {
   }
 
   blogContainer.innerHTML = filtered.map(article => `
-    <article class="glass-card blog-card" style="view-transition-name: article-card-${article.id}">
-      <div class="blog-card-badge">${article.category.toUpperCase()}</div>
+    <article class="glass-card blog-card" style="view-transition-name: article-card-${parseInt(article.id) || 0}">
+      <div class="blog-card-badge">${escapeHtml(article.category.toUpperCase())}</div>
       <div class="blog-card-content">
-        <div class="blog-card-meta">${article.date || 'Tgl Hilang'} | Oleh: ${article.author || 'Tim Robotik'}</div>
-        <h3 class="blog-card-title">${article.title}</h3>
-        <p class="blog-card-excerpt">${article.excerpt}</p>
-        <button class="btn btn-secondary btn-sm read-more-btn" data-id="${article.id}">
+        <div class="blog-card-meta">${escapeHtml(article.date || 'Tgl Hilang')} | Oleh: ${escapeHtml(article.author || 'Tim Robotik')}</div>
+        <h3 class="blog-card-title">${escapeHtml(article.title)}</h3>
+        <p class="blog-card-excerpt">${escapeHtml(article.excerpt)}</p>
+        <button class="btn btn-secondary btn-sm read-more-btn" data-id="${parseInt(article.id) || 0}">
           Baca Selengkapnya
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 6px;">
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -244,7 +229,8 @@ function openArticleDetail(id) {
   playRoboticSound('click');
   const detailDialog = document.getElementById('blog-detail-dialog');
   
-  const bgStyle = article.headerImage ? `style="background-image: url('${article.headerImage}')"` : '';
+  const safeHeaderImage = sanitizeUrl(article.headerImage || '');
+  const bgStyle = safeHeaderImage ? `style="background-image: url('${encodeURI(safeHeaderImage)}')"` : '';
   const bannerClass = article.headerImage ? 'dialog-header-banner' : 'dialog-header-banner no-image';
 
   detailDialog.innerHTML = `
@@ -261,9 +247,9 @@ function openArticleDetail(id) {
     
     <div class="dialog-body-container">
       <div class="dialog-title-card">
-        <div class="dialog-meta">${article.date || ''} | Oleh: ${article.author || 'Tim Robotik'}</div>
-        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 0.75rem; color: var(--text-white); font-size: 2.25rem;">${article.title}</h2>
-        <div class="dialog-badge">${article.category.toUpperCase()}</div>
+        <div class="dialog-meta">${escapeHtml(article.date || '')} | Oleh: ${escapeHtml(article.author || 'Tim Robotik')}</div>
+        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 0.75rem; color: var(--text-white); font-size: 2.25rem;">${escapeHtml(article.title)}</h2>
+        <div class="dialog-badge">${escapeHtml(article.category.toUpperCase())}</div>
       </div>
       
       <div class="dialog-grid-container">
@@ -356,25 +342,26 @@ function renderPublicPortfolio() {
   if (!portfolioContainer) return;
 
   portfolioContainer.innerHTML = portfolioProjects.map(proj => {
-    const cardBg = proj.headerImage ? `style="background-image: linear-gradient(rgba(11, 17, 32, 0.75), rgba(11, 17, 32, 0.95)), url('${proj.headerImage}'); background-size: cover; background-position: center;"` : '';
+    const safeCardImage = sanitizeUrl(proj.headerImage || '');
+    const cardBg = safeCardImage ? `style="background-image: linear-gradient(rgba(11, 17, 32, 0.75), rgba(11, 17, 32, 0.95)), url('${encodeURI(safeCardImage)}'); background-size: cover; background-position: center;"` : '';
     return `
       <div class="glass-card portfolio-card" ${cardBg}>
         <div class="portfolio-header">
-          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${proj.status}</span>
-          <span class="portfolio-category">${proj.category.toUpperCase()}</span>
+          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span>
+          <span class="portfolio-category">${escapeHtml(proj.category.toUpperCase())}</span>
         </div>
-        <h3 class="portfolio-title">${proj.title}</h3>
+        <h3 class="portfolio-title">${escapeHtml(proj.title)}</h3>
         <div class="portfolio-meta">
-          <strong>Pembuat:</strong> ${proj.creators}
-        </div>
-        <div class="portfolio-meta">
-          <strong>Komponen:</strong> ${proj.components}
+          <strong>Pembuat:</strong> ${escapeHtml(proj.creators)}
         </div>
         <div class="portfolio-meta">
-          <strong>Spesifikasi:</strong> ${proj.specs}
+          <strong>Komponen:</strong> ${escapeHtml(proj.components)}
+        </div>
+        <div class="portfolio-meta">
+          <strong>Spesifikasi:</strong> ${escapeHtml(proj.specs)}
         </div>
         
-        <button class="btn btn-outline-cyan btn-sm btn-block view-project-detail-btn" data-id="${proj.id}" style="margin-top: 1.5rem;">
+        <button class="btn btn-outline-cyan btn-sm btn-block view-project-detail-btn" data-id="${parseInt(proj.id) || 0}" style="margin-top: 1.5rem;">
           Lihat Proyek & Kode Arduino 🛠️
         </button>
       </div>
@@ -397,8 +384,9 @@ function openPortfolioDetail(id) {
   playRoboticSound('click');
   const detailDialog = document.getElementById('portfolio-detail-dialog');
   
-  const bgStyle = proj.headerImage ? `style="background-image: url('${proj.headerImage}')"` : '';
-  const bannerClass = proj.headerImage ? 'dialog-header-banner' : 'dialog-header-banner no-image';
+  const safeProjImage = sanitizeUrl(proj.headerImage || '');
+  const bgStyle = safeProjImage ? `style="background-image: url('${encodeURI(safeProjImage)}')"` : '';
+  const bannerClass = safeProjImage ? 'dialog-header-banner' : 'dialog-header-banner no-image';
 
   detailDialog.innerHTML = `
     <div class="dialog-close-bar floating">
@@ -415,23 +403,23 @@ function openPortfolioDetail(id) {
     <div class="dialog-body-container">
       <div class="dialog-title-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${proj.status}</span>
-          <span class="portfolio-category" style="color: var(--accent-cyan); font-weight: bold; letter-spacing: 1.2px;">${proj.category.toUpperCase()}</span>
+          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span>
+          <span class="portfolio-category" style="color: var(--accent-cyan); font-weight: bold; letter-spacing: 1.2px;">${escapeHtml(proj.category.toUpperCase())}</span>
         </div>
-        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 1.5rem; color: var(--text-white); font-size: 2.25rem;">${proj.title}</h2>
+        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 1.5rem; color: var(--text-white); font-size: 2.25rem;">${escapeHtml(proj.title)}</h2>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1.5rem;">
           <div>
             <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Pembuat Siswa</strong>
-            <span style="font-size: 0.95rem; color: var(--text-light);">${proj.creators}</span>
+            <span style="font-size: 0.95rem; color: var(--text-light);">${escapeHtml(proj.creators)}</span>
           </div>
           <div>
             <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Komponen Utama</strong>
-            <span style="font-size: 0.95rem; color: var(--text-light);">${proj.components}</span>
+            <span style="font-size: 0.95rem; color: var(--text-light);">${escapeHtml(proj.components)}</span>
           </div>
           <div>
             <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Spesifikasi Fisik</strong>
-            <span style="font-size: 0.95rem; color: var(--text-light);">${proj.specs}</span>
+            <span style="font-size: 0.95rem; color: var(--text-light);">${escapeHtml(proj.specs)}</span>
           </div>
         </div>
       </div>
@@ -832,17 +820,17 @@ function setupRegistrationForm() {
           const checkedRadio = document.querySelector(`input[name="${q.id}"]:checked`);
           if (checkedRadio) ans = checkedRadio.value;
         }
-        customSummaryHtml += `<div class="summary-item block"><strong>${q.label}:</strong> <span>${ans}</span></div>`;
+        customSummaryHtml += `<div class="summary-item block"><strong>${escapeHtml(q.label)}:</strong> <span>${escapeHtml(ans)}</span></div>`;
       });
     }
     
     summaryContainer.innerHTML = `
-      <div class="summary-item"><strong>Nama Lengkap:</strong> <span>${nama}</span></div>
-      <div class="summary-item"><strong>Kelas:</strong> <span>Kelas ${kelas}</span></div>
-      <div class="summary-item"><strong>Email:</strong> <span>${email}</span></div>
-      <div class="summary-item"><strong>No. WhatsApp:</strong> <span>${noHp}</span></div>
-      <div class="summary-item"><strong>Punya Laptop:</strong> <span>${laptop}</span></div>
-      <div class="summary-item block"><strong>Motivasi:</strong> <p>${motivasi}</p></div>
+      <div class="summary-item"><strong>Nama Lengkap:</strong> <span>${escapeHtml(nama)}</span></div>
+      <div class="summary-item"><strong>Kelas:</strong> <span>Kelas ${escapeHtml(kelas)}</span></div>
+      <div class="summary-item"><strong>Email:</strong> <span>${escapeHtml(email)}</span></div>
+      <div class="summary-item"><strong>No. WhatsApp:</strong> <span>${escapeHtml(noHp)}</span></div>
+      <div class="summary-item"><strong>Punya Laptop:</strong> <span>${escapeHtml(laptop)}</span></div>
+      <div class="summary-item block"><strong>Motivasi:</strong> <p>${escapeHtml(motivasi)}</p></div>
       ${customSummaryHtml}
     `;
   }
@@ -879,10 +867,21 @@ function setupRegistrationForm() {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // Rate limit: prevent spam re-submissions
+    const rateCheck = checkFormRateLimit();
+    if (!rateCheck.allowed) {
+      playRoboticSound('error');
+      const secs = Math.ceil(rateCheck.remainingMs / 1000);
+      alert(`⏳ Mohon tunggu ${secs} detik sebelum mengirim ulang.`);
+      return;
+    }
+
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Memproses Enkripsi Data...';
 
+    recordFormSubmission();
     playRoboticSound('success');
 
     setTimeout(() => {
@@ -1104,7 +1103,7 @@ function renderLandingPage() {
   const achievementsEl = document.getElementById('home-achievements-grid');
 
   if (heroTagEl) heroTagEl.textContent = landingData.heroTag;
-  if (heroTitleEl) heroTitleEl.innerHTML = landingData.heroTitle;
+  if (heroTitleEl) heroTitleEl.innerHTML = sanitizeHeroHtml(landingData.heroTitle);
   if (heroDescEl) heroDescEl.textContent = landingData.heroDesc;
   if (visiTextEl) visiTextEl.textContent = landingData.visiText;
   

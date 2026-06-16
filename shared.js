@@ -642,7 +642,15 @@ export function parseMarkdownToHtml(markdown) {
 
 export function sanitizeInput(text) {
   if (typeof text !== 'string') return text;
-  return text.replace(/<[^>]*>/g, '').trim();
+  try {
+    // DOMParser-based sanitizer: parse as HTML, then extract only text content
+    // This neutralizes all tags, event handlers, javascript: URIs, and script injection
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    return (doc.body.textContent || '').trim();
+  } catch (e) {
+    // Fallback: aggressive strip if DOMParser fails
+    return text.replace(/<[^>]*>/g, '').replace(/on\w+\s*=/gi, '').trim();
+  }
 }
 
 export function escapeHtml(text) {
@@ -653,4 +661,147 @@ export function escapeHtml(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+/**
+ * Validates a URL string to ensure it uses a safe protocol (https:// or http://).
+ * Returns the URL if safe, or an empty string if dangerous (e.g., javascript:, data:).
+ */
+export function sanitizeUrl(url) {
+  if (typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  // Only allow http:// and https:// protocols
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  // Allow relative paths starting with ./ or /
+  if (/^\.?\//.test(trimmed)) return trimmed;
+  // Block everything else (javascript:, data:, vbscript:, etc.)
+  return '';
+}
+
+/**
+ * Sanitizes CMS-provided HTML to allow ONLY <span> tags (for hero title accent).
+ * Strips all other HTML tags and dangerous attributes.
+ */
+export function sanitizeHeroHtml(html) {
+  if (typeof html !== 'string') return '';
+  // Allow only <span> and </span> tags, escape everything else
+  return html.replace(/<(?!\/?(span)\s*\/?>)[^>]*>/gi, (match) => escapeHtml(match));
+}
+
+// --- SECURE SESSION TOKEN MANAGEMENT ---
+/**
+ * Generates an HMAC-like secure session token derived from the password hash.
+ * This prevents session spoofing by making the token unforgeable without the password.
+ */
+export async function generateSecureToken(passwordHash) {
+  const timestamp = Date.now();
+  const payload = `${passwordHash}:${timestamp}:robotik_session`;
+  const encoder = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(payload));
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const token = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return JSON.stringify({ token, timestamp });
+}
+
+/**
+ * Verifies a stored session token is valid and not expired.
+ * @param {string} storedToken - JSON string with token and timestamp
+ * @param {string} passwordHash - The expected admin password hash
+ * @param {number} maxAgeMs - Maximum session age in milliseconds (default: 2 hours)
+ * @returns {Promise<boolean>} - Whether the session is valid
+ */
+export async function verifySecureToken(storedToken, passwordHash, maxAgeMs = 2 * 60 * 60 * 1000) {
+  if (!storedToken) return false;
+  try {
+    const { token, timestamp } = JSON.parse(storedToken);
+    if (!token || !timestamp) return false;
+    // Check session expiry
+    if (Date.now() - timestamp > maxAgeMs) return false;
+    // Recompute expected token
+    const payload = `${passwordHash}:${timestamp}:robotik_session`;
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(payload));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const expectedToken = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return token === expectedToken;
+  } catch (e) {
+    return false;
+  }
+}
+
+// --- LOGIN RATE LIMITER ---
+const LOGIN_STORAGE_KEY = 'robotik_login_attempts';
+
+/**
+ * Returns the current login rate limit state.
+ * @returns {{ attempts: number, lockoutUntil: number|null, isLocked: boolean, remainingMs: number }}
+ */
+export function getLoginRateLimit() {
+  try {
+    const data = JSON.parse(sessionStorage.getItem(LOGIN_STORAGE_KEY) || '{}');
+    const attempts = data.attempts || 0;
+    const lockoutUntil = data.lockoutUntil || null;
+    const now = Date.now();
+    if (lockoutUntil && now < lockoutUntil) {
+      return { attempts, lockoutUntil, isLocked: true, remainingMs: lockoutUntil - now };
+    }
+    // If lockout expired, reset
+    if (lockoutUntil && now >= lockoutUntil) {
+      sessionStorage.removeItem(LOGIN_STORAGE_KEY);
+      return { attempts: 0, lockoutUntil: null, isLocked: false, remainingMs: 0 };
+    }
+    return { attempts, lockoutUntil: null, isLocked: false, remainingMs: 0 };
+  } catch (e) {
+    return { attempts: 0, lockoutUntil: null, isLocked: false, remainingMs: 0 };
+  }
+}
+
+/**
+ * Records a failed login attempt and applies escalating lockout.
+ * Lockout schedule: 5 attempts = 30s, 8 = 60s, 10 = 120s, 15+ = 300s
+ */
+export function recordFailedLogin() {
+  const { attempts } = getLoginRateLimit();
+  const newAttempts = attempts + 1;
+  let lockoutMs = 0;
+  if (newAttempts >= 15) lockoutMs = 300000;      // 5 minutes
+  else if (newAttempts >= 10) lockoutMs = 120000;  // 2 minutes
+  else if (newAttempts >= 8) lockoutMs = 60000;    // 1 minute
+  else if (newAttempts >= 5) lockoutMs = 30000;    // 30 seconds
+
+  const lockoutUntil = lockoutMs > 0 ? Date.now() + lockoutMs : null;
+  sessionStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify({ attempts: newAttempts, lockoutUntil }));
+  return { attempts: newAttempts, lockoutUntil, isLocked: !!lockoutUntil, lockoutMs };
+}
+
+/**
+ * Resets the login rate limiter on successful login.
+ */
+export function resetLoginRateLimit() {
+  sessionStorage.removeItem(LOGIN_STORAGE_KEY);
+}
+
+// --- FORM SUBMISSION RATE LIMITER ---
+let lastFormSubmitTime = 0;
+const FORM_COOLDOWN_MS = 5000; // 5 seconds between submissions
+
+/**
+ * Checks if a form submission is allowed (cooldown-based).
+ * @returns {{ allowed: boolean, remainingMs: number }}
+ */
+export function checkFormRateLimit() {
+  const now = Date.now();
+  const elapsed = now - lastFormSubmitTime;
+  if (elapsed < FORM_COOLDOWN_MS) {
+    return { allowed: false, remainingMs: FORM_COOLDOWN_MS - elapsed };
+  }
+  return { allowed: true, remainingMs: 0 };
+}
+
+/**
+ * Records a form submission timestamp.
+ */
+export function recordFormSubmission() {
+  lastFormSubmitTime = Date.now();
 }

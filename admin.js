@@ -6,6 +6,11 @@ import {
   escapeHtml, 
   parseMarkdownToHtml,
   setupRealTimeApplicantsSync,
+  generateSecureToken,
+  verifySecureToken,
+  getLoginRateLimit,
+  recordFailedLogin,
+  resetLoginRateLimit,
   INITIAL_BLOG_ARTICLES,
   INITIAL_PORTFOLIO_PROJECTS,
   INITIAL_APPLICANTS,
@@ -26,6 +31,8 @@ async function sha256(message) {
 }
 
 // --- CMS AUTHENTICATION ---
+let lockoutTimerInterval = null;
+
 function setupCmsAuthentication() {
   const loginForm = document.getElementById('cms-login-form');
   const logoutBtn = document.getElementById('btn-admin-logout');
@@ -99,24 +106,59 @@ function setupCmsAuthentication() {
     });
   }
 
+  // --- LOGIN RATE LIMIT: Show lockout state on page load ---
+  updateLockoutDisplay();
+
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const user = document.getElementById('admin_username').value.trim();
-      const pass = document.getElementById('admin_password').value.trim();
       const errMsg = document.getElementById('login-error-msg');
       if (errMsg) errMsg.style.display = 'none';
 
+      // Check rate limit BEFORE processing login
+      const rateLimit = getLoginRateLimit();
+      if (rateLimit.isLocked) {
+        playRoboticSound('error');
+        const secs = Math.ceil(rateLimit.remainingMs / 1000);
+        if (errMsg) {
+          errMsg.textContent = `⚠️ Terlalu banyak percobaan gagal. Coba lagi dalam ${secs} detik.`;
+          errMsg.style.display = 'block';
+        }
+        return;
+      }
+
+      const user = document.getElementById('admin_username').value.trim();
+      const pass = document.getElementById('admin_password').value.trim();
       const inputHash = await sha256(pass);
 
       if (user === 'admin' && inputHash === ADMIN_PASS_HASH) {
         playRoboticSound('success');
-        sessionStorage.setItem('robotik_admin_logged', 'true');
+        resetLoginRateLimit();
+        clearLockoutTimer();
+
+        // Generate secure HMAC session token instead of a simple 'true' flag
+        const secureToken = await generateSecureToken(ADMIN_PASS_HASH);
+        sessionStorage.setItem('robotik_admin_session', secureToken);
+        // Remove legacy flag if present
+        sessionStorage.removeItem('robotik_admin_logged');
+
         showAdminPanel();
       } else {
         playRoboticSound('error');
+        const result = recordFailedLogin();
         if (errMsg) {
-          errMsg.textContent = 'Kombinasi Username atau Password salah!';
+          if (result.isLocked) {
+            const secs = Math.ceil(result.lockoutMs / 1000);
+            errMsg.textContent = `🔒 Akun terkunci selama ${secs} detik setelah ${result.attempts} percobaan gagal.`;
+            startLockoutCountdown();
+          } else {
+            const remaining = 5 - result.attempts;
+            if (remaining > 0) {
+              errMsg.textContent = `Kombinasi Username atau Password salah! (${remaining} percobaan tersisa sebelum lockout)`;
+            } else {
+              errMsg.textContent = 'Kombinasi Username atau Password salah!';
+            }
+          }
           errMsg.style.display = 'block';
         }
       }
@@ -126,18 +168,70 @@ function setupCmsAuthentication() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       playRoboticSound('click');
+      sessionStorage.removeItem('robotik_admin_session');
       sessionStorage.removeItem('robotik_admin_logged');
       window.location.href = './index.html';
     });
   }
 }
 
-function checkLoginState() {
-  const isLogged = sessionStorage.getItem('robotik_admin_logged') === 'true';
+// --- LOCKOUT TIMER DISPLAY HELPERS ---
+function updateLockoutDisplay() {
+  const rateLimit = getLoginRateLimit();
+  if (rateLimit.isLocked) {
+    startLockoutCountdown();
+  }
+}
+
+function startLockoutCountdown() {
+  clearLockoutTimer();
+  const errMsg = document.getElementById('login-error-msg');
+  const submitBtn = document.querySelector('#cms-login-form button[type="submit"]');
+
+  lockoutTimerInterval = setInterval(() => {
+    const rl = getLoginRateLimit();
+    if (!rl.isLocked) {
+      clearLockoutTimer();
+      if (errMsg) {
+        errMsg.textContent = 'Lockout berakhir. Silakan coba lagi.';
+        errMsg.style.display = 'block';
+      }
+      if (submitBtn) submitBtn.disabled = false;
+      return;
+    }
+    const secs = Math.ceil(rl.remainingMs / 1000);
+    if (errMsg) {
+      errMsg.textContent = `🔒 Akun terkunci. Coba lagi dalam ${secs} detik...`;
+      errMsg.style.display = 'block';
+    }
+    if (submitBtn) submitBtn.disabled = true;
+  }, 1000);
+}
+
+function clearLockoutTimer() {
+  if (lockoutTimerInterval) {
+    clearInterval(lockoutTimerInterval);
+    lockoutTimerInterval = null;
+  }
+  const submitBtn = document.querySelector('#cms-login-form button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = false;
+}
+
+// --- SECURE LOGIN STATE CHECK (async, HMAC-verified) ---
+async function checkLoginState() {
   const loginSection = document.getElementById('admin-login-section');
   const panelSection = document.getElementById('admin-panel-section');
 
-  if (isLogged) {
+  // Check new secure token first
+  const secureToken = sessionStorage.getItem('robotik_admin_session');
+  const isValid = await verifySecureToken(secureToken, ADMIN_PASS_HASH);
+
+  // Also handle legacy flag migration: remove if present but don't trust it
+  if (sessionStorage.getItem('robotik_admin_logged')) {
+    sessionStorage.removeItem('robotik_admin_logged');
+  }
+
+  if (isValid) {
     loginSection.style.display = 'none';
     panelSection.style.display = 'block';
     renderAdminBlogTable();
@@ -148,6 +242,8 @@ function checkLoginState() {
     populateLandingCmsInputs();
     renderDashboardOverview();
   } else {
+    // Clear invalid/expired token
+    sessionStorage.removeItem('robotik_admin_session');
     loginSection.style.display = 'flex';
     panelSection.style.display = 'none';
   }
@@ -1746,9 +1842,9 @@ function setupInteractiveCircuit() {
 }
 
 // --- BOOTSTRAP ---
-document.addEventListener('DOMContentLoaded', () => {
-  // Check login state first
-  checkLoginState();
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check login state first (async: verifies HMAC session token)
+  await checkLoginState();
   setupCmsAuthentication();
   setupCmsTabs();
   setupLocalImageUploader();

@@ -170,91 +170,6 @@ function renderPublicArticles() {
   });
 }
 
-// --- LIGHTWEIGHT EMBEDDED MARKDOWN TO HTML PARSER ---
-function parseMarkdownToHtml(markdown) {
-  if (!markdown) return '';
-
-  // 1. Escape HTML strings for security
-  let escaped = markdown
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // 2. Extract code blocks ```lang ... ``` to placeholders
-  const codeBlocks = [];
-  escaped = escaped.replace(/```([\s\S]*?)```/g, (match, code) => {
-    let cleanCode = code;
-    const matchLang = code.match(/^([a-zA-Z0-9+#-]+)\r?\n/);
-    let lang = '';
-    if (matchLang) {
-      lang = matchLang[1];
-      cleanCode = code.slice(matchLang[0].length);
-    }
-    const id = `__CODE_BLOCK_${codeBlocks.length}__`;
-    codeBlocks.push(`<pre><code class="language-${lang}">${cleanCode.trim()}</code></pre>`);
-    return id;
-  });
-
-  // 3. Blockquotes
-  escaped = escaped.replace(/^\s*>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
-
-  // 4. Headers
-  escaped = escaped.replace(/^\s*####\s+(.+)$/gm, '<h4>$1</h4>');
-  escaped = escaped.replace(/^\s*###\s+(.+)$/gm, '<h3>$1</h3>');
-  escaped = escaped.replace(/^\s*##\s+(.+)$/gm, '<h2>$1</h2>');
-  escaped = escaped.replace(/^\s*#\s+(.+)$/gm, '<h1>$1</h1>');
-
-  // 5. Unordered lists: convert lines starting with - or *
-  escaped = escaped.replace(/^\s*[\-\*]\s+(.+)$/gm, '<li>$1</li>');
-  escaped = escaped.replace(/(?:^\s*<li>.*?<\/li>\s*)+/gm, (match) => {
-    return `<ul>\n${match}</ul>\n`;
-  });
-
-  // 6. Ordered lists: convert lines starting with numbers
-  escaped = escaped.replace(/^\s*\d+\.\s+(.+)$/gm, '<ol-item>$1</ol-item>');
-  escaped = escaped.replace(/(?:^\s*<ol-item>.*?<\/ol-item>\s*)+/gm, (match) => {
-    return `<ol>\n${match.replace(/<ol-item>/g, '<li>').replace(/<\/ol-item>/g, '</li>')}</ol>\n`;
-  });
-
-  // 7. Paragraphs: split by double newlines or more
-  const paragraphs = escaped.split(/\n\s*\n+/);
-  const processed = paragraphs.map(p => {
-    const trimmed = p.trim();
-    if (!trimmed) return '';
-    // If it's already an HTML block tag, don't wrap in <p>
-    if (/^(<h[1-6]|<ul|<ol|<blockquote|<pre|<li>|__CODE_BLOCK_)/.test(trimmed)) {
-      return trimmed;
-    }
-    return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
-  });
-  escaped = processed.join('\n\n');
-
-  // 8. Inline formatting
-  // Bold: **text** or __text__
-  escaped = escaped.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
-  escaped = escaped.replace(/__([^__]+)__/g, '<strong>$1</strong>');
-
-  // Italic: *text* or _text_
-  escaped = escaped.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
-  escaped = escaped.replace(/_([^_]+)_/g, '<em>$1</em>');
-
-  // Inline code: `code`
-  escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // Links: [text](url)
-  escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-  // Images: ![alt](url)
-  escaped = escaped.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="blog-img">');
-
-  // 9. Restore code blocks
-  codeBlocks.forEach((block, idx) => {
-    escaped = escaped.replace(`__CODE_BLOCK_${idx}__`, block);
-  });
-
-  return escaped;
-}
-
 // --- DYNAMIC TABLE OF CONTENTS GENERATOR ---
 function generateTableOfContents(dialogElement) {
   const richText = dialogElement.querySelector('.dialog-rich-text');
@@ -679,22 +594,6 @@ function setupPortfolio() {
   }
 
   renderPublicPortfolio();
-}
-
-function sanitizeInput(text) {
-  if (typeof text !== 'string') return text;
-  // Rigorously strip any HTML tags to prevent XSS injections
-  return text.replace(/<[^>]*>/g, '').trim();
-}
-
-function escapeHtml(text) {
-  if (typeof text !== 'string') return text;
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
 
 // --- MULTI-STEP REGISTRATION FORM ---

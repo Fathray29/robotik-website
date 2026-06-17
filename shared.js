@@ -676,9 +676,11 @@ export function sanitizeUrl(url) {
   if (!trimmed) return '';
   // Only allow http:// and https:// protocols
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  // Allow safe base64 data URLs for images
+  if (/^data:image\/(jpeg|png|gif|webp|svg\+xml);base64,/i.test(trimmed)) return trimmed;
   // Allow relative paths starting with ./ or /
   if (/^\.?\//.test(trimmed)) return trimmed;
-  // Block everything else (javascript:, data:, vbscript:, etc.)
+  // Block everything else (javascript:, data: other than images, vbscript:, etc.)
   return '';
 }
 

@@ -352,7 +352,7 @@ export function saveData(key, data, syncToCloud = true) {
   } catch (e) {
     console.error('LocalStorage save failed:', e);
     if (e.name === 'QuotaExceededError' || e.code === 22) {
-      alert('⚠️ Penyimpanan browser Anda penuh! Perubahan data tidak dapat disimpan secara permanen.');
+      customAlert('⚠️ Penyimpanan browser Anda penuh! Perubahan data tidak dapat disimpan secara permanen.');
     }
   }
 }
@@ -771,3 +771,267 @@ export function checkFormRateLimit() {
 export function recordFormSubmission() {
   lastFormSubmitTime = Date.now();
 }
+
+// --- REAL-TIME SETTINGS & LANDING SYNC LISTENERS ---
+let regSettingsUnsubscribe = null;
+export function setupRealTimeRegSettingsSync(onUpdateCallback) {
+  if (!state.useFirebase) return;
+  if (regSettingsUnsubscribe) return;
+  try {
+    regSettingsUnsubscribe = state.db.collection('settings').doc('registration').onSnapshot(doc => {
+      if (doc.exists) {
+        state.regSettings = doc.data();
+        saveData('robotik_reg_settings', state.regSettings, false);
+        console.log("Real-time registration settings updated from Cloud Firestore!");
+        if (typeof onUpdateCallback === 'function') {
+          onUpdateCallback(state.regSettings);
+        }
+      }
+    }, err => {
+      console.warn("Firestore real-time settings listener failed:", err);
+    });
+  } catch (e) {
+    console.error("Failed to setup Firestore real-time listener for reg settings:", e);
+  }
+}
+
+let landingDataUnsubscribe = null;
+export function setupRealTimeLandingDataSync(onUpdateCallback) {
+  if (!state.useFirebase) return;
+  if (landingDataUnsubscribe) return;
+  try {
+    landingDataUnsubscribe = state.db.collection('landing').doc('content').onSnapshot(doc => {
+      if (doc.exists) {
+        state.landingData = doc.data();
+        saveData('robotik_landing', state.landingData, false);
+        console.log("Real-time landing data updated from Cloud Firestore!");
+        if (typeof onUpdateCallback === 'function') {
+          onUpdateCallback(state.landingData);
+        }
+      }
+    }, err => {
+      console.warn("Firestore real-time landing data listener failed:", err);
+    });
+  } catch (e) {
+    console.error("Failed to setup Firestore real-time listener for landing data:", e);
+  }
+}
+
+// --- CUSTOM DIALOG OVERLAYS (ALERT & CONFIRM) ---
+function ensurePopupStyles() {
+  if (!document.getElementById('custom-popup-styles')) {
+    const style = document.createElement('style');
+    style.id = 'custom-popup-styles';
+    style.textContent = `
+      .custom-popup-dialog {
+        background: rgba(11, 17, 32, 0.98);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        color: #ffffff;
+        padding: 2rem;
+        max-width: 440px;
+        width: 90%;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+        overflow: hidden;
+        outline: none;
+        position: fixed;
+        top: 50% !important;
+        left: 50% !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        transform: translate(-50%, -50%) scale(0.92) !important;
+        opacity: 0;
+        transition: opacity 0.3s, transform 0.3s, display 0.3s, overlay 0.3s;
+        transition-behavior: allow-discrete;
+        z-index: 99999;
+      }
+      .custom-popup-dialog[open] {
+        opacity: 1 !important;
+        transform: translate(-50%, -50%) scale(1) !important;
+      }
+      @starting-style {
+        .custom-popup-dialog[open] {
+          opacity: 0 !important;
+          transform: translate(-50%, -50%) scale(0.92) !important;
+        }
+      }
+      .custom-popup-dialog::backdrop {
+        background: rgba(2, 6, 23, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .popup-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+      .popup-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .popup-icon {
+        font-size: 1.75rem;
+      }
+      .popup-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.02em;
+        color: #FACC15;
+      }
+      .popup-message {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #E2E8F0;
+        margin: 0;
+      }
+      .popup-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+      .popup-actions .popup-btn {
+        min-height: 42px;
+        padding: 0.5rem 1.5rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+      }
+      .popup-actions .popup-btn-confirm {
+        background: #FACC15;
+        color: #0F172A;
+      }
+      .popup-actions .popup-btn-confirm:hover {
+        background: #EAB308;
+        transform: translateY(-1px);
+        box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+      }
+      .popup-actions .popup-btn-cancel {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .popup-actions .popup-btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+export function customAlert(message) {
+  return new Promise((resolve) => {
+    ensurePopupStyles();
+    
+    let dialog = document.getElementById('custom-alert-dialog');
+    if (!dialog) {
+      dialog = document.createElement('dialog');
+      dialog.id = 'custom-alert-dialog';
+      dialog.className = 'custom-popup-dialog';
+      dialog.innerHTML = `
+        <div class="popup-content">
+          <div class="popup-header">
+            <span class="popup-icon">⚠️</span>
+            <h3 class="popup-title">Pemberitahuan</h3>
+          </div>
+          <p class="popup-message"></p>
+          <div class="popup-actions">
+            <button class="popup-btn popup-btn-confirm popup-close-btn">OK</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(dialog);
+    }
+
+    dialog.querySelector('.popup-message').textContent = message;
+    
+    const closeBtn = dialog.querySelector('.popup-close-btn');
+    const handleClose = () => {
+      dialog.close();
+      closeBtn.removeEventListener('click', handleClose);
+      resolve();
+    };
+    closeBtn.addEventListener('click', handleClose);
+    
+    dialog.showModal();
+    document.body.classList.add('dialog-open');
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('dialog-open');
+      resolve();
+    }, { once: true });
+  });
+}
+
+export function customConfirm(message) {
+  return new Promise((resolve) => {
+    ensurePopupStyles();
+
+    let dialog = document.getElementById('custom-confirm-dialog');
+    if (!dialog) {
+      dialog = document.createElement('dialog');
+      dialog.id = 'custom-confirm-dialog';
+      dialog.className = 'custom-popup-dialog';
+      dialog.innerHTML = `
+        <div class="popup-content">
+          <div class="popup-header">
+            <span class="popup-icon">❓</span>
+            <h3 class="popup-title" style="color: #06B6D4;">Konfirmasi</h3>
+          </div>
+          <p class="popup-message"></p>
+          <div class="popup-actions">
+            <button class="popup-btn popup-btn-cancel popup-cancel-btn">Batal</button>
+            <button class="popup-btn popup-btn-confirm popup-confirm-btn">Ya, Setuju</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(dialog);
+    }
+
+    dialog.querySelector('.popup-message').textContent = message;
+
+    const cancelBtn = dialog.querySelector('.popup-cancel-btn');
+    const confirmBtn = dialog.querySelector('.popup-confirm-btn');
+
+    let resolved = false;
+
+    const handleCancel = () => {
+      if (resolved) return;
+      resolved = true;
+      dialog.close();
+      resolve(false);
+    };
+
+    const handleConfirm = () => {
+      if (resolved) return;
+      resolved = true;
+      dialog.close();
+      resolve(true);
+    };
+
+    cancelBtn.onclick = handleCancel;
+    confirmBtn.onclick = handleConfirm;
+
+    dialog.showModal();
+    document.body.classList.add('dialog-open');
+    dialog.onclose = () => {
+      document.body.classList.remove('dialog-open');
+      if (!resolved) {
+        resolved = true;
+        resolve(false);
+      }
+    };
+  });
+}
+

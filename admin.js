@@ -6,6 +6,11 @@ import {
   escapeHtml, 
   parseMarkdownToHtml,
   setupRealTimeApplicantsSync,
+  customAlert,
+  customConfirm,
+  setupRealTimeRegSettingsSync,
+  setupRealTimeLandingDataSync,
+  initializeCloudDataSync,
 
   getLoginRateLimit,
   recordFailedLogin,
@@ -43,8 +48,8 @@ function setupCmsAuthentication() {
   }
 
   if (btnResetDb) {
-    btnResetDb.addEventListener('click', () => {
-      if (confirm('PERINGATAN: Apakah Anda yakin ingin mereset seluruh database ke kondisi default asli? Semua data tambahan akan hilang.')) {
+    btnResetDb.addEventListener('click', async () => {
+      if (await customConfirm('PERINGATAN: Apakah Anda yakin ingin mereset seluruh database ke kondisi default asli? Semua data tambahan akan hilang.')) {
         playRoboticSound('success');
         localStorage.removeItem('robotik_blog');
         localStorage.removeItem('robotik_portfolio');
@@ -88,7 +93,7 @@ function setupCmsAuthentication() {
         populateRegSettingsCmsInputs();
         renderAdminQuestionsTable();
         
-        alert('Database telah dikembalikan ke kondisi default!');
+        await customAlert('Database telah dikembalikan ke kondisi default!');
       } else {
         playRoboticSound('error');
       }
@@ -215,10 +220,20 @@ function setupAuthStateListener() {
   const panelSection = document.getElementById('admin-panel-section');
 
   if (state.auth) {
-    state.auth.onAuthStateChanged((user) => {
+    state.auth.onAuthStateChanged(async (user) => {
       if (user) {
         loginSection.style.display = 'none';
         panelSection.style.display = 'block';
+        
+        // Fetch fresh cloud data first
+        if (state.useFirebase) {
+          try {
+            await initializeCloudDataSync();
+          } catch (e) {
+            console.error("Failed to sync cloud data on auth change:", e);
+          }
+        }
+
         renderAdminBlogTable();
         renderAdminPortfolioTable();
         renderAdminApplicantsTable();
@@ -482,9 +497,9 @@ function renderAdminBlogTable() {
   });
 
   document.querySelectorAll('.delete-blog-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
-      if (confirm('Apakah Anda yakin ingin menghapus artikel blog ini?')) {
+      if (await customConfirm('Apakah Anda yakin ingin menghapus artikel blog ini?')) {
         playRoboticSound('click');
         state.blogArticles = state.blogArticles.filter(a => String(a.id) !== String(id));
         saveData('robotik_blog', state.blogArticles);
@@ -530,9 +545,9 @@ function renderAdminPortfolioTable() {
   });
 
   document.querySelectorAll('.delete-portfolio-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
-      if (confirm('Apakah Anda yakin ingin menghapus proyek portfolio ini?')) {
+      if (await customConfirm('Apakah Anda yakin ingin menghapus proyek portfolio ini?')) {
         playRoboticSound('click');
         state.portfolioProjects = state.portfolioProjects.filter(p => String(p.id) !== String(id));
         saveData('robotik_portfolio', state.portfolioProjects);
@@ -676,10 +691,10 @@ function rejectApplicant(id) {
   }
 }
 
-function deleteApplicant(id) {
+async function deleteApplicant(id) {
   const idx = state.applicants.findIndex(a => a.id === id);
   if (idx !== -1) {
-    if (confirm(`Apakah Anda yakin ingin menghapus data pendaftar ${state.applicants[idx].nama}?`)) {
+    if (await customConfirm(`Apakah Anda yakin ingin menghapus data pendaftar ${state.applicants[idx].nama}?`)) {
       playRoboticSound('click');
       state.applicants.splice(idx, 1);
       saveData('robotik_applicants', state.applicants);
@@ -1297,16 +1312,16 @@ function setupApplicantsFilterAndExport() {
   }
 
   if (btnExportCsv) {
-    btnExportCsv.addEventListener('click', () => {
+    btnExportCsv.addEventListener('click', async () => {
       playRoboticSound('click');
-      exportApplicantsToCsv();
+      await exportApplicantsToCsv();
     });
   }
 }
 
-function exportApplicantsToCsv() {
+async function exportApplicantsToCsv() {
   if (state.applicants.length === 0) {
-    alert('Tidak ada data pendaftar untuk diekspor.');
+    await customAlert('Tidak ada data pendaftar untuk diekspor.');
     playRoboticSound('error');
     return;
   }
@@ -1358,7 +1373,7 @@ function setupAdminRegSettings() {
   const regSettingsForm = document.getElementById('cms-reg-settings-form');
 
   if (regSettingsForm) {
-    regSettingsForm.addEventListener('submit', (e) => {
+    regSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       state.regSettings.isOpen = (statusToggle.value === 'open');
       state.regSettings.countdownTarget = countdownTargetInput.value;
@@ -1380,7 +1395,7 @@ function setupAdminRegSettings() {
       }
 
       playRoboticSound('success');
-      alert('Konfigurasi pendaftaran berhasil disimpan! 💾');
+      await customAlert('Konfigurasi pendaftaran berhasil disimpan! 💾');
     });
   }
 
@@ -1437,7 +1452,7 @@ function setupAdminRegSettings() {
   }
 
   if (questionForm && questionDialog) {
-    questionForm.addEventListener('submit', (e) => {
+    questionForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const qIdInput = document.getElementById('edit-question-id');
@@ -1458,7 +1473,7 @@ function setupAdminRegSettings() {
         
         if (options.length === 0) {
           playRoboticSound('error');
-          alert('Silakan masukkan opsi pilihan yang valid (koma-dipisahkan) untuk tipe pertanyaan pilihan!');
+          await customAlert('Silakan masukkan opsi pilihan yang valid (koma-dipisahkan) untuk tipe pertanyaan pilihan!');
           optionsInput.focus();
           return;
         }
@@ -1494,7 +1509,7 @@ function setupAdminRegSettings() {
       questionDialog.close();
 
       renderAdminQuestionsTable();
-      alert('Pertanyaan kustom berhasil disimpan!');
+      await customAlert('Pertanyaan kustom berhasil disimpan!');
     });
   }
 }
@@ -1591,13 +1606,13 @@ function renderAdminQuestionsTable() {
   });
 
   tableBody.querySelectorAll('.delete-question-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const qId = btn.getAttribute('data-id');
       const qIdx = state.regSettings.customQuestions.findIndex(item => item.id === qId);
       if (qIdx === -1) return;
 
       const q = state.regSettings.customQuestions[qIdx];
-      if (confirm(`Apakah Anda yakin ingin menghapus pertanyaan kustom: "${q.label}"?`)) {
+      if (await customConfirm(`Apakah Anda yakin ingin menghapus pertanyaan kustom: "${q.label}"?`)) {
         playRoboticSound('click');
         state.regSettings.customQuestions.splice(qIdx, 1);
         saveData('robotik_reg_settings', state.regSettings);
@@ -1671,7 +1686,7 @@ function setupLandingPageCMS() {
     });
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     playRoboticSound('click');
 
@@ -1717,7 +1732,7 @@ function setupLandingPageCMS() {
     saveData('robotik_landing', state.landingData);
 
     playRoboticSound('success');
-    alert('Konten landing page & footer berhasil diperbarui! 🚀');
+    await customAlert('Konten landing page & footer berhasil diperbarui! 🚀');
   });
 }
 
@@ -1763,9 +1778,9 @@ function renderAdminAchievementsTable() {
   });
 
   tableBody.querySelectorAll('.delete-ach-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const idx = parseInt(btn.getAttribute('data-index'), 10);
-      if (confirm('Apakah Anda yakin ingin menghapus penghargaan & prestasi ini?')) {
+      if (await customConfirm('Apakah Anda yakin ingin menghapus penghargaan & prestasi ini?')) {
         playRoboticSound('click');
         state.landingData.achievements.splice(idx, 1);
         saveData('robotik_landing', state.landingData);
@@ -1868,5 +1883,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup Realtime Cloud Sync callbacks
   setupRealTimeApplicantsSync((updatedApplicants) => {
     renderAdminApplicantsTable();
+  });
+
+  setupRealTimeRegSettingsSync((updatedRegSettings) => {
+    populateRegSettingsCmsInputs();
+    renderAdminQuestionsTable();
+  });
+
+  setupRealTimeLandingDataSync((updatedLandingData) => {
+    populateLandingCmsInputs();
   });
 });

@@ -8,15 +8,19 @@ import {
   sanitizeUrl,
   sanitizeHeroHtml,
   checkFormRateLimit,
-  recordFormSubmission
+  recordFormSubmission,
+  customAlert,
+  customConfirm,
+  setupRealTimeRegSettingsSync,
+  setupRealTimeLandingDataSync
 } from './shared.js';
 
 // Central shared state shortcuts
-const blogArticles = state.blogArticles;
-const portfolioProjects = state.portfolioProjects;
-const applicants = state.applicants;
-const regSettings = state.regSettings;
-const landingData = state.landingData;
+let blogArticles = state.blogArticles;
+let portfolioProjects = state.portfolioProjects;
+let applicants = state.applicants;
+let regSettings = state.regSettings;
+let landingData = state.landingData;
 const useFirebase = state.useFirebase;
 const db = state.db;
 
@@ -717,7 +721,7 @@ function setupRegistrationForm() {
     }
   }
 
-  function validateStep(stepNum) {
+  async function validateStep(stepNum) {
     let stepValid = true;
     
     if (stepNum === 1) {
@@ -739,7 +743,7 @@ function setupRegistrationForm() {
       let divisionValid = true;
       if (checkedDivisi.length === 0) {
         divisionValid = false;
-        alert('Silakan pilih minimal satu divisi keahlian.');
+        await customAlert('Silakan pilih minimal satu divisi keahlian.');
       }
       
       stepValid = vMotiv && divisionValid;
@@ -863,16 +867,16 @@ function setupRegistrationForm() {
     `;
   }
 
-  btnNext1.addEventListener('click', () => {
-    if (validateStep(1)) {
+  btnNext1.addEventListener('click', async () => {
+    if (await validateStep(1)) {
       currentStep = 2;
       renderStep(currentStep);
       playRoboticSound('click');
     }
   });
 
-  btnNext2.addEventListener('click', () => {
-    if (validateStep(2)) {
+  btnNext2.addEventListener('click', async () => {
+    if (await validateStep(2)) {
       currentStep = 3;
       renderStep(currentStep);
       playRoboticSound('click');
@@ -893,7 +897,7 @@ function setupRegistrationForm() {
 
 
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     // Rate limit: prevent spam re-submissions
@@ -901,7 +905,7 @@ function setupRegistrationForm() {
     if (!rateCheck.allowed) {
       playRoboticSound('error');
       const secs = Math.ceil(rateCheck.remainingMs / 1000);
-      alert(`⏳ Mohon tunggu ${secs} detik sebelum mengirim ulang.`);
+      await customAlert(`⏳ Mohon tunggu ${secs} detik sebelum mengirim ulang.`);
       return;
     }
 
@@ -1035,6 +1039,13 @@ async function initializeCloudDataSync() {
     await syncLandingDataFromFirestore();
     await syncRegSettingsFromFirestore();
     
+    // Update local let variables with newly synced cloud data
+    blogArticles = state.blogArticles;
+    portfolioProjects = state.portfolioProjects;
+    applicants = state.applicants;
+    regSettings = state.regSettings;
+    landingData = state.landingData;
+    
     // Privacy Fix: Removed syncApplicantsFromFirestore() and setupRealTimeApplicantsSync() 
     // from the public frontend so we don't leak all PII to unauthorized users.
     
@@ -1113,6 +1124,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize interactive system status & telemetry dialog
   setupSystemTelemetry();
+
+  // Setup Real-time cloud sync listeners
+  setupRealTimeRegSettingsSync((updatedRegSettings) => {
+    regSettings = updatedRegSettings;
+    renderCustomQuestionsInForm();
+    updateCountdownTimer();
+    renderWhatsAppBanner();
+  });
+
+  setupRealTimeLandingDataSync((updatedLandingData) => {
+    landingData = updatedLandingData;
+    renderLandingPage();
+  });
 
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
   initializeCloudDataSync();
@@ -2039,7 +2063,7 @@ function setupStatusChecker() {
     const handleCheck = async () => {
       const id = inputCheckStatus.value.trim();
       if (!id) {
-        alert('Silakan masukkan ID Pendaftaran Anda terlebih dahulu.');
+        await customAlert('Silakan masukkan ID Pendaftaran Anda terlebih dahulu.');
         playRoboticSound('error');
         return;
       }
@@ -2065,82 +2089,4 @@ function setupStatusChecker() {
     });
   }
 }
-
-// --- UX ENHANCEMENTS (Modern UI) ---
-function setupUXEnhancements() {
-  // 1. Sticky Header Blur Effect on Scroll
-  const header = document.querySelector('.main-header');
-  if (header) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    }, { passive: true });
-  }
-
-  // 2. Mouse Glow Tracking on Glass Cards
-  const cards = document.querySelectorAll('.glass-card');
-  document.addEventListener('mousemove', (e) => {
-    for (const card of cards) {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      // Set CSS variables for the mouse position
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    }
-  });
-
-  // Modify CSS to use these variables for the inner glow
-  const style = document.createElement('style');
-  style.textContent = `
-    .glass-card::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      border-radius: inherit;
-      background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(0, 229, 255, 0.06), transparent 40%);
-      pointer-events: none;
-      z-index: -1;
-      transition: opacity 0.3s;
-      opacity: 0;
-    }
-    .glass-card:hover::after {
-      opacity: 1;
-    }
-  `;
-  document.head.appendChild(style);
-
-  // 3. Scroll Intersection Observer for Fade-in Animations
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
-  };
-  
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Automatically add fade-in-up class to headings, cards, and sections that don't have it yet
-  const animatedElements = document.querySelectorAll('.glass-card, .hero-content > *, .section-subtitle-center, .divisi-nav-btn');
-  animatedElements.forEach((el, index) => {
-    el.classList.add('fade-in-up');
-    // Add staggered delay
-    if (index % 3 === 1) el.classList.add('delay-100');
-    if (index % 3 === 2) el.classList.add('delay-200');
-    observer.observe(el);
-  });
-}
-
-// Call the UX setup on load
-window.addEventListener('DOMContentLoaded', () => {
-  setupUXEnhancements();
-});
+

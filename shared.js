@@ -603,6 +603,11 @@ export function playRoboticSound(type) {
 export function parseMarkdownToHtml(markdown) {
   if (!markdown) return '';
 
+  // If content is already HTML, do not parse it as markdown, return as-is.
+  if (markdown.trim().startsWith('<') || /<\/?[a-z][\s\S]*>/i.test(markdown)) {
+    return markdown;
+  }
+
   let escaped = markdown
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

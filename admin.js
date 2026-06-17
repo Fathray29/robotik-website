@@ -881,26 +881,29 @@ function openCmsEditor(type, mode, id = null) {
         <textarea id="edit-excerpt" class="input-control" required placeholder="Tulis deskripsi 1-2 baris untuk kartu list artikel...">${article.excerpt || ''}</textarea>
       </div>
       <div class="form-group">
-        <label class="form-label" for="edit-content">Konten Lengkap (Format Markdown) <span>*</span></label>
-        
-        <div class="markdown-toolbar" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; background: rgba(2, 6, 23, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; border-radius: var(--radius-md);">
-          <button type="button" id="btn-cms-undo" class="btn btn-secondary btn-sm" title="Undo (Ctrl+Z / Cmd+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
-            ↩️ Undo
-          </button>
-          <button type="button" id="btn-cms-redo" class="btn btn-secondary btn-sm" title="Redo (Ctrl+Y / Cmd+Shift+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
-            ↪️ Redo
-          </button>
-          <span style="width: 1px; height: 20px; background: rgba(255,255,255,0.15); align-self: center; margin: 0 0.25rem;"></span>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="### " title="Judul H3" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Heading 🏷️</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="**" data-wrap="true" title="Teks Tebal" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">Tebal B</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="- " title="Daftar List" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Daftar 📋</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="[Teks Tautan](https://)" title="Link Tautan" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Tautan 🔗</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="![Keterangan Foto](https://)" title="Sisipkan Foto" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Foto 📷</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="\`\`\`javascript\\n// tulis kode disini\\n\`\`\`" title="Blok Kode" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-family: monospace;">Kode 💻</button>
+        <label class="form-label">Konten Lengkap <span>*</span></label>
+        <div class="rich-editor-container" style="border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); overflow: hidden; background: rgba(15, 23, 42, 0.3);">
+          <div class="rich-toolbar" style="display: flex; gap: 0.35rem; background: rgba(2, 6, 23, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="bold" title="Tebal" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">B</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="italic" title="Miring" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; font-style: italic;">I</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="underline" title="Garis Bawah" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; text-decoration: underline;">U</button>
+            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="h3" title="Heading H3" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">H3</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="h4" title="Heading H4" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">H4</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="p" title="Paragraf Biasa" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">P</button>
+            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertUnorderedList" title="Daftar Bulatan" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">• List</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertOrderedList" title="Daftar Angka" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">1. List</button>
+            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🔗 Tautan</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">📷 Foto</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🧹 Bersih</button>
+          </div>
+          <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 250px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-light); margin-bottom: 0; min-height: 200px;">
+            ${parseMarkdownToHtml(article.content || '')}
+          </div>
+          <input type="hidden" id="edit-content" value="${escapeHtml(article.content || '')}">
         </div>
-        
-        <textarea id="edit-content" class="input-control" required placeholder="Tulis isi tulisan lengkap menggunakan format Markdown..." style="height: 250px;">${article.content || ''}</textarea>
       </div>
     `;
 
@@ -956,26 +959,29 @@ function openCmsEditor(type, mode, id = null) {
         <input type="text" id="edit-specs" class="input-control" required value="${proj.specs || ''}" placeholder="Kecepatan maks, jangkauan sensor, kapasitas daya...">
       </div>
       <div class="form-group">
-        <label class="form-label" for="edit-content">Deskripsi Lengkap Proyek (Format Markdown) <span>*</span></label>
-        
-        <div class="markdown-toolbar" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; background: rgba(2, 6, 23, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; border-radius: var(--radius-md);">
-          <button type="button" id="btn-cms-undo" class="btn btn-secondary btn-sm" title="Undo (Ctrl+Z / Cmd+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
-            ↩️ Undo
-          </button>
-          <button type="button" id="btn-cms-redo" class="btn btn-secondary btn-sm" title="Redo (Ctrl+Y / Cmd+Shift+Z)" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.25rem;">
-            ↪️ Redo
-          </button>
-          <span style="width: 1px; height: 20px; background: rgba(255,255,255,0.15); align-self: center; margin: 0 0.25rem;"></span>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="### " title="Judul H3" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Heading 🏷️</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="**" data-wrap="true" title="Teks Tebal" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">Tebal B</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="*" data-wrap="true" title="Teks Miring" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-style: italic;">Miring I</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="- " title="Daftar List" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Daftar 📋</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="[Teks Tautan](https://)" title="Link Tautan" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Tautan 🔗</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="![Keterangan Foto](https://)" title="Sisipkan Foto" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem;">Foto 📷</button>
-          <button type="button" class="md-btn btn btn-secondary btn-sm" data-insert="\`\`\`javascript\\n// tulis kode disini\\n\`\`\`" title="Blok Kode" style="padding: 0.35rem 0.75rem; min-height: auto; font-size: 0.8rem; font-family: monospace;">Kode 💻</button>
+        <label class="form-label">Deskripsi Lengkap Proyek <span>*</span></label>
+        <div class="rich-editor-container" style="border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); overflow: hidden; background: rgba(15, 23, 42, 0.3);">
+          <div class="rich-toolbar" style="display: flex; gap: 0.35rem; background: rgba(2, 6, 23, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="bold" title="Tebal" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">B</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="italic" title="Miring" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; font-style: italic;">I</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="underline" title="Garis Bawah" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; text-decoration: underline;">U</button>
+            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="h3" title="Heading H3" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">H3</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="h4" title="Heading H4" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">H4</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="p" title="Paragraf Biasa" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">P</button>
+            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertUnorderedList" title="Daftar Bulatan" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">• List</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertOrderedList" title="Daftar Angka" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">1. List</button>
+            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🔗 Tautan</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">📷 Foto</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🧹 Bersih</button>
+          </div>
+          <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 220px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-light); margin-bottom: 0; min-height: 200px;">
+            ${parseMarkdownToHtml(proj.content || '')}
+          </div>
+          <input type="hidden" id="edit-content" value="${escapeHtml(proj.content || '')}">
         </div>
-        
-        <textarea id="edit-content" class="input-control" required placeholder="Tulis deskripsi proyek lengkap menggunakan format Markdown..." style="height: 200px;">${proj.content || ''}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-code">Kode Arduino C++ <span>*</span></label>
@@ -995,7 +1001,7 @@ function openCmsEditor(type, mode, id = null) {
     `;
   }
 
-  setupMarkdownToolbar();
+  setupRichTextEditor();
   setupLocalImageUploader(currentItem);
   setupCmsHistory();
 
@@ -1010,38 +1016,57 @@ function closeCmsEditor() {
   document.body.classList.remove('dialog-open');
 }
 
-// --- MARKDOWN TOOLBAR ---
-function setupMarkdownToolbar() {
-  const textarea = document.getElementById('edit-content');
-  if (!textarea) return;
+// --- NATIVE RICH TEXT EDITOR ---
+function setupRichTextEditor() {
+  const richDiv = document.getElementById('edit-content-rich');
+  const hiddenInput = document.getElementById('edit-content');
+  if (!richDiv || !hiddenInput) return;
 
-  const buttons = document.querySelectorAll('.md-btn');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
+  // Sync contenteditable div content to hidden input
+  richDiv.addEventListener('input', () => {
+    hiddenInput.value = richDiv.innerHTML;
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+
+  // Handle formatted command buttons
+  const richButtons = document.querySelectorAll('.rich-btn');
+  richButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
       if (saveHistoryDebounceTimer) {
         captureCmsState(true);
       }
-
+      
       playRoboticSound('click');
-      const insertText = btn.getAttribute('data-insert');
-      const isWrap = btn.getAttribute('data-wrap') === 'true';
+      const cmd = btn.getAttribute('data-cmd');
+      const val = btn.getAttribute('data-val') || null;
 
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = textarea.value;
-
-      if (isWrap) {
-        const selected = text.substring(start, end);
-        const replacement = insertText + (selected || btn.title) + insertText;
-        textarea.value = text.substring(0, start) + replacement + text.substring(end);
-        textarea.focus();
-        textarea.setSelectionRange(start + insertText.length, start + insertText.length + (selected || btn.title).length);
+      if (cmd === 'createLink') {
+        const url = prompt('Masukkan URL Tautan:', 'https://');
+        if (url) {
+          document.execCommand(cmd, false, url);
+        }
+      } else if (cmd === 'insertImage') {
+        const url = prompt('Masukkan URL Gambar:', 'https://');
+        if (url) {
+          document.execCommand(cmd, false, url);
+          const images = richDiv.querySelectorAll('img');
+          images.forEach(img => {
+            img.style.maxWidth = '100%';
+            img.style.borderRadius = '8px';
+            img.style.margin = '0.5rem 0';
+          });
+        }
       } else {
-        textarea.value = text.substring(0, start) + insertText + text.substring(end);
-        textarea.focus();
-        textarea.setSelectionRange(start + insertText.length, start + insertText.length);
+        document.execCommand(cmd, false, val);
       }
 
+      // Sync and trigger event for CMS undo/redo stack
+      hiddenInput.value = richDiv.innerHTML;
+      hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+      richDiv.focus();
+      
       captureCmsState(true);
     });
   });
@@ -1071,6 +1096,14 @@ function restoreCmsEditorState(stateObj) {
     if (input) {
       input.value = stateObj[id];
       input.dispatchEvent(new Event('input', { bubbles: true }));
+      
+      // Sync the rich text editor's visual editable area
+      if (id === 'edit-content') {
+        const richDiv = document.getElementById('edit-content-rich');
+        if (richDiv) {
+          richDiv.innerHTML = stateObj[id];
+        }
+      }
     }
   });
   isRestoringCmsState = false;

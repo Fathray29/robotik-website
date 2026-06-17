@@ -134,7 +134,15 @@ Soccer Bot v2.0 adalah robot striker bertenaga tinggi yang dikendalikan secara n
 ### Hasil Uji Coba
 
 Robot ini berhasil memenangkan juara 2 kategori robot olahraga tingkat regional berkat respon kontrol bluetooth yang sangat instan dan kekuatan tendangan solenoid yang memukau.`,
-    code: `// Cuplikan Kontrol Solenoid & Motor DC Soccer Bot v2.0\n#define MOTOR_LEFT_F 5\n#define MOTOR_LEFT_B 6\n#define MOTOR_RIGHT_F 9\n#define MOTOR_RIGHT_B 10\n#define SOLENOID_PIN 12\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(MOTOR_LEFT_F, OUTPUT);\n  pinMode(MOTOR_LEFT_B, OUTPUT);\n  pinMode(MOTOR_RIGHT_F, OUTPUT);\n  pinMode(MOTOR_RIGHT_B, OUTPUT);\n  pinMode(SOLENOID_PIN, OUTPUT);\n}\n\nvoid loop() {\n  if (Serial.available() > 0) {\n    char val = Serial.read();\n    if (val == 'F') { // Maju\n      analogWrite(MOTOR_LEFT_F, 255);\n      analogWrite(MOTOR_RIGHT_F, 255);\n    } else if (val == 'K') { // TENDANG! (Solenoid)\n      digitalWrite(SOLENOID_PIN, HIGH);\n      delay(150);\n      digitalWrite(SOLENOID_PIN, LOW);\n    } else if (val == 'S') { // Berhenti\n      analogWrite(MOTOR_LEFT_F, 0);\n      analogWrite(MOTOR_RIGHT_F, 0);\n    }\n  }\n}`
+    code: `// Cuplikan Kontrol Solenoid & Motor DC Soccer Bot v2.0\n#define MOTOR_LEFT_F 5\n#define MOTOR_LEFT_B 6\n#define MOTOR_RIGHT_F 9\n#define MOTOR_RIGHT_B 10\n#define SOLENOID_PIN 12\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(MOTOR_LEFT_F, OUTPUT);\n  pinMode(MOTOR_LEFT_B, OUTPUT);\n  pinMode(MOTOR_RIGHT_F, OUTPUT);\n  pinMode(MOTOR_RIGHT_B, OUTPUT);\n  pinMode(SOLENOID_PIN, OUTPUT);\n}\n\nvoid loop() {\n  if (Serial.available() > 0) {\n    char val = Serial.read();\n    if (val == 'F') { // Maju\n      analogWrite(MOTOR_LEFT_F, 255);\n      analogWrite(MOTOR_RIGHT_F, 255);\n    } else if (val == 'K') { // TENDANG! (Solenoid)\n      digitalWrite(SOLENOID_PIN, HIGH);\n      delay(150);\n      digitalWrite(SOLENOID_PIN, LOW);\n    } else if (val == 'S') { // Berhenti\n      analogWrite(MOTOR_LEFT_F, 0);\n      analogWrite(MOTOR_RIGHT_F, 0);\n    }\n  }\n}`,
+    schematic: `Gunakan pinout koneksi berikut untuk perakitan Soccer Bot:
+
+- **VCC** -> Baterai Li-Po 11.1V (via Regulator 5V untuk Arduino)
+- **GND** -> Ground Bersama
+- **Motor Left F/B** -> PWM Pins D5, D6 (Koneksi ke L298N)
+- **Motor Right F/B** -> PWM Pins D9, D10
+- **Solenoid Pin** -> Digital Pin D12 (Memicu Relay Solenoid 24V)`,
+    showCode: true
   },
   {
     id: 2,
@@ -160,7 +168,14 @@ Proyek Smart Agriculture Monitoring dirancang untuk membantu pemantauan dan peny
 ### Manfaat Proyek
 
 Sangat ideal untuk diaplikasikan pada perkebunan hidroponik sekolah, menghemat konsumsi energi, dan memastikan kesehatan tumbuh kembang tanaman terjaga 24 jam penuh.`,
-    code: `// Cuplikan Koneksi IoT Blynk ESP32\n#include <WiFi.h>\n#include <WiFiClient.h>\n#include <BlynkSimpleEsp32.h>\n\nchar auth[] = "Your_Blynk_Auth_Token";\nchar ssid[] = "Wifi_Motechart_Robotik";\nchar pass[] = "motechart_wifi_pass";\n\n#define SOIL_PIN 34\n#define RELAY_PIN 23\n\nvoid setup() {\n  Blynk.begin(auth, ssid, pass);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  Blynk.run();\n  int soilMoisture = analogRead(SOIL_PIN);\n  Blynk.virtualWrite(V1, soilMoisture);\n  \n  if (soilMoisture > 3000) { // Tanah kering\n    digitalWrite(RELAY_PIN, HIGH); // Pompa menyala\n  } else {\n    digitalWrite(RELAY_PIN, LOW);\n  }\n  delay(1000);\n}`
+    code: `// Cuplikan Koneksi IoT Blynk ESP32\n#include <WiFi.h>\n#include <WiFiClient.h>\n#include <BlynkSimpleEsp32.h>\n\nchar auth[] = "Your_Blynk_Auth_Token";\nchar ssid[] = "Wifi_Motechart_Robotik";\nchar pass[] = "motechart_wifi_pass";\n\n#define SOIL_PIN 34\n#define RELAY_PIN 23\n\nvoid setup() {\n  Blynk.begin(auth, ssid, pass);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  Blynk.run();\n  int soilMoisture = analogRead(SOIL_PIN);\n  Blynk.virtualWrite(V1, soilMoisture);\n  \n  if (soilMoisture > 3000) { // Tanah kering\n    digitalWrite(RELAY_PIN, HIGH); // Pompa menyala\n  } else {\n    digitalWrite(RELAY_PIN, LOW);\n  }\n  delay(1000);\n}`,
+    schematic: `Gunakan pinout ESP32 berikut untuk perakitan:
+
+- **VCC** -> Adaptor Daya 5V / USB
+- **GND** -> Ground Bersama
+- **Sensor Soil** -> Pin Analog GPIO34
+- **Relay Pompa** -> Pin Digital GPIO23 (Mengendalikan Pompa Air 5V)`,
+    showCode: true
   },
   {
     id: 3,
@@ -186,7 +201,13 @@ Maze Solver Robot dirancang untuk bernavigasi secara mandiri memecahkan labirin 
 ### Status Saat Ini
 
 Saat ini robot berada dalam fase optimasi PID motor agar pergerakan belokan bisa dilakukan dengan kecepatan sudut yang lebih agresif saat kompetisi tingkat nasional mendatang.`,
-    code: `// Cuplikan Algoritma Pendeteksi Dinding & Koreksi MPU6050\n#define TRIG_LEFT 2\n#define ECHO_LEFT 3\n#define TRIG_FRONT 4\n#define ECHO_FRONT 5\n\nfloat getDistance(int trig, int echo) {\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n  long duration = pulseIn(echo, HIGH);\n  return duration * 0.034 / 2;\n}\n\nvoid setup() {\n  pinMode(TRIG_LEFT, OUTPUT);\n  pinMode(ECHO_LEFT, INPUT);\n  pinMode(TRIG_FRONT, OUTPUT);\n  pinMode(ECHO_FRONT, INPUT);\n}\n\nvoid loop() {\n  float distFront = getDistance(TRIG_FRONT, ECHO_FRONT);\n  float distLeft = getDistance(TRIG_LEFT, ECHO_LEFT);\n  \n  if (distFront < 10.0) {\n    if (distLeft > 15.0) {\n      belokKiri();\n    } else {\n      belokKanan();\n    }\n  } else {\n    majuLurusPID();\n  }\n}`
+    code: `// Cuplikan Algoritma Pendeteksi Dinding & Koreksi MPU6050\n#define TRIG_LEFT 2\n#define ECHO_LEFT 3\n#define TRIG_FRONT 4\n#define ECHO_FRONT 5\n\nfloat getDistance(int trig, int echo) {\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n  long duration = pulseIn(echo, HIGH);\n  return duration * 0.034 / 2;\n}\n\nvoid setup() {\n  pinMode(TRIG_LEFT, OUTPUT);\n  pinMode(ECHO_LEFT, INPUT);\n  pinMode(TRIG_FRONT, OUTPUT);\n  pinMode(ECHO_FRONT, INPUT);\n}\n\nvoid loop() {\n  float distFront = getDistance(TRIG_FRONT, ECHO_FRONT);\n  float distLeft = getDistance(TRIG_LEFT, ECHO_LEFT);\n  \n  if (distFront < 10.0) {\n    if (distLeft > 15.0) {\n      belokKiri();\n    } else {\n      belokKanan();\n    }\n  } else {\n    majuLurusPID();\n  }\n}`,
+    schematic: `Gunakan pinout Arduino Nano berikut:
+
+- **Sensor Ultrasonik** -> Pin D2 & D3 (Kiri), D4 & D5 (Depan)
+- **MPU6050 Gyro** -> Pin I2C A4 (SDA), A5 (SCL)
+- **Motor Driver** -> Pin TB6612FNG Control`,
+    showCode: true
   }
 ];
 

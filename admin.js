@@ -380,7 +380,6 @@ function setupCmsTabs() {
             article.headerImage = headerImgVal;
           }
         }
-        
         saveData('robotik_blog', state.blogArticles);
         renderAdminBlogTable();
         
@@ -394,6 +393,8 @@ function setupCmsTabs() {
         const codeVal = document.getElementById('edit-code').value.trim();
         const conVal = document.getElementById('edit-content').value.trim();
         const headerImgVal = document.getElementById('edit-header-image').value.trim();
+        const schematicVal = document.getElementById('edit-schematic').value.trim();
+        const showCodeVal = document.getElementById('edit-show-code').value === 'true';
 
         if (mode === 'add') {
           const newId = state.portfolioProjects.length > 0 ? Math.max(...state.portfolioProjects.map(p => p.id)) + 1 : 1;
@@ -407,7 +408,9 @@ function setupCmsTabs() {
             specs: specVal,
             code: codeVal,
             content: conVal,
-            headerImage: headerImgVal
+            headerImage: headerImgVal,
+            schematic: schematicVal,
+            showCode: showCodeVal
           });
         } else if (mode === 'edit') {
           const id = editorForm.getAttribute('data-id');
@@ -422,6 +425,8 @@ function setupCmsTabs() {
             proj.code = codeVal;
             proj.content = conVal;
             proj.headerImage = headerImgVal;
+            proj.schematic = schematicVal;
+            proj.showCode = showCodeVal;
           }
         }
 
@@ -975,6 +980,17 @@ function openCmsEditor(type, mode, id = null) {
       <div class="form-group">
         <label class="form-label" for="edit-code">Kode Arduino C++ <span>*</span></label>
         <textarea id="edit-code" class="input-control" required placeholder="Tempel kode pemrograman robot Arduino Anda di sini..." style="font-family: monospace; font-size: 0.9rem; height: 180px;">${proj.code || ''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-schematic">Fisik & Koneksi (Format Markdown) <span>*</span></label>
+        <textarea id="edit-schematic" class="input-control" required placeholder="Tulis rincian koneksi kabel, pinout mikroprosesor, baterai, dll..." style="font-family: monospace; font-size: 0.9rem; height: 120px;">${proj.schematic || ''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-show-code">Tampilkan Kode & Koneksi Ke Publik? <span>*</span></label>
+        <select id="edit-show-code" class="input-control" required style="appearance: auto;">
+          <option value="true" ${proj.showCode !== false ? 'selected' : ''}>Ya, Tampilkan</option>
+          <option value="false" ${proj.showCode === false ? 'selected' : ''}>Tidak, Sembunyikan</option>
+        </select>
       </div>
     `;
   }

@@ -442,6 +442,7 @@ function openPortfolioDetail(id) {
             <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 1.25rem;">Deskripsi Detail Proyek 🤖</h3>
             ${parseMarkdownToHtml(proj.content || '*Belum ada deskripsi mendalam.*')}
             
+            ${proj.showCode !== false ? `
             <h3 style="margin-top: 3.5rem; margin-bottom: 1.25rem; color: var(--accent-cyan); font-size: 1.5rem;">Skema & Kode Pemrograman Robot 💻</h3>
             
             <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden; position: relative;">
@@ -469,17 +470,14 @@ function openPortfolioDetail(id) {
                   </svg>
                   <div class="schematic-info">
                     <h4 style="color: var(--accent-yellow); font-size: 1.15rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Gunakan pinout koneksi mikroprosesor berikut untuk perakitan fisik:</p>
-                    <ul style="color: var(--text-muted); padding-left: 1.25rem; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                      <li><strong>VCC</strong> -> Baterai Li-Ion 7.4V (via Regulator Tegangan LM7805)</li>
-                      <li><strong>GND</strong> -> Ground Bersama (Baterai & Papan Controller)</li>
-                      <li><strong>Sensor I/O</strong> -> Analog Pins A0, A1, A2 (Kiri, Tengah, Kanan)</li>
-                      <li><strong>Motor Driver EnA/EnB</strong> -> PWM Pins D5, D6 (Pemicu Kecepatan Motor)</li>
-                    </ul>
+                    <div style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                      ${parseMarkdownToHtml(proj.schematic || '*Belum ada rincian koneksi fisik.*')}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            ` : ''}
           </div>
         </div>
       </div>

@@ -898,6 +898,34 @@ function setupRegistrationForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // Prevent submission if not on the final step (Step 3)
+    if (currentStep < 3) {
+      if (currentStep === 1) {
+        if (await validateStep(1)) {
+          currentStep = 2;
+          renderStep(currentStep);
+          playRoboticSound('click');
+        }
+      } else if (currentStep === 2) {
+        if (await validateStep(2)) {
+          currentStep = 3;
+          renderStep(currentStep);
+          playRoboticSound('click');
+        }
+      }
+      return;
+    }
+
+    // Final validation check for all steps
+    const step1Valid = await validateStep(1);
+    const step2Valid = await validateStep(2);
+    if (!step1Valid || !step2Valid) {
+      playRoboticSound('error');
+      currentStep = !step1Valid ? 1 : 2;
+      renderStep(currentStep);
+      return;
+    }
+
     // Rate limit: prevent spam re-submissions
     const rateCheck = checkFormRateLimit();
     if (!rateCheck.allowed) {
@@ -1944,10 +1972,14 @@ async function checkApplicantStatus(id) {
   }
 
   let applicant = null;
+  let normalizedId = id.trim().toUpperCase();
+  if (/^\d{6}$/.test(normalizedId)) {
+    normalizedId = 'ROBO-' + normalizedId;
+  }
   
   if (useFirebase && db) {
     try {
-      const docRef = await db.collection('applicants').doc(id.trim().toUpperCase()).get();
+      const docRef = await db.collection('applicants').doc(normalizedId).get();
       if (docRef.exists) {
         applicant = docRef.data();
       }
@@ -1956,7 +1988,7 @@ async function checkApplicantStatus(id) {
     }
   } else {
     // Fallback for local storage mode
-    applicant = applicants.find(a => a.id.toUpperCase() === id.trim().toUpperCase());
+    applicant = applicants.find(a => a.id.toUpperCase() === normalizedId);
   }
 
   if (btnCheckStatus) {
@@ -1968,10 +2000,10 @@ async function checkApplicantStatus(id) {
     playRoboticSound('error');
     contentContainer.innerHTML = `
       <div style="text-align: center; padding: 2rem;">
-        <div style="font-size: 3rem; color: #FB7185; margin-bottom: 1rem;">âš ï¸</div>
+        <div style="font-size: 3rem; color: #FB7185; margin-bottom: 1rem;">⚠️</div>
         <h3 style="color: var(--text-white); margin-bottom: 0.5rem;">ID Tidak Ditemukan</h3>
         <p style="color: var(--text-muted); font-size: 0.95rem;">
-          ID pendaftaran <strong>"${escapeHtml(id)}"</strong> tidak terdaftar di database kami. Silakan periksa kembali penulisan ID Anda atau hubungi admin.
+          ID pendaftaran <strong>"${escapeHtml(normalizedId)}"</strong> tidak terdaftar di database kami. Silakan periksa kembali penulisan ID Anda atau hubungi admin.
         </p>
       </div>
     `;
@@ -1985,7 +2017,7 @@ async function checkApplicantStatus(id) {
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
         </div>
-        <h3 style="color: var(--accent-yellow); font-size: 1.5rem; margin-bottom: 0.5rem;">Menunggu Persetujuan â³</h3>
+        <h3 style="color: var(--accent-yellow); font-size: 1.5rem; margin-bottom: 0.5rem;">Menunggu Persetujuan ⏳</h3>
         <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
           Halo <strong>${escapeHtml(applicant.nama)}</strong>, pendaftaran Anda untuk kelas <strong>${escapeHtml(applicant.kelas)}</strong> sedang diproses oleh pengurus ekskul Motechart Robotik.
         </p>
@@ -2003,7 +2035,7 @@ async function checkApplicantStatus(id) {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12.031 2C6.51 2 2.03 6.48 2.03 12c0 2.159.57 4.259 1.66 6.13l-1.77 6.47 6.63-1.74c1.88 1.02 4 1.56 6.13 1.56 5.52 0 10-4.48 10-10S17.551 2 12.031 2zm6.39 14.19c-.27.76-1.55 1.48-2.15 1.56-.54.07-1.24.1-3.64-.89-3.07-1.26-5.05-4.38-5.2-4.58-.15-.2-1.2-1.6-1.2-3.06 0-1.46.76-2.17 1.03-2.46.27-.3.59-.37.79-.37.2 0 .4.01.57.02.18.01.41-.07.65.5.24.58.82 2.02.9 2.17.08.16.14.35.03.56-.11.22-.26.47-.38.61-.13.14-.26.3-.11.56.15.26.68 1.12 1.46 1.82.99.9 1.83 1.18 2.09 1.31.26.13.41.11.56-.06.15-.18.66-.76.84-.96.18-.2.37-.16.63-.07.26.09 1.66.78 1.95.92.29.14.48.22.56.35.07.13.07.76-.2 1.52z"/>
           </svg>
-          Gabung Grup WhatsApp ðŸ’¬
+          Gabung Grup WhatsApp 💬
         </a>
       </div>
     `;
@@ -2011,7 +2043,7 @@ async function checkApplicantStatus(id) {
     playRoboticSound('success');
     contentContainer.innerHTML = `
       <div style="padding: 0.5rem; text-align: center;">
-        <div style="font-size: 3rem; margin-bottom: 0.5rem;">ðŸŽ‰</div>
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
         <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 0.5rem;">Selamat, Anda Diterima!</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
           Selamat bergabung di <strong>Motechart Robotik</strong>, <strong>${escapeHtml(applicant.nama)}</strong>! Berikut adalah Kartu Anggota Digital resmi Anda. Silakan simpan / screenshot kartu ini.
@@ -2033,7 +2065,7 @@ async function checkApplicantStatus(id) {
             <line x1="9" y1="9" x2="15" y2="15"></line>
           </svg>
         </div>
-        <h3 style="color: #FB7185; font-size: 1.5rem; margin-bottom: 0.5rem;">Pendaftaran Ditolak ðŸ”´</h3>
+        <h3 style="color: #FB7185; font-size: 1.5rem; margin-bottom: 0.5rem;">Pendaftaran Ditolak 🔴</h3>
         <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
           Halo <strong>${escapeHtml(applicant.nama)}</strong>, mohon maaf saat ini pendaftaran Anda belum dapat kami setujui karena kuota divisi penuh atau alasan administratif lainnya.
         </p>

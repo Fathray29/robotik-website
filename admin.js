@@ -671,6 +671,7 @@ function approveApplicant(id) {
     state.applicants[idx].status = 'Diterima';
     saveData('robotik_applicants', state.applicants);
     renderAdminApplicantsTable();
+    renderDashboardOverview();
 
     if (state.useFirebase) {
       state.db.collection('applicants').doc(id).update({ status: 'Diterima' })
@@ -687,6 +688,7 @@ function rejectApplicant(id) {
     state.applicants[idx].status = 'Ditolak';
     saveData('robotik_applicants', state.applicants);
     renderAdminApplicantsTable();
+    renderDashboardOverview();
 
     if (state.useFirebase) {
       state.db.collection('applicants').doc(id).update({ status: 'Ditolak' })
@@ -704,6 +706,7 @@ async function deleteApplicant(id) {
       state.applicants.splice(idx, 1);
       saveData('robotik_applicants', state.applicants);
       renderAdminApplicantsTable();
+      renderDashboardOverview();
 
       if (state.useFirebase) {
         state.db.collection('applicants').doc(id).delete()
@@ -1932,6 +1935,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup Realtime Cloud Sync callbacks
   setupRealTimeApplicantsSync((updatedApplicants) => {
     renderAdminApplicantsTable();
+    renderDashboardOverview();
   });
 
   setupRealTimeRegSettingsSync((updatedRegSettings) => {

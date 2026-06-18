@@ -219,7 +219,6 @@ export const INITIAL_APPLICANTS = [
     email: 'rian.hidayat@gmail.com',
     noHp: '081234567890',
     laptop: 'Ya, Siap Digunakan',
-    divisi: ['Programming & Algoritma', 'Mechanics & Desain 3D'],
     motivasi: 'Sangat tertarik dengan pengembangan robot berbasis Arduino dan optimasi kode C++.',
     tanggalDaftar: '2026-05-20',
     status: 'Diterima'
@@ -231,7 +230,6 @@ export const INITIAL_APPLICANTS = [
     email: 'maya.safitri@gmail.com',
     noHp: '085712345678',
     laptop: 'Ya, Siap Digunakan',
-    divisi: ['Electronics & IoT'],
     motivasi: 'Ingin mendalami bagaimana merakit sirkuit PCB dan menyolder sensor-sensor IoT.',
     tanggalDaftar: '2026-05-21',
     status: 'Pending'
@@ -243,7 +241,6 @@ export const INITIAL_APPLICANTS = [
     email: 'aditya.pratama@gmail.com',
     noHp: '089912345678',
     laptop: 'Tidak (Gunakan Lab Ekskul)',
-    divisi: ['Mechanics & Desain 3D'],
     motivasi: 'Ingin belajar merakit bodi fisik robot (desain 3D CAD dan pemotongan bahan akrilik).',
     tanggalDaftar: '2026-05-22',
     status: 'Pending'

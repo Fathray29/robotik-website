@@ -1,6 +1,7 @@
 import { 
   state, 
   saveData, 
+  loadData, 
   playRoboticSound, 
   sanitizeInput, 
   escapeHtml, 
@@ -646,26 +647,6 @@ function setupRegistrationForm() {
           }
         }
 
-        // Real-time dynamic AI recommendation for divisions
-        const val = input.value.toLowerCase();
-        document.querySelectorAll('.custom-checkbox-wrapper').forEach(el => el.classList.remove('recommended'));
-        
-        const keywordsMechanics = ['3d', 'cad', 'sasis', 'desain', 'mekanik', 'chassis', 'akrilik', 'bodi', 'struktur', 'physics', 'fisik', 'rangka'];
-        const keywordsElectronics = ['sirkuit', 'sensor', 'arduino', 'solder', 'kabel', 'elektronik', 'baterai', 'hardware', 'pcb', 'arus', 'tegangan', 'daya'];
-        const keywordsProgramming = ['program', 'coding', 'software', 'python', 'c++', 'algoritma', 'pid', 'code', 'pemrogram', 'iot', 'logic', 'logika'];
-        
-        if (keywordsMechanics.some(kw => val.includes(kw))) {
-          const el = document.getElementById('wrapper-mechanics');
-          if (el) el.classList.add('recommended');
-        }
-        if (keywordsElectronics.some(kw => val.includes(kw))) {
-          const el = document.getElementById('wrapper-electronics');
-          if (el) el.classList.add('recommended');
-        }
-        if (keywordsProgramming.some(kw => val.includes(kw))) {
-          const el = document.getElementById('wrapper-programming');
-          if (el) el.classList.add('recommended');
-        }
       }
     });
   });
@@ -736,15 +717,7 @@ function setupRegistrationForm() {
       const motivasi = document.getElementById('motivasi');
       const vMotiv = validateField(motivasi);
       
-      // Enforce at least one division selected
-      const checkedDivisi = document.querySelectorAll('input[name="divisi"]:checked');
-      let divisionValid = true;
-      if (checkedDivisi.length === 0) {
-        divisionValid = false;
-        await customAlert('Silakan pilih minimal satu divisi keahlian.');
-      }
-      
-      stepValid = vMotiv && divisionValid;
+      stepValid = vMotiv;
       // Validasi pertanyaan kustom yang wajib diisi (required)
       let customValid = true;
       if (regSettings.customQuestions) {
@@ -832,8 +805,6 @@ function setupRegistrationForm() {
     const email = document.getElementById('email').value;
     const noHp = document.getElementById('no_hp').value;
     const laptop = document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak';
-    const checkedDiv = Array.from(document.querySelectorAll('input[name="divisi"]:checked')).map(cb => cb.value);
-    const divisiStr = checkedDiv.join(', ') || '-';
 
     const motivasi = document.getElementById('motivasi').value;
     const summaryContainer = document.getElementById('confirmation-summary');
@@ -859,7 +830,6 @@ function setupRegistrationForm() {
       <div class="summary-item"><strong>Email:</strong> <span>${escapeHtml(email)}</span></div>
       <div class="summary-item"><strong>No. WhatsApp:</strong> <span>${escapeHtml(noHp)}</span></div>
       <div class="summary-item"><strong>Punya Laptop:</strong> <span>${escapeHtml(laptop)}</span></div>
-      <div class="summary-item"><strong>Divisi Diminati:</strong> <span>${escapeHtml(divisiStr)}</span></div>
       <div class="summary-item block"><strong>Motivasi:</strong> <p>${escapeHtml(motivasi)}</p></div>
       ${customSummaryHtml}
     `;
@@ -998,7 +968,6 @@ function setupRegistrationForm() {
         email: emailSiswa,
         noHp: noHpSiswa,
         laptop: document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak',
-        divisi: Array.from(document.querySelectorAll('input[name="divisi"]:checked')).map(cb => cb.value),
         motivasi: motivasiSiswa,
         tanggalDaftar: new Date().toISOString().split('T')[0],
         status: 'Pending',
@@ -1988,7 +1957,8 @@ async function checkApplicantStatus(id) {
     }
   } else {
     // Fallback for local storage mode
-    applicant = applicants.find(a => a.id.toUpperCase() === normalizedId);
+    const latestApplicants = loadData('robotik_applicants', applicants);
+    applicant = latestApplicants.find(a => a.id.toUpperCase() === normalizedId);
   }
 
   if (btnCheckStatus) {
@@ -2024,7 +1994,6 @@ async function checkApplicantStatus(id) {
         <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 8px; padding: 1rem; text-align: left; margin-bottom: 1.5rem;">
           <div style="display: grid; grid-template-columns: 100px 1fr; gap: 0.5rem; font-size: 0.9rem;">
             <span style="color: var(--text-muted);">ID Unik:</span><span style="color: var(--text-white); font-weight: bold;">${escapeHtml(applicant.id)}</span>
-            <span style="color: var(--text-muted);">Divisi:</span><span style="color: var(--text-white);">${escapeHtml(applicant.divisi)}</span>
             <span style="color: var(--text-muted);">Tanggal:</span><span style="color: var(--text-white);">${escapeHtml(applicant.timestamp || new Date().toISOString().split('T')[0])}</span>
           </div>
         </div>

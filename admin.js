@@ -607,21 +607,17 @@ function renderAdminApplicantsTable() {
          <button class="btn btn-secondary btn-sm btn-reject" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Tolak 🔴</button>`
       : '';
 
-    const joinedDivisions = Array.isArray(applicant.divisi) 
-      ? applicant.divisi.join(', ') 
-      : applicant.divisi;
-
     return `
       <tr>
         <td>${index + 1}</td>
         <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(applicant.nama)}</td>
         <td>${escapeHtml(applicant.kelas)}</td>
         <td>${escapeHtml(applicant.noHp)}</td>
-        <td>${escapeHtml(joinedDivisions)}</td>
         <td>${escapeHtml(applicant.tanggalDaftar)}</td>
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
         <td>
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">Detail 🔍</button>
             ${showActions}
             ${showLihatKartu}
             <button class="btn btn-secondary btn-sm btn-delete" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.2); color: rgba(255,255,255,0.4);" aria-label="Hapus Pendaftar">Hapus 🗑️</button>
@@ -651,6 +647,14 @@ function renderAdminApplicantsTable() {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
       viewApplicantCard(id);
+    });
+    btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
+  });
+
+  tableBody.querySelectorAll('.btn-view-detail').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      viewApplicantDetail(id);
     });
     btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
   });
@@ -731,6 +735,82 @@ function viewApplicantCard(id) {
   const dialog = document.getElementById('admin-card-preview-dialog');
   if (dialog) {
     playRoboticSound('success');
+    dialog.showModal();
+    document.body.classList.add('dialog-open');
+  }
+}
+
+function viewApplicantDetail(id) {
+  const applicant = state.applicants.find(a => a.id === id);
+  if (!applicant) return;
+
+  const container = document.getElementById('admin-applicant-detail-container');
+  if (!container) return;
+
+  let statusClass = 'status-pending';
+  let statusLabel = 'Menunggu Persetujuan';
+  if (applicant.status === 'Diterima') {
+    statusClass = 'status-approved';
+    statusLabel = 'Diterima';
+  } else if (applicant.status === 'Ditolak') {
+    statusClass = 'status-rejected';
+    statusLabel = 'Ditolak';
+  }
+
+  let customQuestionsHtml = '';
+  if (state.regSettings.customQuestions && state.regSettings.customQuestions.length > 0) {
+    customQuestionsHtml = `<h4 style="color: var(--accent-cyan); margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.25rem;">Jawaban Pertanyaan Kustom</h4>`;
+    state.regSettings.customQuestions.forEach(q => {
+      const ans = applicant.customAnswers && applicant.customAnswers[q.id] 
+        ? applicant.customAnswers[q.id] 
+        : '-';
+      customQuestionsHtml += `
+        <div style="margin-bottom: 0.75rem;">
+          <strong style="color: var(--text-muted); font-size: 0.85rem; display: block;">${escapeHtml(q.label)}</strong>
+          <span style="color: var(--text-white); font-size: 0.95rem;">${escapeHtml(ans)}</span>
+        </div>
+      `;
+    });
+  }
+
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: 120px 1fr; gap: 0.5rem; font-size: 0.95rem; line-height: 1.5; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem;">
+      <span style="color: var(--text-muted);">ID Pendaftaran:</span>
+      <strong style="color: var(--accent-cyan); font-family: monospace;">${escapeHtml(applicant.id)}</strong>
+
+      <span style="color: var(--text-muted);">Nama Lengkap:</span>
+      <span style="color: var(--text-white); font-weight: 600;">${escapeHtml(applicant.nama)}</span>
+
+      <span style="color: var(--text-muted);">Kelas:</span>
+      <span style="color: var(--text-white);">Kelas ${escapeHtml(applicant.kelas)}</span>
+
+      <span style="color: var(--text-muted);">Email:</span>
+      <span style="color: var(--text-white);">${escapeHtml(applicant.email)}</span>
+
+      <span style="color: var(--text-muted);">No. WhatsApp:</span>
+      <span style="color: var(--text-white);">${escapeHtml(applicant.noHp)}</span>
+
+      <span style="color: var(--text-muted);">Punya Laptop:</span>
+      <span style="color: var(--text-white);">${escapeHtml(applicant.laptop || 'Tidak')}</span>
+
+      <span style="color: var(--text-muted);">Tanggal Daftar:</span>
+      <span style="color: var(--text-white);">${escapeHtml(applicant.tanggalDaftar)}</span>
+
+      <span style="color: var(--text-muted);">Status:</span>
+      <span><span class="status-badge ${statusClass}">${statusLabel}</span></span>
+    </div>
+
+    <div style="margin-top: 1rem;">
+      <strong style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 0.25rem;">Motivasi Bergabung:</strong>
+      <p style="color: var(--text-white); font-size: 0.95rem; line-height: 1.6; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 6px; white-space: pre-wrap; margin: 0;">${escapeHtml(applicant.motivasi)}</p>
+    </div>
+
+    ${customQuestionsHtml}
+  `;
+
+  const dialog = document.getElementById('admin-applicant-detail-dialog');
+  if (dialog) {
+    playRoboticSound('click');
     dialog.showModal();
     document.body.classList.add('dialog-open');
   }
@@ -1378,9 +1458,8 @@ async function exportApplicantsToCsv() {
     return;
   }
 
-  const headers = ['No', 'ID Pendaftaran', 'Nama Lengkap', 'Kelas', 'Email', 'No. WhatsApp', 'Minat Divisi', 'Motivasi', 'Tanggal Daftar', 'Status'];
+  const headers = ['No', 'ID Pendaftaran', 'Nama Lengkap', 'Kelas', 'Email', 'No. WhatsApp', 'Motivasi', 'Tanggal Daftar', 'Status'];
   const rows = state.applicants.map((app, index) => {
-    const joinedDivisions = Array.isArray(app.divisi) ? app.divisi.join(', ') : app.divisi;
     return [
       index + 1,
       app.id || '',
@@ -1388,7 +1467,6 @@ async function exportApplicantsToCsv() {
       app.kelas || '',
       app.email || '',
       app.noHp || '',
-      joinedDivisions || '',
       (app.motivasi || '').replace(/\r?\n/g, ' '),
       app.tanggalDaftar || '',
       app.status || ''
@@ -1930,6 +2008,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       playRoboticSound('click');
       previewDialog.close();
     });
+  }
+
+  // Setup close buttons on applicant detail dialog
+  const detailDialog = document.getElementById('admin-applicant-detail-dialog');
+  const closeDetailDialogBtn = document.getElementById('close-detail-dialog-btn');
+  const btnCloseDetailDialog = document.getElementById('btn-close-detail-dialog');
+  
+  if (detailDialog) {
+    if (closeDetailDialogBtn) {
+      closeDetailDialogBtn.addEventListener('click', () => {
+        playRoboticSound('click');
+        detailDialog.close();
+      });
+    }
+    if (btnCloseDetailDialog) {
+      btnCloseDetailDialog.addEventListener('click', () => {
+        playRoboticSound('click');
+        detailDialog.close();
+      });
+    }
   }
 
   // Setup Realtime Cloud Sync callbacks

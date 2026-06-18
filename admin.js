@@ -671,6 +671,7 @@ function renderAdminApplicantsTable() {
 function approveApplicant(id) {
   const idx = state.applicants.findIndex(a => a.id === id);
   if (idx !== -1) {
+    const originalStatus = state.applicants[idx].status;
     playRoboticSound('success');
     state.applicants[idx].status = 'Diterima';
     saveData('robotik_applicants', state.applicants);
@@ -680,7 +681,14 @@ function approveApplicant(id) {
     if (state.useFirebase) {
       state.db.collection('applicants').doc(id).update({ status: 'Diterima' })
         .then(() => console.log("Applicant approval successfully synced to Cloud Firestore!"))
-        .catch(err => console.error("Firestore approval sync failed:", err));
+        .catch(async (err) => {
+          console.error("Firestore approval sync failed:", err);
+          state.applicants[idx].status = originalStatus;
+          saveData('robotik_applicants', state.applicants);
+          renderAdminApplicantsTable();
+          renderDashboardOverview();
+          await customAlert('⚠️ Gagal menyetujui di Cloud Database: ' + err.message);
+        });
     }
   }
 }
@@ -688,6 +696,7 @@ function approveApplicant(id) {
 function rejectApplicant(id) {
   const idx = state.applicants.findIndex(a => a.id === id);
   if (idx !== -1) {
+    const originalStatus = state.applicants[idx].status;
     playRoboticSound('error');
     state.applicants[idx].status = 'Ditolak';
     saveData('robotik_applicants', state.applicants);
@@ -697,7 +706,14 @@ function rejectApplicant(id) {
     if (state.useFirebase) {
       state.db.collection('applicants').doc(id).update({ status: 'Ditolak' })
         .then(() => console.log("Applicant rejection successfully synced to Cloud Firestore!"))
-        .catch(err => console.error("Firestore rejection sync failed:", err));
+        .catch(async (err) => {
+          console.error("Firestore rejection sync failed:", err);
+          state.applicants[idx].status = originalStatus;
+          saveData('robotik_applicants', state.applicants);
+          renderAdminApplicantsTable();
+          renderDashboardOverview();
+          await customAlert('⚠️ Gagal menolak di Cloud Database: ' + err.message);
+        });
     }
   }
 }
@@ -706,6 +722,7 @@ async function deleteApplicant(id) {
   const idx = state.applicants.findIndex(a => a.id === id);
   if (idx !== -1) {
     if (await customConfirm(`Apakah Anda yakin ingin menghapus data pendaftar ${state.applicants[idx].nama}?`)) {
+      const originalApplicant = { ...state.applicants[idx] };
       playRoboticSound('click');
       state.applicants.splice(idx, 1);
       saveData('robotik_applicants', state.applicants);
@@ -715,7 +732,14 @@ async function deleteApplicant(id) {
       if (state.useFirebase) {
         state.db.collection('applicants').doc(id).delete()
           .then(() => console.log("Applicant deletion successfully synced to Cloud Firestore!"))
-          .catch(err => console.error("Firestore deletion sync failed:", err));
+          .catch(async (err) => {
+            console.error("Firestore deletion sync failed:", err);
+            state.applicants.splice(idx, 0, originalApplicant);
+            saveData('robotik_applicants', state.applicants);
+            renderAdminApplicantsTable();
+            renderDashboardOverview();
+            await customAlert('⚠️ Gagal menghapus di Cloud Database: ' + err.message);
+          });
       }
     } else {
       playRoboticSound('error');

@@ -99,7 +99,74 @@ function setupRouter() {
     }
   });
 
+  const brandLink = document.getElementById('brand-link');
+  if (brandLink) {
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigateTo('view-home');
+    });
+  }
+
   window.appNavigate = navigateTo;
+}
+
+// --- PROGRAMMATIC INTERACTIVE EVENT HANDLERS ---
+function setupInteractiveElements() {
+  const heroDaftarBtn = document.getElementById('hero-btn-daftar');
+  if (heroDaftarBtn) {
+    heroDaftarBtn.addEventListener('click', () => {
+      if (window.appNavigate) window.appNavigate('view-pendaftaran');
+    });
+  }
+
+  const heroGaleriBtn = document.getElementById('hero-btn-galeri');
+  if (heroGaleriBtn) {
+    heroGaleriBtn.addEventListener('click', () => {
+      if (window.appNavigate) window.appNavigate('view-portfolio');
+    });
+  }
+
+  const successReloadBtn = document.getElementById('success-btn-reload');
+  if (successReloadBtn) {
+    successReloadBtn.addEventListener('click', () => {
+      location.reload();
+    });
+  }
+
+  document.querySelectorAll('.footer-nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const target = link.getAttribute('data-target');
+      if (target && window.appNavigate) {
+        e.preventDefault();
+        window.appNavigate(target);
+      }
+    });
+  });
+
+  document.querySelectorAll('.footer-div-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.appNavigate) {
+        window.appNavigate('view-home');
+        const divId = link.getAttribute('data-div');
+        const container = document.getElementById('divisi-detail-container');
+        if (container) {
+          container.scrollIntoView({ behavior: 'smooth' });
+        }
+        const tabButton = document.querySelector(`.divisi-nav-btn[data-div="${divId}"]`);
+        if (tabButton) {
+          tabButton.click();
+        }
+      }
+    });
+  });
+
+  const backToTopBtn = document.getElementById('btn-back-to-top');
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 }
 
 // --- PUBLIC BLOG PAGE CONTROLLER ---
@@ -1084,6 +1151,7 @@ function setupInteractiveCircuit() {
 // --- APP BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', () => {
   setupRouter();
+  setupInteractiveElements();
   // setupAudioToggle();
   setupBlog();
   setupPortfolio();

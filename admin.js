@@ -49,19 +49,39 @@ function setupCmsAuthentication() {
 
   if (btnResetDb) {
     btnResetDb.addEventListener('click', async () => {
-      if (await customConfirm('PERINGATAN: Apakah Anda yakin ingin mereset seluruh database ke kondisi default asli? Semua data tambahan akan hilang.')) {
+      if (await customConfirm('PERINGATAN: Apakah Anda yakin ingin mengosongkan seluruh database? Semua data pendaftaran, artikel, proyek portofolio, pertanyaan kustom, dan prestasi akan dihapus secara permanen.')) {
         playRoboticSound('success');
-        localStorage.removeItem('robotik_blog');
-        localStorage.removeItem('robotik_portfolio');
-        localStorage.removeItem('robotik_applicants');
-        localStorage.removeItem('robotik_reg_settings');
-        localStorage.removeItem('robotik_landing');
         
-        state.blogArticles = INITIAL_BLOG_ARTICLES;
-        state.portfolioProjects = INITIAL_PORTFOLIO_PROJECTS;
-        state.applicants = INITIAL_APPLICANTS;
-        state.regSettings = JSON.parse(JSON.stringify(INITIAL_REG_SETTINGS));
-        state.landingData = JSON.parse(JSON.stringify(INITIAL_LANDING_DATA));
+        state.blogArticles = [];
+        state.portfolioProjects = [];
+        state.applicants = [];
+        
+        state.regSettings = {
+          isOpen: true,
+          countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+          customQuestions: [],
+          waTitle: 'Grup WhatsApp Resmi Calon Anggota',
+          waDesc: 'Harap bergabung ke grup koordinasi calon anggota baru di bawah ini.',
+          waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
+        };
+
+        state.landingData = {
+          heroTag: 'Ekstrakurikuler Unggulan',
+          heroTitle: 'Rancang Masa Depanmu Bersama <span>Robotik</span>!',
+          heroDesc: 'Deskripsi ekskul robotik.',
+          visiText: 'Visi kami.',
+          misiList: ['Misi 1', 'Misi 2', 'Misi 3', 'Misi 4'],
+          divMechDesc: 'Mekanik.',
+          divElecDesc: 'Elektronika.',
+          divProgDesc: 'Pemrograman.',
+          achievements: [],
+          footerTagline: 'Footer tagline.',
+          footerLocation: 'Lab Robotika',
+          footerEmail: 'robotik@motechart.sch.id',
+          footerInstagram: '',
+          footerGithub: '',
+          footerYoutube: ''
+        };
         
         saveData('robotik_blog', state.blogArticles);
         saveData('robotik_portfolio', state.portfolioProjects);
@@ -76,13 +96,9 @@ function setupCmsAuthentication() {
               snapshot.forEach(doc => {
                 batch.delete(doc.ref);
               });
-              INITIAL_APPLICANTS.forEach(app => {
-                const docRef = state.db.collection('applicants').doc(app.id);
-                batch.set(docRef, app);
-              });
               return batch.commit();
             })
-            .then(() => console.log("Cloud Reset: Applicants database successfully reset & re-seeded!"))
+            .then(() => console.log("Cloud Reset: Applicants database successfully cleared!"))
             .catch(err => console.error("Cloud Reset Error: Firestore applicants clear failed:", err));
         }
         
@@ -93,7 +109,7 @@ function setupCmsAuthentication() {
         populateRegSettingsCmsInputs();
         renderAdminQuestionsTable();
         
-        await customAlert('Database telah dikembalikan ke kondisi default!');
+        await customAlert('Database telah dikosongkan secara permanen!');
       } else {
         playRoboticSound('error');
       }
@@ -319,6 +335,14 @@ function setupCmsTabs() {
   }
   if (btnAddPortfolio) {
     btnAddPortfolio.addEventListener('click', () => openCmsEditor('portfolio', 'add'));
+  }
+
+  const btnOverviewViewAll = document.getElementById('btn-overview-view-all');
+  if (btnOverviewViewAll) {
+    btnOverviewViewAll.addEventListener('click', () => {
+      const tab = document.querySelector('[data-cms-target="cms-applicants-view"]');
+      if (tab) tab.click();
+    });
   }
 
   const closeEditorBtn = document.getElementById('close-editor-dialog-btn');

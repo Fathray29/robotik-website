@@ -50,7 +50,7 @@
   <!-- NAVIGATION HEADER -->
   <header class="main-header">
     <div class="container header-container">
-      <a href="#home" class="brand" onclick="window.appNavigate('view-home'); return false;"
+      <a href="#home" class="brand" id="brand-link"
         aria-label="Motechart Robotik Home">
         <!-- High-fidelity custom brand logo in SVG representing Motechart Robotik -->
         <svg class="brand-logo-svg" width="40" height="40" viewBox="0 0 200 200" fill="none"
@@ -200,8 +200,8 @@
               pemrograman algoritma tingkat tinggi untuk menciptakan robot-robot inovatif masa depan.
             </p>
             <div class="hero-actions">
-              <button class="btn btn-yellow" onclick="window.appNavigate('view-pendaftaran')">Daftar Sekarang</button>
-              <button class="btn btn-secondary" onclick="window.appNavigate('view-portfolio')">Lihat Galeri
+              <button class="btn btn-yellow" id="hero-btn-daftar">Daftar Sekarang</button>
+              <button class="btn btn-secondary" id="hero-btn-galeri">Lihat Galeri
                 Karya</button>
             </div>
           </div>
@@ -722,7 +722,7 @@
               </div>
             </div>
 
-            <button class="btn btn-yellow" style="margin-top: 3.5rem;" onclick="location.reload();">
+            <button class="btn btn-yellow" style="margin-top: 3.5rem;" id="success-btn-reload">
               Kembali ke Beranda ekskul
             </button>
           </div>
@@ -847,13 +847,12 @@
         <div class="footer-col links-col">
           <h4 class="footer-col-title">Navigasi Cepat</h4>
           <ul class="footer-col-links">
-            <li><a href="#home" onclick="window.appNavigate('view-home'); return false;">Beranda (Home)</a></li>
-            <li><a href="#blog" onclick="window.appNavigate('view-blog'); return false;">Blog Informasi</a></li>
-            <li><a href="#portfolio" onclick="window.appNavigate('view-portfolio'); return false;">Galeri Portfolio</a>
-            </li>
-            <li><a href="#pendaftaran" onclick="window.appNavigate('view-pendaftaran'); return false;">Pendaftaran
-                Siswa</a></li>
+            <li><a href="#home" class="footer-nav-link" data-target="view-home">Beranda (Home)</a></li>
+            <li><a href="#blog" class="footer-nav-link" data-target="view-blog">Blog Informasi</a></li>
+            <li><a href="#portfolio" class="footer-nav-link" data-target="view-portfolio">Galeri Portfolio</a></li>
+            <li><a href="#pendaftaran" class="footer-nav-link" data-target="view-pendaftaran">Pendaftaran Siswa</a></li>
             <li><a href="admin.html">Admin Dashboard</a></li>
+            <li><a href="privacy.html">Kebijakan Privasi</a></li>
           </ul>
         </div>
 
@@ -861,15 +860,9 @@
         <div class="footer-col divisions-col">
           <h4 class="footer-col-title">Divisi Keahlian</h4>
           <ul class="footer-col-links">
-            <li><a href="#divisi"
-                onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">🦾
-                Mekanik (CAD Design)</a></li>
-            <li><a href="#divisi"
-                onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">⚡
-                Elektronik (IoT Circuits)</a></li>
-            <li><a href="#divisi"
-                onclick="window.appNavigate('view-home'); document.getElementById('divisi-detail-container').scrollIntoView({behavior: 'smooth'}); return false;">💻
-                Pemrograman (C++ Code)</a></li>
+            <li><a href="#divisi" class="footer-div-link" data-div="mechanics">🦾 Mekanik (CAD Design)</a></li>
+            <li><a href="#divisi" class="footer-div-link" data-div="electronics">⚡ Elektronik (IoT Circuits)</a></li>
+            <li><a href="#divisi" class="footer-div-link" data-div="programming">💻 Pemrograman (C++ Code)</a></li>
           </ul>
         </div>
 
@@ -902,8 +895,7 @@
           <p style="font-size: 0.75rem; color: rgba(255,255,255,0.25); margin-top: 0.35rem;">Seluruh hak cipta
             dilindungi. Program Kerja Ekstrakurikuler Bidang Sains & Teknologi.</p>
         </div>
-        <button type="button" id="btn-back-to-top" class="back-to-top-btn"
-          onclick="window.scrollTo({top: 0, behavior: 'smooth'});" aria-label="Kembali ke Atas">
+        <button type="button" id="btn-back-to-top" class="back-to-top-btn" aria-label="Kembali ke Atas">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"></polyline>

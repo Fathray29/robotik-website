@@ -491,7 +491,13 @@
   <!-- Editor Dialog (Blog & Portfolio) -->
   <dialog id="cms-editor-dialog">
     <div class="dialog-header">
-      <h3 class="dialog-title" id="cms-dialog-title">Editor Konten</h3>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <h3 class="dialog-title" id="cms-dialog-title">Editor Konten</h3>
+        <div style="display: flex; gap: 0.35rem; align-items: center;">
+          <button type="button" id="btn-cms-undo" class="btn btn-secondary btn-sm" title="Undo (Ctrl+Z)" style="padding: 0.25rem 0.5rem; min-height: auto; font-size: 0.85rem;">↩️</button>
+          <button type="button" id="btn-cms-redo" class="btn btn-secondary btn-sm" title="Redo (Ctrl+Y)" style="padding: 0.25rem 0.5rem; min-height: auto; font-size: 0.85rem;">↪️</button>
+        </div>
+      </div>
       <button type="button" id="close-editor-dialog-btn" class="btn-close">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>

@@ -13,7 +13,11 @@ import {
   customAlert,
   customConfirm,
   setupRealTimeRegSettingsSync,
-  setupRealTimeLandingDataSync
+  setupRealTimeLandingDataSync,
+  syncBlogFromFirestore,
+  syncPortfolioFromFirestore,
+  setupRealTimeBlogSync,
+  setupRealTimePortfolioSync
 } from './shared.js';
 
 // Central shared state shortcuts
@@ -32,47 +36,53 @@ function setupRouter() {
 
   function navigateTo(targetViewId, scrollUp = true) {
     const activeView = document.querySelector('.page-view.active');
-    if (activeView && activeView.id === targetViewId) return;
+    if (activeView && activeView.id === targetViewId) return Promise.resolve();
 
     // Admin is now handled by admin.html with HMAC session tokens.
     if (targetViewId === 'view-admin') {
       window.location.href = './admin.html';
-      return;
+      return Promise.resolve();
     }
 
-    const performTransition = () => {
-      views.forEach(v => v.classList.remove('active'));
-      navLinks.forEach(l => l.classList.remove('active'));
+    return new Promise((resolve) => {
+      const performTransition = () => {
+        views.forEach(v => v.classList.remove('active'));
+        navLinks.forEach(l => l.classList.remove('active'));
 
-      const targetView = document.getElementById(targetViewId);
-      if (targetView) {
-        targetView.classList.add('active');
-        window.history.pushState(null, '', `#${targetViewId.replace('view-', '')}`);
+        const targetView = document.getElementById(targetViewId);
+        if (targetView) {
+          targetView.classList.add('active');
+          window.history.pushState(null, '', `#${targetViewId.replace('view-', '')}`);
 
-        const correspondingLink = document.querySelector(`.nav-link[data-target="${targetViewId}"]`);
-        if (correspondingLink) {
-          correspondingLink.classList.add('active');
-        }
+          const correspondingLink = document.querySelector(`.nav-link[data-target="${targetViewId}"]`);
+          if (correspondingLink) {
+            correspondingLink.classList.add('active');
+          }
 
-        const heading = targetView.querySelector('h1, h2');
-        if (heading) {
-          heading.setAttribute('tabindex', '-1');
-          heading.focus();
+          const heading = targetView.querySelector('h1, h2');
+          if (heading) {
+            heading.setAttribute('tabindex', '-1');
+            heading.focus();
+          }
+          
+          if (scrollUp) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
         }
-        
-        if (scrollUp) {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (!document.startViewTransition) {
+          resolve();
         }
+      };
+
+      if (document.startViewTransition) {
+        const transition = document.startViewTransition(performTransition);
+        transition.updateCallbackDone.then(resolve).catch(resolve);
+      } else {
+        performTransition();
       }
-    };
-
-    if (document.startViewTransition) {
-      document.startViewTransition(performTransition);
-    } else {
-      performTransition();
-    }
-    
-    playRoboticSound('click');
+      
+      playRoboticSound('click');
+    });
   }
 
   navLinks.forEach(link => {
@@ -144,10 +154,10 @@ function setupInteractiveElements() {
   });
 
   document.querySelectorAll('.footer-div-link').forEach(link => {
-    link.addEventListener('click', (e) => {
+    link.addEventListener('click', async (e) => {
       e.preventDefault();
       if (window.appNavigate) {
-        window.appNavigate('view-home');
+        await window.appNavigate('view-home');
         const divId = link.getAttribute('data-div');
         const container = document.getElementById('divisi-detail-container');
         if (container) {
@@ -686,8 +696,8 @@ function setupRegistrationForm() {
     },
     'motivasi': {
       required: true,
-      minlength: 10,
-      errorMessage: 'Berikan motivasi yang jelas (minimal 10 karakter).'
+      minlength: 20,
+      errorMessage: 'Berikan motivasi yang jelas (minimal 20 karakter).'
     }
   };
 
@@ -704,7 +714,7 @@ function setupRegistrationForm() {
       if (fieldId === 'motivasi') {
         const charCount = document.getElementById('char-count');
         if (charCount) {
-          const charsLeft = 10 - input.value.length;
+          const charsLeft = 20 - input.value.length;
           if (charsLeft > 0) {
             charCount.textContent = `(${charsLeft} karakter lagi)`;
             charCount.style.color = 'var(--text-muted)';
@@ -1042,7 +1052,7 @@ function setupRegistrationForm() {
       };
 
       applicants.push(newApplicant);
-      saveData('robotik_applicants', applicants);
+      saveData('robotik_applicants', applicants, false);
 
       if (useFirebase) {
         db.collection('applicants').doc(regId).set(newApplicant)
@@ -1100,6 +1110,8 @@ async function initializeCloudDataSync() {
     console.log("Motechart Cloud Engine: Initiating data sync from Firebase Firestore...");
     await syncLandingDataFromFirestore();
     await syncRegSettingsFromFirestore();
+    await syncBlogFromFirestore();
+    await syncPortfolioFromFirestore();
     
     // Update local let variables with newly synced cloud data
     blogArticles = state.blogArticles;
@@ -1116,6 +1128,8 @@ async function initializeCloudDataSync() {
     renderCustomQuestionsInForm();
     updateCountdownTimer();
     renderWhatsAppBanner();
+    renderPublicArticles();
+    renderPublicPortfolio();
     
     // Re-populate inputs in CMS if forms are loaded
     if (typeof window.populateLandingCmsInputs === 'function') {
@@ -1199,6 +1213,16 @@ document.addEventListener('DOMContentLoaded', () => {
   setupRealTimeLandingDataSync((updatedLandingData) => {
     landingData = updatedLandingData;
     renderLandingPage();
+  });
+
+  setupRealTimeBlogSync((updatedBlogArticles) => {
+    blogArticles = updatedBlogArticles;
+    renderPublicArticles();
+  });
+
+  setupRealTimePortfolioSync((updatedPortfolioProjects) => {
+    portfolioProjects = updatedPortfolioProjects;
+    renderPublicPortfolio();
   });
 
   // Async cloud sync trigger (runs in background and populates UI seamlessly)
@@ -1967,7 +1991,7 @@ function updateCountdownTimer() {
         if (secondsEl) secondsEl.textContent = '00';
 
         regSettings.isOpen = true;
-        saveData('robotik_reg_settings', regSettings);
+        saveData('robotik_reg_settings', regSettings, false);
         clearInterval(countdownInterval);
         countdownInterval = null;
         closedContainer.style.display = 'none';

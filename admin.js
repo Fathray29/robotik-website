@@ -11,6 +11,8 @@ import {
   setupRealTimeRegSettingsSync,
   setupRealTimeLandingDataSync,
   initializeCloudDataSync,
+  setupRealTimeBlogSync,
+  setupRealTimePortfolioSync,
 
   getLoginRateLimit,
   recordFailedLogin,
@@ -505,9 +507,9 @@ function renderAdminBlogTable() {
   tableBody.innerHTML = state.blogArticles.map((article, index) => `
     <tr>
       <td>${index + 1}</td>
-      <td style="font-weight: 600; color: var(--text-white);">${article.title}</td>
-      <td><span class="table-badge">${article.category.toUpperCase()}</span></td>
-      <td>${article.date || '-'}</td>
+      <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(article.title)}</td>
+      <td><span class="table-badge">${escapeHtml(article.category.toUpperCase())}</span></td>
+      <td>${escapeHtml(article.date || '-')}</td>
       <td>
         <div style="display: flex; gap: 0.5rem;">
           <button class="btn btn-outline-cyan btn-sm edit-blog-btn" data-id="${article.id}" aria-label="Ubah Artikel">Edit</button>
@@ -553,9 +555,9 @@ function renderAdminPortfolioTable() {
   tableBody.innerHTML = state.portfolioProjects.map((proj, index) => `
     <tr>
       <td>${index + 1}</td>
-      <td style="font-weight: 600; color: var(--text-white);">${proj.title}</td>
-      <td><span class="table-badge">${proj.category.toUpperCase()}</span></td>
-      <td><span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${proj.status}</span></td>
+      <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(proj.title)}</td>
+      <td><span class="table-badge">${escapeHtml(proj.category.toUpperCase())}</span></td>
+      <td><span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span></td>
       <td>
         <div style="display: flex; gap: 0.5rem;">
           <button class="btn btn-outline-cyan btn-sm edit-portfolio-btn" data-id="${proj.id}" aria-label="Ubah Proyek">Edit</button>
@@ -1357,8 +1359,14 @@ function setupCmsHistory() {
   const btnUndo = document.getElementById('btn-cms-undo');
   const btnRedo = document.getElementById('btn-cms-redo');
 
-  if (btnUndo) btnUndo.addEventListener('click', undoCms);
-  if (btnRedo) btnRedo.addEventListener('click', redoCms);
+  if (btnUndo && !btnUndo.dataset.listenerAttached) {
+    btnUndo.addEventListener('click', undoCms);
+    btnUndo.dataset.listenerAttached = 'true';
+  }
+  if (btnRedo && !btnRedo.dataset.listenerAttached) {
+    btnRedo.addEventListener('click', redoCms);
+    btnRedo.dataset.listenerAttached = 'true';
+  }
 
   updateUndoRedoButtons();
 }
@@ -2091,5 +2099,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   setupRealTimeLandingDataSync((updatedLandingData) => {
     populateLandingCmsInputs();
+  });
+
+  setupRealTimeBlogSync((updatedBlogArticles) => {
+    renderAdminBlogTable();
+    renderDashboardOverview();
+  });
+
+  setupRealTimePortfolioSync((updatedPortfolioProjects) => {
+    renderAdminPortfolioTable();
+    renderDashboardOverview();
   });
 });

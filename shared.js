@@ -356,7 +356,8 @@ export function saveData(key, data, syncToCloud = true) {
     const encrypted = obfuscate(serialized);
     localStorage.setItem(key, encrypted);
 
-    if (state.useFirebase && syncToCloud) {
+    const currentUser = state.auth ? state.auth.currentUser : null;
+    if (state.useFirebase && syncToCloud && currentUser) {
       if (key === 'robotik_reg_settings') {
         state.db.collection('settings').doc('registration').set(data)
           .then(() => console.log("Cloud Sync: Registration settings successfully updated!"))
@@ -365,6 +366,14 @@ export function saveData(key, data, syncToCloud = true) {
         state.db.collection('landing').doc('content').set(data)
           .then(() => console.log("Cloud Sync: Landing page content successfully updated!"))
           .catch(err => console.error("Cloud Sync Error: Landing content sync failed:", err));
+      } else if (key === 'robotik_blog') {
+        state.db.collection('blog').doc('articles').set({ articles: data })
+          .then(() => console.log("Cloud Sync: Blog articles successfully updated!"))
+          .catch(err => console.error("Cloud Sync Error: Blog articles sync failed:", err));
+      } else if (key === 'robotik_portfolio') {
+        state.db.collection('portfolio').doc('projects').set({ projects: data })
+          .then(() => console.log("Cloud Sync: Portfolio projects successfully updated!"))
+          .catch(err => console.error("Cloud Sync Error: Portfolio projects sync failed:", err));
       }
     }
   } catch (e) {
@@ -468,6 +477,42 @@ export async function syncLandingDataFromFirestore() {
   }
 }
 
+export async function syncBlogFromFirestore() {
+  if (!state.useFirebase) return;
+  try {
+    const doc = await state.db.collection('blog').doc('articles').get();
+    if (doc.exists) {
+      const cloudData = doc.data();
+      state.blogArticles = cloudData.articles || [];
+      saveData('robotik_blog', state.blogArticles, false);
+      console.log("Cloud sync completed: Blog articles loaded.");
+    } else {
+      await state.db.collection('blog').doc('articles').set({ articles: state.blogArticles });
+      console.log("Firestore seeded with initial blog articles.");
+    }
+  } catch (e) {
+    console.error("Firestore sync blog failed:", e);
+  }
+}
+
+export async function syncPortfolioFromFirestore() {
+  if (!state.useFirebase) return;
+  try {
+    const doc = await state.db.collection('portfolio').doc('projects').get();
+    if (doc.exists) {
+      const cloudData = doc.data();
+      state.portfolioProjects = cloudData.projects || [];
+      saveData('robotik_portfolio', state.portfolioProjects, false);
+      console.log("Cloud sync completed: Portfolio projects loaded.");
+    } else {
+      await state.db.collection('portfolio').doc('projects').set({ projects: state.portfolioProjects });
+      console.log("Firestore seeded with initial portfolio projects.");
+    }
+  } catch (e) {
+    console.error("Firestore sync portfolio failed:", e);
+  }
+}
+
 let applicantsUnsubscribe = null;
 export function setupRealTimeApplicantsSync(onUpdateCallback) {
   if (!state.useFirebase) return;
@@ -497,6 +542,8 @@ export async function initializeCloudDataSync(callbacks = {}) {
     await syncLandingDataFromFirestore();
     await syncRegSettingsFromFirestore();
     await syncApplicantsFromFirestore();
+    await syncBlogFromFirestore();
+    await syncPortfolioFromFirestore();
     
     if (typeof callbacks.onSyncComplete === 'function') {
       callbacks.onSyncComplete();
@@ -839,6 +886,50 @@ export function setupRealTimeLandingDataSync(onUpdateCallback) {
     });
   } catch (e) {
     console.error("Failed to setup Firestore real-time listener for landing data:", e);
+  }
+}
+
+let blogUnsubscribe = null;
+export function setupRealTimeBlogSync(onUpdateCallback) {
+  if (!state.useFirebase) return;
+  if (blogUnsubscribe) return;
+  try {
+    blogUnsubscribe = state.db.collection('blog').doc('articles').onSnapshot(doc => {
+      if (doc.exists) {
+        state.blogArticles = doc.data().articles || [];
+        saveData('robotik_blog', state.blogArticles, false);
+        console.log("Real-time blog articles updated from Cloud Firestore!");
+        if (typeof onUpdateCallback === 'function') {
+          onUpdateCallback(state.blogArticles);
+        }
+      }
+    }, err => {
+      console.warn("Firestore real-time blog listener failed:", err);
+    });
+  } catch (e) {
+    console.error("Failed to setup Firestore real-time listener for blog:", e);
+  }
+}
+
+let portfolioUnsubscribe = null;
+export function setupRealTimePortfolioSync(onUpdateCallback) {
+  if (!state.useFirebase) return;
+  if (portfolioUnsubscribe) return;
+  try {
+    portfolioUnsubscribe = state.db.collection('portfolio').doc('projects').onSnapshot(doc => {
+      if (doc.exists) {
+        state.portfolioProjects = doc.data().projects || [];
+        saveData('robotik_portfolio', state.portfolioProjects, false);
+        console.log("Real-time portfolio projects updated from Cloud Firestore!");
+        if (typeof onUpdateCallback === 'function') {
+          onUpdateCallback(state.portfolioProjects);
+        }
+      }
+    }, err => {
+      console.warn("Firestore real-time portfolio listener failed:", err);
+    });
+  } catch (e) {
+    console.error("Failed to setup Firestore real-time listener for portfolio:", e);
   }
 }
 

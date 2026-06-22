@@ -54,12 +54,13 @@
 
     @media (max-width: 992px) {
       .privacy-sidebar {
-        position: sticky;
-        top: 75px;
+        position: relative;
+        top: auto;
         background: var(--bg-glass-heavy);
         padding: 0.75rem 1rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
         border-radius: var(--radius-md);
+        box-shadow: none;
       }
     }
 
@@ -183,11 +184,13 @@
       font-size: 1.5rem;
       color: var(--accent-yellow);
       margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
       border-bottom: 1px dashed var(--border-glass);
       padding-bottom: 0.75rem;
+    }
+
+    .privacy-section-card h2 span {
+      color: var(--accent-cyan);
+      margin-right: 0.5rem;
     }
 
     .privacy-section-card p,
@@ -283,6 +286,40 @@
       background: rgba(250, 204, 21, 0.15);
       color: var(--accent-yellow);
       border: 1px solid rgba(250, 204, 21, 0.25);
+    }
+
+    .policy-status-badge {
+      margin-top: 0.75rem;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.08);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      line-height: 1.4;
+    }
+
+    .policy-status-badge .status-divider {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 576px) {
+      .policy-status-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        border-radius: var(--radius-md);
+      }
+      .policy-status-badge .status-divider {
+        display: none;
+      }
     }
 
     @media (max-width: 768px) {
@@ -388,11 +425,10 @@
         </h1>
         <p style="color: var(--text-muted); font-size: 1.05rem;">Dokumen Resmi Kepatuhan Data dan Hak Asasi Pengguna
           Portal Motechart Robotik</p>
-        <div
-          style="margin-top: 0.75rem; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--accent-cyan); background: rgba(6, 182, 212, 0.08); padding: 0.4rem 1rem; border-radius: 30px; border: 1px solid rgba(6, 182, 212, 0.25);">
+        <div class="policy-status-badge">
           <span>Status Kebijakan:</span>
-          <strong>AKTIF & MENGIKAT</strong>
-          <span style="color: var(--text-muted);">|</span>
+          <strong>AKTIF &amp; MENGIKAT</strong>
+          <span class="status-divider">|</span>
           <span>Terakhir Diperbarui: 22 Juni 2026</span>
         </div>
       </div>
@@ -668,6 +704,11 @@
             navLinks.forEach(link => {
               if (link.getAttribute('href') === `#${id}`) {
                 link.classList.add('active');
+                
+                // Scroll active link into view horizontally in mobile view
+                if (window.innerWidth <= 992) {
+                  link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
               } else {
                 link.classList.remove('active');
               }

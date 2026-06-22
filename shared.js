@@ -286,7 +286,7 @@ export const INITIAL_LANDING_DATA = {
   ],
   footerTagline: 'Wadah pengembangan inovasi, otomatisasi, dan kreativitas teknologi robotika masa depan bagi para remaja unggul.',
   footerLocation: 'Lab Robotika, Gedung B Lantai 2',
-  footerEmail: 'robotik@motechart.sch.id',
+  footerEmail: 'robotikmotechart@gmail.com',
   footerInstagram: 'https://instagram.com',
   footerGithub: 'https://github.com',
   footerYoutube: 'https://youtube.com'

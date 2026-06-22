@@ -79,7 +79,7 @@ function setupCmsAuthentication() {
           achievements: [],
           footerTagline: 'Footer tagline.',
           footerLocation: 'Lab Robotika',
-          footerEmail: 'robotik@motechart.sch.id',
+          footerEmail: 'robotikmotechart@gmail.com',
           footerInstagram: '',
           footerGithub: '',
           footerYoutube: ''

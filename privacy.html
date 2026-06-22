@@ -45,6 +45,7 @@
       border-radius: var(--radius-lg);
       padding: 1.75rem;
       transition: var(--transition-smooth);
+      z-index: 10;
     }
 
     .privacy-sidebar:hover {
@@ -53,8 +54,12 @@
 
     @media (max-width: 992px) {
       .privacy-sidebar {
-        position: relative;
-        top: 0;
+        position: sticky;
+        top: 75px;
+        background: var(--bg-glass-heavy);
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: var(--radius-md);
       }
     }
 
@@ -68,11 +73,50 @@
       padding-bottom: 0.5rem;
     }
 
+    @media (max-width: 992px) {
+      .privacy-sidebar h3 {
+        display: none;
+      }
+    }
+
     .privacy-sidebar ul {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar ul {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: 0.75rem;
+      }
+      .privacy-sidebar ul::-webkit-scrollbar {
+        height: 4px;
+      }
+      .privacy-sidebar ul::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .privacy-sidebar ul::-webkit-scrollbar-thumb {
+        background: var(--accent-cyan-glass);
+        border-radius: 2px;
+      }
+    }
+
+    .privacy-sidebar li {
+      width: 100%;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar li {
+        width: auto;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+      }
     }
 
     .privacy-sidebar li a {
@@ -86,10 +130,24 @@
       transition: var(--transition-smooth);
     }
 
+    @media (max-width: 992px) {
+      .privacy-sidebar li a {
+        padding: 0.5rem 1rem;
+        font-size: 0.825rem;
+        white-space: nowrap;
+      }
+    }
+
     .privacy-sidebar li a:hover {
       color: var(--accent-yellow);
       background: rgba(250, 204, 21, 0.05);
       transform: translateX(4px);
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar li a:hover {
+        transform: none;
+      }
     }
 
     .privacy-sidebar li a.active {
@@ -112,7 +170,7 @@
       border-radius: var(--radius-lg);
       padding: 2.5rem;
       transition: var(--transition-smooth);
-      scroll-margin-top: 110px;
+      scroll-margin-top: 150px;
     }
 
     .privacy-section-card:hover {
@@ -156,15 +214,23 @@
       gap: 0.5rem;
     }
 
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 1.5rem 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-glass);
+    }
+
     .privacy-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 1.5rem 0;
+      margin: 0;
       font-size: 0.9rem;
       background: rgba(11, 17, 32, 0.4);
-      border-radius: var(--radius-md);
       overflow: hidden;
-      border: 1px solid var(--border-glass);
+      min-width: 550px;
     }
 
     .privacy-table th,
@@ -217,6 +283,37 @@
       background: rgba(250, 204, 21, 0.15);
       color: var(--accent-yellow);
       border: 1px solid rgba(250, 204, 21, 0.25);
+    }
+
+    @media (max-width: 768px) {
+      .privacy-container {
+        padding: 1rem 0.75rem;
+      }
+      .page-title-section {
+        margin-bottom: 2rem !important;
+      }
+      .page-title-section h1 {
+        font-size: 1.85rem !important;
+        line-height: 1.3;
+      }
+      .page-title-section p {
+        font-size: 0.9rem !important;
+      }
+      .privacy-section-card {
+        padding: 1.5rem 1.25rem;
+        border-radius: var(--radius-md);
+      }
+      .privacy-section-card h2 {
+        font-size: 1.25rem;
+        gap: 0.5rem;
+      }
+      .privacy-section-card p,
+      .privacy-section-card li {
+        font-size: 0.875rem;
+      }
+      .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -377,42 +474,44 @@
               ekstrakurikuler secara terukur. Berikut rincian data yang kami kumpulkan:
             </p>
 
-            <table class="privacy-table">
-              <thead>
-                <tr>
-                  <th>Kategori Data</th>
-                  <th>Jenis Data Spesifik</th>
-                  <th>Sifat Pengumpulan</th>
-                  <th>Fungsi Utama</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Identitas Diri</strong></td>
-                  <td>Nama Lengkap, Tingkat Kelas (X/XI/XII)</td>
-                  <td><span class="privacy-badge required">Wajib</span></td>
-                  <td>Verifikasi identitas siswa sekolah &amp; pencetakan Kartu ID Anggota</td>
-                </tr>
-                <tr>
-                  <td><strong>Kontak Aktif</strong></td>
-                  <td>Alamat Email, Nomor WhatsApp / Handphone</td>
-                  <td><span class="privacy-badge required">Wajib</span></td>
-                  <td>Saluran pengiriman pemberitahuan seleksi &amp; undangan grup belajar</td>
-                </tr>
-                <tr>
-                  <td><strong>Sarana Belajar</strong></td>
-                  <td>Status Kepemilikan Laptop</td>
-                  <td><span class="privacy-badge required">Wajib</span></td>
-                  <td>Penyusunan alokasi perangkat komputer di Lab selama sesi praktikum</td>
-                </tr>
-                <tr>
-                  <td><strong>Parameter Minat</strong></td>
-                  <td>Motivasi Pendaftaran &amp; Evaluasi Jawaban Kustom</td>
-                  <td><span class="privacy-badge required">Wajib</span></td>
-                  <td>Bahan pertimbangan kelayakan wawancara oleh pengurus &amp; pembina</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="privacy-table">
+                <thead>
+                  <tr>
+                    <th>Kategori Data</th>
+                    <th>Jenis Data Spesifik</th>
+                    <th>Sifat Pengumpulan</th>
+                    <th>Fungsi Utama</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Identitas Diri</strong></td>
+                    <td>Nama Lengkap, Tingkat Kelas (X/XI/XII)</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Verifikasi identitas siswa sekolah &amp; pencetakan Kartu ID Anggota</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Kontak Aktif</strong></td>
+                    <td>Alamat Email, Nomor WhatsApp / Handphone</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Saluran pengiriman pemberitahuan seleksi &amp; undangan grup belajar</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sarana Belajar</strong></td>
+                    <td>Status Kepemilikan Laptop</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Penyusunan alokasi perangkat komputer di Lab selama sesi praktikum</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Parameter Minat</strong></td>
+                    <td>Motivasi Pendaftaran &amp; Evaluasi Jawaban Kustom</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Bahan pertimbangan kelayakan wawancara oleh pengurus &amp; pembina</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             <p>
               Kami tidak mengumpulkan Data Pribadi yang bersifat sensitif seperti rekam medis, data biometrik,
@@ -504,25 +603,27 @@
               koreksi/penghapusan data pribadi Anda, silakan hubungi penanggung jawab Pelindungan Data Motechart Robotik
               melalui kontak resmi berikut:
             </p>
-            <table class="privacy-table" style="max-width: 600px;">
-              <tbody>
-                <tr>
-                  <td><strong>Surel Resmi (Email)</strong></td>
-                  <td><a href="mailto:robotikmotechart@gmail.com"
-                      style="color: var(--accent-cyan); text-decoration: underline;">robotikmotechart@gmail.com</a></td>
-                </tr>
-                <tr>
-                  <td><strong>Lokasi Fisik (Lab)</strong></td>
-                  <td>Jl. Lingkungan Kayu Manis No. 30, Desa Cirimekar, Kecamatan Cibinong, Kabupaten Bogor. Kode Pos
-                    16917
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>Waktu Layanan Admin</strong></td>
-                  <td>Senin - Jumat | 14:00 - 17:00 WIB (Sesi Ekstrakurikuler)</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive" style="max-width: 600px;">
+              <table class="privacy-table">
+                <tbody>
+                  <tr>
+                    <td><strong>Surel Resmi (Email)</strong></td>
+                    <td><a href="mailto:robotikmotechart@gmail.com"
+                        style="color: var(--accent-cyan); text-decoration: underline;">robotikmotechart@gmail.com</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lokasi Fisik (Lab)</strong></td>
+                    <td>Jl. Lingkungan Kayu Manis No. 30, Desa Cirimekar, Kecamatan Cibinong, Kabupaten Bogor. Kode Pos
+                      16917
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Waktu Layanan Admin</strong></td>
+                    <td>Senin - Jumat | 14:00 - 17:00 WIB (Sesi Ekstrakurikuler)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </section>
 
           <!-- BACK TO HOME FOOTER BUTTON -->

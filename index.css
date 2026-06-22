@@ -4265,8 +4265,18 @@ select.input-control option {
 
   /* Dialog styling optimizations */
   dialog {
-    padding: 1.5rem;
+    padding: 1.25rem;
     width: 95%;
+  }
+
+  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog) {
+    top: 5% !important;
+    transform: translate(-50%, 0) scale(0.95) !important;
+    max-height: 90vh !important;
+  }
+
+  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog)[open] {
+    transform: translate(-50%, 0) scale(1) !important;
   }
 
   /* Form actions layout */
@@ -4351,8 +4361,28 @@ select.input-control option {
   }
 
   .card-body {
-    padding: 1.25rem;
+    padding: 1.25rem 1rem;
+    grid-template-columns: 60px 1fr;
     gap: 1rem;
+  }
+
+  .card-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .card-avatar svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .card-name {
+    font-size: 1.05rem !important;
+  }
+
+  .card-class {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
   }
 
   .card-footer-barcode svg {

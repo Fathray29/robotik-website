@@ -296,9 +296,8 @@ export const INITIAL_LANDING_DATA = {
   footerTagline: 'Wadah pengembangan inovasi, otomatisasi, dan kreativitas teknologi robotika masa depan bagi para remaja unggul.',
   footerLocation: 'Lab Robotika, Gedung B Lantai 2',
   footerEmail: 'robotikmotechart@gmail.com',
-  footerInstagram: 'https://instagram.com',
-  footerGithub: 'https://github.com',
-  footerYoutube: 'https://youtube.com'
+  footerInstagram: 'https://www.instagram.com/motechart_mansabo/',
+  footerYoutube: 'https://www.youtube.com/@Motechart-RobotikMAN1Bogor'
 };
 
 
@@ -421,6 +420,25 @@ if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER
 }
 
 
+// Migration utility for landing page data
+export function migrateLandingData(data) {
+  let changed = false;
+  if (!data) return false;
+  if (data.footerInstagram === 'https://instagram.com' || !data.footerInstagram) {
+    data.footerInstagram = 'https://www.instagram.com/motechart_mansabo/';
+    changed = true;
+  }
+  if (data.footerYoutube === 'https://youtube.com' || !data.footerYoutube) {
+    data.footerYoutube = 'https://www.youtube.com/@Motechart-RobotikMAN1Bogor';
+    changed = true;
+  }
+  if ('footerGithub' in data) {
+    delete data.footerGithub;
+    changed = true;
+  }
+  return changed;
+}
+
 // --- CENTRAL DATA STATE OBJECT ---
 export const state = {
   blogArticles: loadData('robotik_blog', INITIAL_BLOG_ARTICLES),
@@ -433,6 +451,11 @@ export const state = {
   db: db,
   auth: auth
 };
+
+// Run local migration
+if (migrateLandingData(state.landingData)) {
+  saveData('robotik_landing', state.landingData, false);
+}
 
 
 // --- CLOUD FIREBASE SYNC HELPERS ---
@@ -474,8 +497,10 @@ export async function syncLandingDataFromFirestore() {
   try {
     const doc = await state.db.collection('landing').doc('content').get();
     if (doc.exists) {
-      state.landingData = doc.data();
-      saveData('robotik_landing', state.landingData, false);
+      const data = doc.data();
+      const changed = migrateLandingData(data);
+      state.landingData = data;
+      saveData('robotik_landing', state.landingData, changed);
       console.log("Cloud sync completed: Landing page data loaded.");
     } else {
       await state.db.collection('landing').doc('content').set(state.landingData);
@@ -883,8 +908,10 @@ export function setupRealTimeLandingDataSync(onUpdateCallback) {
   try {
     landingDataUnsubscribe = state.db.collection('landing').doc('content').onSnapshot(doc => {
       if (doc.exists) {
-        state.landingData = doc.data();
-        saveData('robotik_landing', state.landingData, false);
+        const data = doc.data();
+        const changed = migrateLandingData(data);
+        state.landingData = data;
+        saveData('robotik_landing', state.landingData, changed);
         console.log("Real-time landing data updated from Cloud Firestore!");
         if (typeof onUpdateCallback === 'function') {
           onUpdateCallback(state.landingData);

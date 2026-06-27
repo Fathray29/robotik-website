@@ -1274,15 +1274,13 @@ function renderLandingPage() {
   const footerLocationEl = document.getElementById('footer-location-text');
   const footerEmailEl = document.getElementById('footer-email-text');
   const footerInstaEl = document.getElementById('footer-instagram-link');
-  const footerGithubEl = document.getElementById('footer-github-link');
   const footerYoutubeEl = document.getElementById('footer-youtube-link');
 
   if (footerTaglineEl) footerTaglineEl.textContent = landingData.footerTagline || '';
   if (footerLocationEl) footerLocationEl.textContent = landingData.footerLocation || '';
   if (footerEmailEl) footerEmailEl.textContent = landingData.footerEmail || '';
-  if (footerInstaEl) footerInstaEl.href = landingData.footerInstagram || 'https://instagram.com';
-  if (footerGithubEl) footerGithubEl.href = landingData.footerGithub || 'https://github.com';
-  if (footerYoutubeEl) footerYoutubeEl.href = landingData.footerYoutube || 'https://youtube.com';
+  if (footerInstaEl) footerInstaEl.href = landingData.footerInstagram || 'https://www.instagram.com/motechart_mansabo/';
+  if (footerYoutubeEl) footerYoutubeEl.href = landingData.footerYoutube || 'https://www.youtube.com/@Motechart-RobotikMAN1Bogor';
 
   // Populate / refresh the interactive divisions panel
   if (typeof setupInteractiveDivisions === 'function') {

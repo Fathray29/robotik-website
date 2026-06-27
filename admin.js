@@ -81,7 +81,6 @@ function setupCmsAuthentication() {
           footerLocation: 'Lab Robotika',
           footerEmail: 'robotikmotechart@gmail.com',
           footerInstagram: '',
-          footerGithub: '',
           footerYoutube: ''
         };
         
@@ -1888,7 +1887,6 @@ function setupLandingPageCMS() {
     const footerLocationInput = document.getElementById('cms-footer-location');
     const footerEmailInput = document.getElementById('cms-footer-email');
     const footerInstagramInput = document.getElementById('cms-footer-instagram');
-    const footerGithubInput = document.getElementById('cms-footer-github');
     const footerYoutubeInput = document.getElementById('cms-footer-youtube');
 
     const updatedMisi = [];
@@ -1911,7 +1909,6 @@ function setupLandingPageCMS() {
       footerLocation: footerLocationInput ? footerLocationInput.value.trim() : '',
       footerEmail: footerEmailInput ? footerEmailInput.value.trim() : '',
       footerInstagram: footerInstagramInput ? footerInstagramInput.value.trim() : '',
-      footerGithub: footerGithubInput ? footerGithubInput.value.trim() : '',
       footerYoutube: footerYoutubeInput ? footerYoutubeInput.value.trim() : ''
     };
 
@@ -1989,7 +1986,6 @@ function populateLandingCmsInputs() {
   const footerLocationInput = document.getElementById('cms-footer-location');
   const footerEmailInput = document.getElementById('cms-footer-email');
   const footerInstagramInput = document.getElementById('cms-footer-instagram');
-  const footerGithubInput = document.getElementById('cms-footer-github');
   const footerYoutubeInput = document.getElementById('cms-footer-youtube');
 
   if (heroTagInput) heroTagInput.value = state.landingData.heroTag || '';
@@ -2012,7 +2008,6 @@ function populateLandingCmsInputs() {
   if (footerLocationInput) footerLocationInput.value = state.landingData.footerLocation || '';
   if (footerEmailInput) footerEmailInput.value = state.landingData.footerEmail || '';
   if (footerInstagramInput) footerInstagramInput.value = state.landingData.footerInstagram || '';
-  if (footerGithubInput) footerGithubInput.value = state.landingData.footerGithub || '';
   if (footerYoutubeInput) footerYoutubeInput.value = state.landingData.footerYoutube || '';
 
   renderAdminAchievementsTable();

@@ -1318,56 +1318,134 @@ function setupInteractiveDivisions() {
         '3D Printing & Physical Assembly'
       ];
       graphicHtml = `
-        <svg class="mechanics-blueprint-svg" width="180" height="180" viewBox="0 0 200 200" fill="none" style="color: var(--accent-yellow); filter: drop-shadow(0 0 15px currentColor);">
+        <svg class="mechanics-blueprint-svg" width="180" height="180" viewBox="0 0 200 200" fill="none" style="color: var(--accent-yellow); filter: drop-shadow(0 0 15px rgba(250, 204, 21, 0.25));">
           <!-- Blueprint Grid Background -->
-          <g opacity="0.15" stroke="currentColor" stroke-width="0.5">
-            <line x1="20" y1="20" x2="20" y2="180" />
-            <line x1="50" y1="20" x2="50" y2="180" />
-            <line x1="80" y1="20" x2="80" y2="180" />
-            <line x1="110" y1="20" x2="110" y2="180" />
-            <line x1="140" y1="20" x2="140" y2="180" />
-            <line x1="170" y1="20" x2="170" y2="180" />
+          <g opacity="0.12" stroke="currentColor" stroke-width="0.5">
+            <line x1="10" y1="10" x2="10" y2="190" />
+            <line x1="40" y1="10" x2="40" y2="190" />
+            <line x1="70" y1="10" x2="70" y2="190" />
+            <line x1="100" y1="10" x2="100" y2="190" />
+            <line x1="130" y1="10" x2="130" y2="190" />
+            <line x1="160" y1="10" x2="160" y2="190" />
+            <line x1="190" y1="10" x2="190" y2="190" />
             
-            <line x1="20" y1="20" x2="180" y2="20" />
-            <line x1="20" y1="50" x2="180" y2="50" />
-            <line x1="20" y1="80" x2="180" y2="80" />
-            <line x1="20" y1="110" x2="180" y2="110" />
-            <line x1="20" y1="140" x2="180" y2="140" />
-            <line x1="20" y1="170" x2="180" y2="170" />
+            <line x1="10" y1="10" x2="190" y2="10" />
+            <line x1="10" y1="40" x2="190" y2="40" />
+            <line x1="10" y1="70" x2="190" y2="70" />
+            <line x1="10" y1="100" x2="190" y2="100" />
+            <line x1="10" y1="130" x2="190" y2="130" />
+            <line x1="10" y1="160" x2="190" y2="160" />
+            <line x1="10" y1="190" x2="190" y2="190" />
           </g>
           
-          <!-- Outer Tech HUD Rings -->
-          <circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="1.5" stroke-dasharray="12 8" opacity="0.4" />
-          <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-width="1" stroke-dasharray="40 10 5 10" opacity="0.3" />
+          <!-- Outer Compass HUD Arc & Calibration Ticks -->
+          <circle cx="100" cy="100" r="90" stroke="currentColor" stroke-width="1" stroke-dasharray="2 6" opacity="0.3" />
+          <circle cx="100" cy="100" r="85" stroke="currentColor" stroke-width="1.5" stroke-dasharray="40 10 5 10" opacity="0.4" />
           
-          <!-- Inner Spinning CAD Ring -->
-          <g>
-            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite" />
-            <circle cx="100" cy="100" r="50" stroke="currentColor" stroke-width="2" stroke-dasharray="30 15 10 15" />
-            <path d="M 100 45 L 100 50 M 100 150 L 100 155 M 45 100 L 50 100 M 150 100 L 155 100" stroke="currentColor" stroke-width="2" />
+          <!-- Technical CAD Dimension Line & Labels -->
+          <g opacity="0.6" stroke="currentColor" stroke-width="0.8">
+            <!-- Caliper lines on the left -->
+            <line x1="15" y1="35" x2="15" y2="165" />
+            <line x1="10" y1="35" x2="20" y2="35" />
+            <line x1="10" y1="165" x2="20" y2="165" />
+            <!-- Dimension indicators -->
+            <line x1="55" y1="155" x2="145" y2="155" />
+            <path d="M 55 155 L 60 152 M 55 155 L 60 158 M 145 155 L 140 152 M 145 155 L 140 158" />
           </g>
           
-          <!-- Holographic 3D Wireframe Cube (Rotating) -->
-          <g>
-            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="-360 100 100" dur="25s" repeatCount="indefinite" />
-            <!-- Front Face -->
-            <rect x="75" y="75" width="50" height="50" stroke="currentColor" stroke-width="2" opacity="0.85" />
-            <!-- Back Face -->
-            <rect x="85" y="65" width="50" height="50" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5" />
-            <!-- Connecting Edges -->
-            <line x1="75" y1="75" x2="85" y2="65" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
-            <line x1="125" y1="75" x2="135" y2="65" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
-            <line x1="75" y1="125" x2="85" y2="115" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
-            <line x1="125" y1="125" x2="135" y2="115" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
-            <!-- Center Core Point -->
-            <circle cx="100" cy="100" r="4" fill="currentColor" />
-          </g>
+          <text x="100" y="150" fill="currentColor" font-family="monospace" font-size="7" text-anchor="middle" letter-spacing="0.5" opacity="0.8">L: 90.00 mm</text>
+          <text x="25" y="25" fill="currentColor" font-family="monospace" font-size="7" opacity="0.6">SCALE: 1:1</text>
+          <text x="145" y="25" fill="currentColor" font-family="monospace" font-size="7" text-anchor="end" opacity="0.6">CAD-01: ACTIVE</text>
           
-          <!-- Laser Scanning Line (Sweeping vertically) -->
-          <line x1="15" y1="20" x2="185" y2="20" stroke="currentColor" stroke-width="2" opacity="0.8">
-            <animate attributeName="y1" values="30; 170; 30" dur="4s" repeatCount="indefinite" />
-            <animate attributeName="y2" values="30; 170; 30" dur="4s" repeatCount="indefinite" />
-          </line>
+          <!-- Concentric Outer Radar Sweep Arc -->
+          <path d="M 20 100 A 80 80 0 0 1 100 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+
+          <!-- Gear Assembly 01 (Central Large Drive Gear, Radius 30) -->
+          <g transform="translate(85, 100)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite" />
+              <circle cx="0" cy="0" r="28" stroke="currentColor" stroke-width="2" fill="none" />
+              <circle cx="0" cy="0" r="8" stroke="currentColor" stroke-width="1.5" fill="none" />
+              <!-- Spokes -->
+              <line x1="0" y1="-28" x2="0" y2="28" stroke="currentColor" stroke-width="1.5" />
+              <line x1="-28" y1="0" x2="28" y2="0" stroke="currentColor" stroke-width="1.5" />
+              <!-- Outer Pitch Circle -->
+              <circle cx="0" cy="0" r="32" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.6" />
+              <!-- Gear teeth -->
+              <g fill="currentColor">
+                <rect x="-3" y="-33" width="6" height="7" rx="1" />
+                <rect x="-3" y="26" width="6" height="7" rx="1" />
+                <rect x="-33" y="-3" width="7" height="6" rx="1" />
+                <rect x="26" y="-3" width="7" height="6" rx="1" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(30)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(60)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(120)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(150)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(210)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(240)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(300)" />
+                <rect x="-3" y="-33" width="6" height="7" rx="1" transform="rotate(330)" />
+              </g>
+            </g>
+          </g>
+
+          <!-- Gear Assembly 02 (Driven Meshed Small Gear, Radius 18) -->
+          <!-- Centers distance: 85 + 48 = 133 -->
+          <g transform="translate(133, 100)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="6s" repeatCount="indefinite" />
+              <circle cx="0" cy="0" r="16" stroke="currentColor" stroke-width="1.5" fill="none" />
+              <circle cx="0" cy="0" r="5" stroke="currentColor" stroke-width="1" fill="none" />
+              <!-- Spokes -->
+              <line x1="0" y1="-16" x2="0" y2="16" stroke="currentColor" stroke-width="1" />
+              <line x1="-16" y1="0" x2="16" y2="0" stroke="currentColor" stroke-width="1" />
+              <!-- Teeth -->
+              <g fill="currentColor">
+                <rect x="-2" y="-20" width="4" height="5" rx="0.5" />
+                <rect x="-2" y="15" width="4" height="5" rx="0.5" />
+                <rect x="-20" y="-2" width="5" height="4" rx="0.5" />
+                <rect x="15" y="-2" width="5" height="4" rx="0.5" />
+                <rect x="-2" y="-20" width="4" height="5" rx="0.5" transform="rotate(45)" />
+                <rect x="-2" y="-20" width="4" height="5" rx="0.5" transform="rotate(135)" />
+                <rect x="-2" y="-20" width="4" height="5" rx="0.5" transform="rotate(225)" />
+                <rect x="-2" y="-20" width="4" height="5" rx="0.5" transform="rotate(315)" />
+              </g>
+            </g>
+          </g>
+
+          <!-- Kinematics: Double Jointed Swinging Mechanical Arm Linkage -->
+          <g transform="translate(85, 60)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate" values="-35; 35; -35" dur="5s" repeatCount="indefinite" />
+              <!-- Arm Segment 1 -->
+              <line x1="0" y1="0" x2="0" y2="35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+              <circle cx="0" cy="0" r="3.5" fill="var(--bg-primary)" stroke="currentColor" stroke-width="1.5" />
+              <!-- Joint 2 -->
+              <g transform="translate(0, 35)">
+                <animateTransform attributeName="transform" type="rotate" values="60; -50; 60" dur="5s" repeatCount="indefinite" />
+                <!-- Arm Segment 2 -->
+                <line x1="0" y1="0" x2="30" y2="20" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2 1" />
+                <circle cx="0" cy="0" r="3" fill="currentColor" />
+                <circle cx="30" cy="20" r="3" fill="var(--accent-yellow)" />
+                
+                <!-- Dimension arc line on Joint 2 -->
+                <path d="M 12 8 A 15 15 0 0 1 18 12" stroke="currentColor" stroke-width="0.8" opacity="0.6" />
+                <text x="18" y="7" fill="currentColor" font-family="monospace" font-size="5" opacity="0.7">45°</text>
+              </g>
+            </g>
+          </g>
+
+          <!-- Floating Engineering Guideline Crosshairs -->
+          <line x1="85" y1="35" x2="85" y2="165" stroke="currentColor" stroke-dasharray="5 5" stroke-width="0.5" opacity="0.25" />
+          <line x1="20" y1="100" x2="180" y2="100" stroke="currentColor" stroke-dasharray="5 5" stroke-width="0.5" opacity="0.25" />
+          
+          <!-- Laser Coordinate Target -->
+          <g transform="translate(133, 100)" opacity="0.7">
+            <circle cx="0" cy="0" r="2" fill="#FF3B30" />
+            <circle cx="0" cy="0" r="6" stroke="#FF3B30" stroke-width="0.5" stroke-dasharray="2 1">
+              <animate attributeName="r" values="4; 9; 4" dur="2s" repeatCount="indefinite" />
+            </circle>
+          </g>
         </svg>
       `;
     } else if (divisionId === 'electronics') {

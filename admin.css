@@ -696,28 +696,6 @@ body {
   vertical-align: middle;
 }
 
-.action-btns {
-  display: flex;
-  gap: 0.5rem;
-}
-.btn-icon {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  padding: 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-}
-.btn-icon:hover {
-  background: rgba(255,255,255,0.1);
-  color: var(--text-main);
-}
-.btn-icon.delete:hover {
-  background: rgba(239,68,68,0.2);
-  color: var(--accent-red);
-}
 
 /* Badges mappings for backwards compatibility with admin.js */
 .badge, .table-badge, .portfolio-badge, .status-badge {
@@ -730,8 +708,6 @@ body {
   letter-spacing: 0.05em;
 }
 .table-badge { background: rgba(255,255,255,0.1); color: var(--text-main); }
-.badge-progress { background: rgba(250, 204, 21, 0.15); color: var(--accent-yellow); border: 1px solid rgba(250, 204, 21, 0.3); }
-.badge-success { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
 
 .status-pending { background: rgba(250, 204, 21, 0.15); color: var(--accent-yellow); border: 1px solid rgba(250, 204, 21, 0.3); }
 .status-approved { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
@@ -845,20 +821,10 @@ dialog[open]::backdrop {
   max-height: 70vh;
   overflow-y: auto;
 }
-.dialog-footer {
-  padding: 1.5rem 2rem;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  background: rgba(0,0,0,0.2);
-}
 
 /* Utilities */
 .text-muted { color: var(--text-muted); }
 .text-white { color: var(--text-main); }
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
 .mt-4 { margin-top: 2rem; }
 
 /* Responsive Sidebar */

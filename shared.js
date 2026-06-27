@@ -2,6 +2,15 @@
  * Shared Utilities and Central Data Store for Motechart Robotik
  */
 
+// Disable telemetry and debugging prints in production build
+if (import.meta.env.PROD) {
+  console.log = () => {};
+  console.info = () => {};
+  console.debug = () => {};
+  console.warn = () => {};
+}
+
+
 // --- INITIAL DEFAULT DATA (FALLBACK) ---
 export const INITIAL_BLOG_ARTICLES = [
   {

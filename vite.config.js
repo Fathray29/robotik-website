@@ -6,6 +6,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   build: {
+    minify: 'esbuild',
+    cssMinify: true,
+    sourcemap: false,
+    assetsInlineLimit: 4096,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),

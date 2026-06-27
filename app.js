@@ -2186,4 +2186,18 @@ function setupStatusChecker() {
     });
   }
 }
+
+// --- GLOBAL EXCEPTION HARDENING ---
+window.addEventListener('error', (event) => {
+  // Gracefully log to fallback logic or monitor in non-prod
+  if (import.meta.env.DEV) {
+    console.error("Uncaught runtime exception captured:", event.error);
+  }
+});
+window.addEventListener('unhandledrejection', (event) => {
+  if (import.meta.env.DEV) {
+    console.error("Unhandled async promise rejection captured:", event.reason);
+  }
+});
+
 

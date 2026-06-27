@@ -2061,10 +2061,10 @@ async function checkApplicantStatus(id) {
   if (!applicant) {
     playRoboticSound('error');
     contentContainer.innerHTML = `
-      <div style="text-align: center; padding: 2rem;">
-        <div style="font-size: 3rem; color: #FB7185; margin-bottom: 1rem;">⚠️</div>
-        <h3 style="color: var(--text-white); margin-bottom: 0.5rem;">ID Tidak Ditemukan</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
+      <div class="status-result-card rejected">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+        <h3 style="color: #FB7185; font-size: 1.75rem; margin-bottom: 1rem;">ID Tidak Ditemukan</h3>
+        <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; max-width: 500px; margin: 0 auto;">
           ID pendaftaran <strong>"${escapeHtml(normalizedId)}"</strong> tidak terdaftar di database kami. Silakan periksa kembali penulisan ID Anda atau hubungi admin.
         </p>
       </div>
@@ -2072,45 +2072,47 @@ async function checkApplicantStatus(id) {
   } else if (applicant.status === 'Pending') {
     playRoboticSound('success');
     contentContainer.innerHTML = `
-      <div style="padding: 1.5rem; text-align: center;">
+      <div class="status-result-card">
         <div class="pulsing-radar-icon" aria-hidden="true" style="margin: 0 auto 1.5rem auto; border-color: var(--accent-yellow); background: rgba(245, 158, 11, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
         </div>
-        <h3 style="color: var(--accent-yellow); font-size: 1.5rem; margin-bottom: 0.5rem;">Menunggu Persetujuan ⏳</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        <h3 style="color: var(--accent-yellow); font-size: 1.75rem; margin-bottom: 1rem;">Menunggu Persetujuan ⏳</h3>
+        <p style="color: var(--text-light); font-size: 1.05rem; line-height: 1.6; max-width: 500px; margin: 0 auto 1.5rem auto;">
           Halo <strong>${escapeHtml(applicant.nama)}</strong>, pendaftaran Anda untuk kelas <strong>${escapeHtml(applicant.kelas)}</strong> sedang diproses oleh pengurus ekskul Motechart Robotik.
         </p>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 8px; padding: 1rem; text-align: left; margin-bottom: 1.5rem;">
-          <div style="display: grid; grid-template-columns: 100px 1fr; gap: 0.5rem; font-size: 0.9rem;">
-            <span style="color: var(--text-muted);">ID Unik:</span><span style="color: var(--text-white); font-weight: bold;">${escapeHtml(applicant.id)}</span>
-            <span style="color: var(--text-muted);">Tanggal:</span><span style="color: var(--text-white);">${escapeHtml(applicant.timestamp || new Date().toISOString().split('T')[0])}</span>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 8px; padding: 1.25rem; text-align: left; max-width: 400px; margin: 0 auto 1.5rem auto;">
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: 0.5rem; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">ID Unik:</span><span style="color: var(--text-white); font-weight: bold; font-family: monospace;">${escapeHtml(applicant.id)}</span>
+            <span style="color: var(--text-muted);">Tanggal:</span><span style="color: var(--text-white);">${escapeHtml(applicant.tanggalDaftar || applicant.timestamp || new Date().toISOString().split('T')[0])}</span>
           </div>
         </div>
-        <p style="color: var(--text-white); font-size: 0.95rem; margin-bottom: 1rem;">
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem; max-width: 500px; margin: 0 auto 1.5rem auto;">
           ${escapeHtml(regSettings.waDesc || 'Silakan bergabung di grup WhatsApp untuk informasi selanjutnya.')}
         </p>
-        <a href="${regSettings.waLink || '#'}" target="_blank" class="btn btn-yellow" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; justify-content: center; width: 100%;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.031 2C6.51 2 2.03 6.48 2.03 12c0 2.159.57 4.259 1.66 6.13l-1.77 6.47 6.63-1.74c1.88 1.02 4 1.56 6.13 1.56 5.52 0 10-4.48 10-10S17.551 2 12.031 2zm6.39 14.19c-.27.76-1.55 1.48-2.15 1.56-.54.07-1.24.1-3.64-.89-3.07-1.26-5.05-4.38-5.2-4.58-.15-.2-1.2-1.6-1.2-3.06 0-1.46.76-2.17 1.03-2.46.27-.3.59-.37.79-.37.2 0 .4.01.57.02.18.01.41-.07.65.5.24.58.82 2.02.9 2.17.08.16.14.35.03.56-.11.22-.26.47-.38.61-.13.14-.26.3-.11.56.15.26.68 1.12 1.46 1.82.99.9 1.83 1.18 2.09 1.31.26.13.41.11.56-.06.15-.18.66-.76.84-.96.18-.2.37-.16.63-.07.26.09 1.66.78 1.95.92.29.14.48.22.56.35.07.13.07.76-.2 1.52z"/>
-          </svg>
-          Gabung Grup WhatsApp 💬
-        </a>
+        <div style="max-width: 400px; margin: 0 auto;">
+          <a href="${regSettings.waLink || '#'}" target="_blank" class="btn btn-yellow" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; justify-content: center; width: 100%;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.031 2C6.51 2 2.03 6.48 2.03 12c0 2.159.57 4.259 1.66 6.13l-1.77 6.47 6.63-1.74c1.88 1.02 4 1.56 6.13 1.56 5.52 0 10-4.48 10-10S17.551 2 12.031 2zm6.39 14.19c-.27.76-1.55 1.48-2.15 1.56-.54.07-1.24.1-3.64-.89-3.07-1.26-5.05-4.38-5.2-4.58-.15-.2-1.2-1.6-1.2-3.06 0-1.46.76-2.17 1.03-2.46.27-.3.59-.37.79-.37.2 0 .4.01.57.02.18.01.41-.07.65.5.24.58.82 2.02.9 2.17.08.16.14.35.03.56-.11.22-.26.47-.38.61-.13.14-.26.3-.11.56.15.26.68 1.12 1.46 1.82.99.9 1.83 1.18 2.09 1.31.26.13.41.11.56-.06.15-.18.66-.76.84-.96.18-.2.37-.16.63-.07.26.09 1.66.78 1.95.92.29.14.48.22.56.35.07.13.07.76-.2 1.52z"/>
+            </svg>
+            Gabung Grup WhatsApp 💬
+          </a>
+        </div>
       </div>
     `;
   } else if (applicant.status === 'Diterima') {
     playRoboticSound('success');
     contentContainer.innerHTML = `
-      <div style="padding: 0.5rem; text-align: center;">
-        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
-        <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 0.5rem;">Selamat, Anda Diterima!</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
-          Selamat bergabung di <strong>Motechart Robotik</strong>, <strong>${escapeHtml(applicant.nama)}</strong>! Berikut adalah Kartu Anggota Digital resmi Anda. Silakan simpan / screenshot kartu ini.
+      <div class="status-result-card accepted">
+        <div style="font-size: 5rem; margin-bottom: 0.5rem; filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.4)); animation: pulse 1.5s infinite alternate;">🎉</div>
+        <h3 style="color: var(--accent-yellow); font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);">Selamat, Anda Diterima!</h3>
+        <p style="color: var(--text-light); font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 0 auto 2rem auto;">
+          Selamat bergabung di <strong>Motechart Robotik</strong>, <strong>${escapeHtml(applicant.nama)}</strong>! Berikut adalah Kartu Anggota Digital resmi Anda. Silakan simpan / ambil tangkapan layar (screenshot) kartu ini.
         </p>
         
-        <div style="display: flex; justify-content: center; margin-bottom: 1rem; overflow-x: auto; padding: 0.5rem;">
+        <div class="accepted-card-wrapper">
           ${generateStudentCardHtml(applicant.nama, applicant.kelas, applicant.id)}
         </div>
       </div>
@@ -2118,7 +2120,7 @@ async function checkApplicantStatus(id) {
   } else if (applicant.status === 'Ditolak') {
     playRoboticSound('error');
     contentContainer.innerHTML = `
-      <div style="padding: 1.5rem; text-align: center;">
+      <div class="status-result-card rejected">
         <div class="pulsing-radar-icon" aria-hidden="true" style="margin: 0 auto 1.5rem auto; border-color: #FB7185; background: rgba(244, 63, 94, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
@@ -2126,11 +2128,11 @@ async function checkApplicantStatus(id) {
             <line x1="9" y1="9" x2="15" y2="15"></line>
           </svg>
         </div>
-        <h3 style="color: #FB7185; font-size: 1.5rem; margin-bottom: 0.5rem;">Pendaftaran Ditolak 🔴</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+        <h3 style="color: #FB7185; font-size: 1.75rem; margin-bottom: 1rem;">Pendaftaran Ditolak 🔴</h3>
+        <p style="color: var(--text-light); font-size: 1.05rem; line-height: 1.6; max-width: 500px; margin: 0 auto 1rem auto;">
           Halo <strong>${escapeHtml(applicant.nama)}</strong>, mohon maaf saat ini pendaftaran Anda belum dapat kami setujui karena kuota divisi penuh atau alasan administratif lainnya.
         </p>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 500px; margin: 0 auto;">
           Terima kasih atas minat besar Anda untuk bergabung dengan Motechart Robotik. Tetap semangat belajar robotika!
         </p>
       </div>

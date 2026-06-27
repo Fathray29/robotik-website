@@ -1397,7 +1397,7 @@ dialog {
 }
 
 /* Position and centering logic for standard modal dialogs */
-dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog) {
+dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog):not(#student-status-dialog) {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -1407,7 +1407,7 @@ dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog) {
   transform: translate(-50%, -50%) scale(0.92);
 }
 
-dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog)[open] {
+dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog):not(#student-status-dialog)[open] {
   transform: translate(-50%, -50%) scale(1);
 }
 
@@ -1450,7 +1450,7 @@ dialog[open] {
 }
 
 @starting-style {
-  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog)[open] {
+  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog):not(#student-status-dialog)[open] {
     transform: translate(-50%, -50%) scale(0.92);
   }
 }
@@ -1556,7 +1556,8 @@ body.dialog-open {
    FULL-SCREEN READER DIALOG SYSTEM (BLOG & PORTFOLIO)
    ========================================================================== */
 #blog-detail-dialog,
-#portfolio-detail-dialog {
+#portfolio-detail-dialog,
+#student-status-dialog {
   width: 100vw;
   height: 100vh;
   max-width: 100vw;
@@ -1960,6 +1961,145 @@ body.dialog-open {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+/* --- STATUS PENDAFTARAN HASIL STYLING --- */
+.status-result-card {
+  max-width: 680px;
+  margin: 1.5rem auto;
+  padding: 3rem 2.5rem;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.status-result-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+.status-result-card.accepted::before {
+  background: linear-gradient(90deg, transparent, var(--accent-yellow), transparent);
+}
+
+.status-result-card.rejected::before {
+  background: linear-gradient(90deg, transparent, #FB7185, transparent);
+}
+
+.status-result-card.accepted {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.15), 0 10px 40px rgba(0,0,0,0.5);
+  background: radial-gradient(circle at top, rgba(245, 158, 11, 0.04) 0%, rgba(15, 23, 42, 0.55) 100%);
+}
+
+.accepted-card-wrapper {
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 0.5rem;
+  width: 100%;
+}
+
+.accepted-card-wrapper .robot-student-card {
+  max-width: 520px;
+  width: 100%;
+  border-width: 4px;
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.4), 0 0 70px rgba(6, 182, 212, 0.2);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transform: scale(1.05);
+}
+
+.accepted-card-wrapper .robot-student-card:hover {
+  transform: scale(1.08) translateY(-5px);
+  box-shadow: 0 0 50px rgba(245, 158, 11, 0.6), 0 0 90px rgba(6, 182, 212, 0.3);
+}
+
+.accepted-card-wrapper .card-header {
+  background: rgba(245, 158, 11, 0.15);
+  border-bottom: 2px solid var(--accent-yellow);
+  padding: 1.5rem;
+}
+
+.accepted-card-wrapper .card-title {
+  font-size: 1.3rem;
+  color: var(--accent-yellow);
+}
+
+.accepted-card-wrapper .card-avatar {
+  width: 100px;
+  height: 100px;
+  border-color: var(--accent-yellow);
+  box-shadow: var(--shadow-glow-yellow);
+}
+
+.accepted-card-wrapper .card-avatar svg {
+  width: 50px;
+  height: 50px;
+}
+
+.accepted-card-wrapper .card-name {
+  font-size: 1.65rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.accepted-card-wrapper .card-class {
+  font-size: 0.9rem;
+}
+
+.accepted-card-wrapper .card-id-row {
+  font-size: 0.9rem;
+}
+
+.accepted-card-wrapper .card-id-row span {
+  font-size: 1.1rem;
+}
+
+.accepted-card-wrapper .card-body {
+  grid-template-columns: 100px 1fr;
+  gap: 1.75rem;
+  padding: 2.25rem 1.75rem;
+}
+
+.accepted-card-wrapper .card-footer-barcode {
+  padding: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Light theme overrides for student status card */
+body.light-theme .status-result-card {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .status-result-card.accepted {
+  background: radial-gradient(circle at top, rgba(245, 158, 11, 0.05) 0%, rgba(255, 255, 255, 0.65) 100%);
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1), 0 0 30px rgba(245, 158, 11, 0.1);
+}
+
+body.light-theme .accepted-card-wrapper .robot-student-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-color: var(--accent-yellow);
+}
+
+body.light-theme .accepted-card-wrapper .card-name {
+  color: #0f172a;
+}
+
 /* ==========================================================================
    NEO-INDUSTRIAL PREMIUM LIGHT MODE OVERRIDES
    ========================================================================== */
@@ -2062,7 +2202,8 @@ body.light-theme .dialog-title-card h2.dialog-title {
 }
 
 body.light-theme #blog-detail-dialog,
-body.light-theme #portfolio-detail-dialog {
+body.light-theme #portfolio-detail-dialog,
+body.light-theme #student-status-dialog {
   background: #f8fafc;
 }
 
@@ -4269,13 +4410,13 @@ select.input-control option {
     width: 95%;
   }
 
-  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog) {
+  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog):not(#student-status-dialog) {
     top: 5% !important;
     transform: translate(-50%, 0) scale(0.95) !important;
     max-height: 90vh !important;
   }
 
-  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog)[open] {
+  dialog:not(#blog-detail-dialog):not(#portfolio-detail-dialog):not(#student-status-dialog)[open] {
     transform: translate(-50%, 0) scale(1) !important;
   }
 
@@ -4407,6 +4548,45 @@ select.input-control option {
   .robot-mascot {
     transform: scale(0.85);
     margin: 0 auto;
+  }
+
+  /* Status Result Card & Accepted Card Mobile Optimizations */
+  .status-result-card {
+    padding: 2rem 1.25rem;
+    margin: 1rem auto;
+  }
+
+  .accepted-card-wrapper {
+    padding: 1rem 0;
+  }
+
+  .accepted-card-wrapper .robot-student-card {
+    transform: scale(1.0);
+    border-width: 3px;
+  }
+
+  .accepted-card-wrapper .robot-student-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .accepted-card-wrapper .card-body {
+    grid-template-columns: 80px 1fr;
+    gap: 1.25rem;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .accepted-card-wrapper .card-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .accepted-card-wrapper .card-avatar svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .accepted-card-wrapper .card-name {
+    font-size: 1.35rem;
   }
 }
 

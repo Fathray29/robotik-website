@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Cek apakah user sudah login sebagai Admin
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // 1. Pengaturan Pendaftaran (Settings)
+    match /settings/registration {
+      allow read: if true;           // Semua pengunjung bisa membaca status pembukaan & countdown
+      allow write: if isAdmin();     // Hanya admin yang bisa mengubah pengaturan pendaftaran
+    }
+
+    // 2. Konten Halaman Utama (Landing Page)
+    match /landing/content {
+      allow read: if true;           // Semua pengunjung bisa membaca teks landing page
+      allow write: if isAdmin();     // Hanya admin yang bisa mengubah konten landing page
+    }
+
+    // 3. Artikel Blog
+    match /blog/articles {
+      allow read: if true;           // Semua pengunjung bisa membaca artikel blog
+      allow write: if isAdmin();     // Hanya admin yang bisa menulis & menyunting artikel
+    }
+
+    // 4. Proyek Portofolio
+    match /portfolio/projects {
+      allow read: if true;           // Semua pengunjung bisa melihat galeri portofolio
+      allow write: if isAdmin();     // Hanya admin yang bisa menambah & menyunting proyek
+    }
+
+    // 5. Statistik Pengunjung (Telemetry)
+    match /telemetry/visitors {
+      allow read: if true;           // Semua pengunjung bisa membaca jumlah counter pengunjung
+      allow write: if true;          // Semua pengunjung diperbolehkan melakukan increment (+1) saat berkunjung
+    }
+
+    // 6. Data Pendaftar (Applicants)
+    match /applicants/{applicantId} {
+      allow get: if true;            // Pengunjung boleh cek status pendaftarannya secara spesifik menggunakan ID (ROBO-xxxxxx)
+      allow create: if true;         // Pengunjung diperbolehkan mendaftar (membuat entri pendaftar baru)
+      
+      allow list: if isAdmin();      // Hanya admin yang diperbolehkan menampilkan seluruh daftar pendaftar
+      allow update: if isAdmin();    // Hanya admin yang bisa menyetujui (Approve) atau menolak (Reject) pendaftar
+      allow delete: if isAdmin();    // Hanya admin yang bisa menghapus data pendaftar
+    }
+  }
+}

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kebijakan Privasi - Motechart Robotik</title>
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://Rayyan.github.io/robotik-website/privacy.html">
+  <link rel="stylesheet" href="./index.css">
+  <style>
+    .privacy-container {
+      width: 100%;
+      max-width: 100%;
+      padding: 3rem 4rem;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-container {
+        padding: 1.5rem;
+      }
+    }
+
+    .privacy-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 3rem;
+      align-items: start;
+      width: 100%;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    .privacy-sidebar {
+      position: sticky;
+      top: 100px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: var(--transition-smooth);
+      z-index: 10;
+    }
+
+    .privacy-sidebar:hover {
+      border-color: rgba(6, 182, 212, 0.3);
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar {
+        position: relative;
+        top: auto;
+        background: var(--bg-glass-heavy);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: none;
+      }
+    }
+
+    .privacy-sidebar h3 {
+      font-size: 1.1rem;
+      color: var(--accent-cyan);
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 0.5rem;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar h3 {
+        display: none;
+      }
+    }
+
+    .privacy-sidebar ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar ul {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: 0.75rem;
+      }
+      .privacy-sidebar ul::-webkit-scrollbar {
+        height: 4px;
+      }
+      .privacy-sidebar ul::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .privacy-sidebar ul::-webkit-scrollbar-thumb {
+        background: var(--accent-cyan-glass);
+        border-radius: 2px;
+      }
+    }
+
+    .privacy-sidebar li {
+      width: 100%;
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar li {
+        width: auto;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+      }
+    }
+
+    .privacy-sidebar li a {
+      display: block;
+      padding: 0.6rem 0.85rem;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      transition: var(--transition-smooth);
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar li a {
+        padding: 0.5rem 1rem;
+        font-size: 0.825rem;
+        white-space: nowrap;
+      }
+    }
+
+    .privacy-sidebar li a:hover {
+      color: var(--accent-yellow);
+      background: rgba(250, 204, 21, 0.05);
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 992px) {
+      .privacy-sidebar li a:hover {
+        transform: none;
+      }
+    }
+
+    .privacy-sidebar li a.active {
+      color: var(--text-dark);
+      background: var(--accent-yellow);
+      box-shadow: var(--shadow-glow-yellow);
+    }
+
+    .privacy-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .privacy-section-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      transition: var(--transition-smooth);
+      scroll-margin-top: 150px;
+    }
+
+    .privacy-section-card:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      background: rgba(19, 27, 46, 0.8);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .privacy-section-card h2 {
+      font-size: 1.5rem;
+      color: var(--accent-yellow);
+      margin-bottom: 1.25rem;
+      border-bottom: 1px dashed var(--border-glass);
+      padding-bottom: 0.75rem;
+    }
+
+    .privacy-section-card h2 span {
+      color: var(--accent-cyan);
+      margin-right: 0.5rem;
+    }
+
+    .privacy-section-card p,
+    .privacy-section-card li {
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-size: 0.975rem;
+    }
+
+    .privacy-section-card p {
+      margin-bottom: 1.25rem;
+    }
+
+    .privacy-section-card strong {
+      color: var(--text-white);
+    }
+
+    .privacy-section-card ul,
+    .privacy-section-card ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 1.5rem 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-glass);
+    }
+
+    .privacy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+      font-size: 0.9rem;
+      background: rgba(11, 17, 32, 0.4);
+      overflow: hidden;
+      min-width: 550px;
+    }
+
+    .privacy-table th,
+    .privacy-table td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .privacy-table th {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .privacy-table td {
+      color: var(--text-muted);
+    }
+
+    .privacy-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .privacy-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-white);
+    }
+
+    .privacy-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .privacy-badge.required {
+      background: rgba(244, 63, 94, 0.15);
+      color: #FB7185;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+
+    .privacy-badge.optional {
+      background: rgba(250, 204, 21, 0.15);
+      color: var(--accent-yellow);
+      border: 1px solid rgba(250, 204, 21, 0.25);
+    }
+
+    .policy-status-badge {
+      margin-top: 0.75rem;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.08);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      line-height: 1.4;
+    }
+
+    .policy-status-badge .status-divider {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 576px) {
+      .policy-status-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        border-radius: var(--radius-md);
+      }
+      .policy-status-badge .status-divider {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .privacy-container {
+        padding: 1rem 0.75rem;
+      }
+      .page-title-section {
+        margin-bottom: 2rem !important;
+      }
+      .page-title-section h1 {
+        font-size: 1.85rem !important;
+        line-height: 1.3;
+      }
+      .page-title-section p {
+        font-size: 0.9rem !important;
+      }
+      .privacy-section-card {
+        padding: 1.5rem 1.25rem;
+        border-radius: var(--radius-md);
+      }
+      .privacy-section-card h2 {
+        font-size: 1.25rem;
+        gap: 0.5rem;
+      }
+      .privacy-section-card p,
+      .privacy-section-card li {
+        font-size: 0.875rem;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background visual circuit layout & glows -->
+  <div class="bg-grid-glows">
+    <div class="bg-glow-spot cyan" aria-hidden="true"></div>
+    <div class="bg-glow-spot yellow" aria-hidden="true"></div>
+  </div>
+
+  <!-- NAVIGATION HEADER -->
+  <header class="main-header">
+    <div class="container header-container">
+      <a href="index.html" class="brand" aria-label="Motechart Robotik Home">
+        <svg class="brand-logo-svg" width="40" height="40" viewBox="0 0 200 200" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gold-grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFEFA6" />
+              <stop offset="30%" stop-color="#E5C158" />
+              <stop offset="70%" stop-color="#B28C32" />
+              <stop offset="100%" stop-color="#805C15" />
+            </linearGradient>
+            <linearGradient id="silver-grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" />
+              <stop offset="25%" stop-color="#E5E5EA" />
+              <stop offset="50%" stop-color="#AEAEB2" />
+              <stop offset="75%" stop-color="#636366" />
+              <stop offset="100%" stop-color="#3A3A3C" />
+            </linearGradient>
+            <radialGradient id="cyan-glow-header" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#00F0FF" />
+              <stop offset="70%" stop-color="#06B6D4" />
+              <stop offset="100%" stop-color="#083344" />
+            </radialGradient>
+          </defs>
+          <g transform="translate(64, 108)">
+            <circle cx="0" cy="0" r="14" fill="url(#silver-grad-header)" stroke="#1E293B" stroke-width="0.5" />
+            <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-header)" />
+          </g>
+          <g transform="translate(136, 108)">
+            <circle cx="0" cy="0" r="14" fill="url(#silver-grad-header)" stroke="#1E293B" stroke-width="0.5" />
+            <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-header)" />
+          </g>
+          <g transform="translate(100, 150)">
+            <circle cx="0" cy="0" r="19" fill="url(#silver-grad-header)" stroke="#1E293B" stroke-width="0.5" />
+          </g>
+          <path
+            d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
+            stroke="url(#gold-grad-header)" stroke-width="4.5" fill="none" />
+        </svg>
+        <span class="brand-text">MOTECHART ROBOTIK</span>
+      </a>
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Kembali ke Beranda</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main style="flex-grow: 1; padding: 4rem 0;">
+    <div class="privacy-container">
+
+      <div class="page-title-section" style="margin-bottom: 3.5rem; text-align: left;">
+        <h1
+          style="font-size: 2.75rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--text-white) 40%, var(--accent-cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          Pusat Pelindungan & Kebijakan Privasi
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Dokumen Resmi Kepatuhan Data dan Hak Asasi Pengguna
+          Portal Motechart Robotik</p>
+        <div class="policy-status-badge">
+          <span>Status Kebijakan:</span>
+          <strong>AKTIF &amp; MENGIKAT</strong>
+          <span class="status-divider">|</span>
+          <span>Terakhir Diperbarui: 22 Juni 2026</span>
+        </div>
+      </div>
+
+      <div class="privacy-layout">
+
+        <!-- SIDEBAR TABLE OF CONTENTS -->
+        <aside class="privacy-sidebar">
+          <h3>Daftar Pasal</h3>
+          <ul id="privacy-toc">
+            <li><a href="#pengantar" class="active">1. Pengantar &amp; Definisi</a></li>
+            <li><a href="#dasar-hukum">2. Dasar Hukum Pemrosesan</a></li>
+            <li><a href="#data-dikumpulkan">3. Informasi yang Dikumpulkan</a></li>
+            <li><a href="#tujuan-pemrosesan">4. Tujuan Penggunaan Data</a></li>
+            <li><a href="#keamanan-penyimpanan">5. Keamanan &amp; Penyimpanan</a></li>
+            <li><a href="#hak-pengguna">6. Hak Pemilik Data</a></li>
+            <li><a href="#pihak-ketiga">7. Pengungkapan Pihak Ketiga</a></li>
+            <li><a href="#kontak">8. Kontak &amp; Pengaduan</a></li>
+          </ul>
+          <div
+            style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-glass); text-align: center;">
+            <a href="index.html" class="btn btn-cyan btn-sm btn-block">🤖 Ke Halaman Utama</a>
+          </div>
+        </aside>
+
+        <!-- MAIN POLICY CONTENTS -->
+        <div class="privacy-content-wrapper">
+
+          <!-- SECTION 1 -->
+          <section id="pengantar" class="privacy-section-card">
+            <h2><span>1.</span> Pengantar &amp; Definisi Utama</h2>
+            <p>
+              Selamat datang di Portal Resmi Ekstrakurikuler Motechart Robotik. Kami berkomitmen penuh untuk melindungi
+              privasi dan integritas data pribadi siswa, pendaftar, anggota, alumni, serta mentor kami. Kebijakan
+              Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi yang
+              Anda berikan melalui situs ini.
+            </p>
+            <p>
+              Dalam dokumen kebijakan ini, istilah-istilah di bawah ini memiliki arti sebagai berikut:
+            </p>
+            <ul>
+              <li><strong>"Portal" / "Situs"</strong> merujuk pada situs web pendaftaran dan pengelolaan data Motechart
+                Robotik.</li>
+              <li><strong>"Kami" / "Pengurus"</strong> merujuk pada panitia pelaksana dan pengurus resmi Ekstrakurikuler
+                Motechart Robotik.</li>
+              <li><strong>"Pengguna" / "Pendaftar"</strong> merujuk pada setiap individu siswa yang mengakses situs atau
+                mengisi formulir aplikasi pendaftaran keanggotaan.</li>
+              <li><strong>"Data Pribadi"</strong> merujuk pada segala informasi yang dapat mengidentifikasi seorang
+                individu secara langsung maupun tidak langsung.</li>
+            </ul>
+          </section>
+
+          <!-- SECTION 2 -->
+          <section id="dasar-hukum" class="privacy-section-card">
+            <h2><span>2.</span> Dasar Hukum Pemrosesan Data</h2>
+            <p>
+              Pemrosesan Data Pribadi oleh Motechart Robotik dilakukan berlandaskan kepatuhan terhadap regulasi hukum
+              pelindungan data yang berlaku di Republik Indonesia, khususnya:
+            </p>
+            <ol>
+              <li><strong>Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP)</strong>: Kami
+                memastikan pemrosesan didasarkan pada persetujuan eksplisit (*explicit consent*) dari pemilik data
+                pribadi melalui pengisian formulir pendaftaran secara sukarela.</li>
+              <li><strong>Undang-Undang Informasi dan Transaksi Elektronik (UU ITE)</strong>: Terkait keamanan transaksi
+                data elektronik dan proteksi sistem informasi portal.</li>
+            </ol>
+            <p>
+              Dengan menekan tombol kirim pendaftaran di portal ini, Anda menyatakan persetujuan secara sadar bagi Kami
+              untuk memproses informasi tersebut sesuai batas-batas tujuan yang didefinisikan dalam Kebijakan Privasi
+              ini.
+            </p>
+          </section>
+
+          <!-- SECTION 3 -->
+          <section id="data-dikumpulkan" class="privacy-section-card">
+            <h2><span>3.</span> Informasi yang Kami Kumpulkan</h2>
+            <p>
+              Kami mengumpulkan informasi minimal yang diperlukan guna memproses administrasi seleksi masuk
+              ekstrakurikuler secara terukur. Berikut rincian data yang kami kumpulkan:
+            </p>
+
+            <div class="table-responsive">
+              <table class="privacy-table">
+                <thead>
+                  <tr>
+                    <th>Kategori Data</th>
+                    <th>Jenis Data Spesifik</th>
+                    <th>Sifat Pengumpulan</th>
+                    <th>Fungsi Utama</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Identitas Diri</strong></td>
+                    <td>Nama Lengkap, Tingkat Kelas (X/XI/XII)</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Verifikasi identitas siswa sekolah &amp; pencetakan Kartu ID Anggota</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Kontak Aktif</strong></td>
+                    <td>Alamat Email, Nomor WhatsApp / Handphone</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Saluran pengiriman pemberitahuan seleksi &amp; undangan grup belajar</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Sarana Belajar</strong></td>
+                    <td>Status Kepemilikan Laptop</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Penyusunan alokasi perangkat komputer di Lab selama sesi praktikum</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Parameter Minat</strong></td>
+                    <td>Motivasi Pendaftaran &amp; Evaluasi Jawaban Kustom</td>
+                    <td><span class="privacy-badge required">Wajib</span></td>
+                    <td>Bahan pertimbangan kelayakan wawancara oleh pengurus &amp; pembina</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              Kami tidak mengumpulkan Data Pribadi yang bersifat sensitif seperti rekam medis, data biometrik,
+              preferensi politik, atau data finansial pribadi.
+            </p>
+          </section>
+
+          <!-- SECTION 4 -->
+          <section id="tujuan-pemrosesan" class="privacy-section-card">
+            <h2><span>4.</span> Tujuan Pemrosesan &amp; Penggunaan Data</h2>
+            <p>
+              Kami memproses data pendaftar secara sistematis dengan tujuan internal yang transparan dan terbatas pada
+              hal-hal berikut:
+            </p>
+            <ul>
+              <li><strong>Administrasi Seleksi:</strong> Menyeleksi calon anggota baru berdasarkan kuota ketersediaan
+                kapasitas laboratorium dan keselarasan visi pendaftar.</li>
+              <li><strong>Komunikasi Resmi:</strong> Menghubungi pendaftar untuk jadwal sesi wawancara langsung, tes
+                logika pemrograman dasar, dan pengumuman hasil kelulusan.</li>
+              <li><strong>Pencetakan Kartu Anggota Digital:</strong> Menyusun basis data digital guna menerbitkan kartu
+                anggota elektronik berbasis QR/Barcode yang terenkripsi aman.</li>
+              <li><strong>Pemetaan Divisi Belajar:</strong> Mengelompokkan minat dasar siswa ke dalam divisi kompetensi
+                mekanik (chassis &amp; CAD), elektronik (sirkuit &amp; PCB), atau pemrograman (C++ &amp; IoT).</li>
+            </ul>
+          </section>
+
+          <!-- SECTION 5 -->
+          <section id="keamanan-penyimpanan" class="privacy-section-card">
+            <h2><span>5.</span> Keamanan &amp; Protokol Penyimpanan Data</h2>
+            <p>
+              Kami menerapkan standar keamanan teknis guna melindungi data pribadi Anda dari akses tidak sah,
+              pengungkapan, perubahan, atau penghancuran tanpa izin:
+            </p>
+            <ul>
+              <li><strong>Enkripsi Sisi Klien (Local Storage):</strong> Data pendaftaran sementara disandikan
+                menggunakan algoritma XOR dan base64 terenkripsi di penyimpanan lokal peramban Anda untuk mencegah
+                intersepsi malware pihak ketiga.</li>
+              <li><strong>Transmisi Aman &amp; Cloud Database:</strong> Transmisi data ke peladen kami dilindungi
+                protokol HTTPS (SSL) dan disimpan secara aman pada infrastruktur cloud database Firebase Cloud Firestore
+                dengan aturan keamanan otentikasi ketat.</li>
+              <li><strong>Hak Akses Terbatas (Least Privilege):</strong> Hanya Administrator/Pengurus inti terotentikasi
+                dengan hak akses khusus yang dapat membuka data pendaftar melalui panel dasbor admin yang terlindungi
+                proteksi serangan brute-force (*rate-limiter*).</li>
+              <li><strong>Retensi Data:</strong> Data pendaftar yang tidak diterima akan dihapus secara permanen dari
+                database dalam jangka waktu 30 hari kalender setelah proses seleksi berakhir. Data pendaftar yang
+                diterima akan dipertahankan sebagai arsip keanggotaan aktif selama siswa menempuh studi di sekolah.</li>
+            </ul>
+          </section>
+
+          <!-- SECTION 6 -->
+          <section id="hak-pengguna" class="privacy-section-card">
+            <h2><span>6.</span> Hak Pemilik Data Pribadi</h2>
+            <p>
+              Sesuai dengan ketentuan regulasi UU PDP, setiap pendaftar selaku pemilik data memiliki hak penuh atas data
+              pribadi mereka sebagai berikut:
+            </p>
+            <ol>
+              <li><strong>Hak Akses (Right to Access):</strong> Anda berhak meninjau kembali status pendaftaran dan
+                akurasi data Anda setiap saat secara mandiri menggunakan <strong>ID Pendaftaran Unik</strong> pada kolom
+                pelacak status di halaman pendaftaran.</li>
+              <li><strong>Hak Koreksi (Right to Rectification):</strong> Anda berhak meminta perubahan atau perbaikan
+                data pendaftaran jika terjadi kesalahan penulisan (seperti salah ketik nama atau nomor WhatsApp) dengan
+                menghubungi administrator portal.</li>
+              <li><strong>Hak Penghapusan (Right to Erasure / Right to be Forgotten):</strong> Anda berhak menarik diri
+                dari proses pendaftaran dan mengajukan permintaan penghapusan data secara permanen dari database
+                pengurus sebelum pengumuman resmi dirilis.</li>
+            </ol>
+          </section>
+
+          <!-- SECTION 7 -->
+          <section id="pihak-ketiga" class="privacy-section-card">
+            <h2><span>7.</span> Pengungkapan Kepada Pihak Ketiga</h2>
+            <p>
+              Motechart Robotik menerapkan kebijakan kerahasiaan mutlak. Kami <strong>tidak akan menjual, menyewakan,
+                memperdagangkan, atau memindahkan</strong> data pribadi calon anggota atau anggota aktif kepada pihak
+              ketiga di luar struktur pengurus dan pembina sekolah untuk tujuan komersial atau periklanan.
+            </p>
+            <p>
+              Data pribadi hanya akan diungkapkan apabila diwajibkan secara hukum oleh otoritas sekolah atau perintah
+              hukum yang sah berdasarkan undang-undang yang berlaku di Republik Indonesia.
+            </p>
+          </section>
+
+          <!-- SECTION 8 -->
+          <section id="kontak" class="privacy-section-card">
+            <h2><span>8.</span> Kontak Resmi &amp; Pengaduan Privasi</h2>
+            <p>
+              Apabila Anda memiliki pertanyaan, keberatan terhadap pemrosesan data, atau ingin mengajukan hak
+              koreksi/penghapusan data pribadi Anda, silakan hubungi penanggung jawab Pelindungan Data Motechart Robotik
+              melalui kontak resmi berikut:
+            </p>
+            <div class="table-responsive" style="max-width: 600px;">
+              <table class="privacy-table">
+                <tbody>
+                  <tr>
+                    <td><strong>Surel Resmi (Email)</strong></td>
+                    <td><a href="mailto:robotikmotechart@gmail.com"
+                        style="color: var(--accent-cyan); text-decoration: underline;">robotikmotechart@gmail.com</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lokasi Fisik (Lab)</strong></td>
+                    <td>Jl. Lingkungan Kayu Manis No. 30, Desa Cirimekar, Kecamatan Cibinong, Kabupaten Bogor. Kode Pos
+                      16917
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Waktu Layanan Admin</strong></td>
+                    <td>Senin - Jumat | 14:00 - 17:00 WIB (Sesi Ekstrakurikuler)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- BACK TO HOME FOOTER BUTTON -->
+          <div
+            style="margin-top: 1.5rem; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="index.html" class="btn btn-secondary">← Kembali ke Beranda</a>
+            <a href="index.html#pendaftaran" class="btn btn-yellow">Daftar Ekstrakurikuler Sekarang 🤖</a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="main-footer" style="margin-top: auto;">
+    <div class="container" style="text-align: center; padding: 2.5rem 0; border-top: 1px solid var(--border-glass);">
+      <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 Motechart Robotik Club. Dokumen Kebijakan
+        Pelindungan Data Pribadi.</p>
+      <p style="font-size: 0.75rem; color: rgba(255,255,255,0.25); margin-top: 0.35rem;">Sesuai Standar Kepatuhan UU No.
+        27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP).</p>
+    </div>
+  </footer>
+
+  <!-- Table of Contents Active Scroll Tracker Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('.privacy-section-card');
+      const navLinks = document.querySelectorAll('.privacy-sidebar li a');
+
+      const observerOptions = {
+        root: null,
+        rootMargin: '-10% 0px -65% 0px',
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+                
+                // Scroll active link into view horizontally in mobile view
+                if (window.innerWidth <= 992) {
+                  link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach(section => observer.observe(section));
+
+      // Smooth scroll adjustment for anchor clicks
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href');
+          const targetSection = document.querySelector(targetId);
+          if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+            history.pushState(null, null, targetId);
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Security Headers & Meta -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; font-src 'self' https:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CMS Admin Dashboard - Motechart Robotik</title>
+
+  <!-- Menggunakan styling mandiri khusus admin -->
+  <link rel="stylesheet" href="./admin.css">
+
+  <!-- Firebase Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+  <!-- Efek Background Khusus Admin -->
+  <div class="admin-bg-effects"></div>
+
+  <!-- A. GERBANG LOGIN ADMIN -->
+  <div id="admin-login-section" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-badge">
+          <span class="status-dot"></span>
+          Secure Admin Node
+        </div>
+        <svg class="login-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="var(--accent-cyan)" />
+          <rect x="9" y="11" width="6" height="5" rx="1" fill="rgba(6, 182, 212, 0.1)" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+          <path d="M10.5 11V9a1.5 1.5 0 0 1 3 0v2" stroke="var(--accent-cyan)" stroke-width="1.5"/>
+        </svg>
+        <h2>Admin Portal</h2>
+        <p>System Administration Console</p>
+      </div>
+
+      <form id="cms-login-form" autocomplete="on">
+        <div id="login-error-msg" class="error-panel" style="display: none;" role="alert"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="admin_username">Admin Email <span>*</span></label>
+          <input type="email" id="admin_username" name="admin_username" class="input-control" required placeholder="admin@motechart.com" autocomplete="username">
+        </div>
+
+        <div class="form-group password-group">
+          <label class="form-label" for="admin_password">Password <span>*</span></label>
+          <div class="password-input-wrapper">
+            <input type="password" id="admin_password" name="admin_password" class="input-control" required placeholder="••••••••" autocomplete="current-password">
+            <button type="button" id="toggle-admin-password" class="password-toggle-btn" aria-label="Tampilkan Password">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-cyan btn-block btn-submit" style="margin-top: 1rem;">Akses Dashboard 🚀</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="./index.html" class="back-link">
+          ← Kembali ke Website Utama
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- B. PANEL ADMIN DASHBOARD (CMS CONTROLS) -->
+  <div id="admin-panel-section" class="dashboard-container" style="display: none;">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-title">
+          <svg width="24" height="24" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="10">
+            <circle cx="100" cy="100" r="80" stroke="var(--accent-yellow)"/>
+            <path d="M70,110 L130,110" stroke="var(--accent-cyan)"/>
+            <circle cx="75" cy="80" r="10" fill="var(--accent-cyan)"/>
+            <circle cx="125" cy="80" r="10" fill="var(--accent-cyan)"/>
+          </svg>
+          ADMIN <span>PAGE</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" role="tablist">
+        <!-- Kategori 1: Overview -->
+        <div class="sidebar-group">
+          <div class="sidebar-group-title">Overview</div>
+          <button type="button" class="nav-item active" data-cms-target="cms-overview-view" role="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard Overview
+          </button>
+        </div>
+
+        <!-- Kategori 2: Pendaftaran (Kelola + Sistem) -->
+        <div class="sidebar-group">
+          <div class="sidebar-group-title">Pendaftaran</div>
+          <button type="button" class="nav-item" data-cms-target="cms-applicants-view" role="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Kelola Pendaftar
+          </button>
+          <button type="button" class="nav-item" data-cms-target="cms-settings-view" role="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Sistem Pendaftaran
+          </button>
+        </div>
+
+        <!-- Kategori 3: Konten Website (Blog, Portfolio, Landing Page) -->
+        <div class="sidebar-group">
+          <div class="sidebar-group-title">Konten Website</div>
+          <button type="button" class="nav-item" data-cms-target="cms-blog-view" role="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Artikel Blog
+          </button>
+          <button type="button" class="nav-item" data-cms-target="cms-portfolio-view" role="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+            Galeri Portfolio
+          </button>
+          <button type="button" class="nav-item" data-cms-target="cms-landing-view" role="tab">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            Landing Page Konten
+          </button>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button type="button" id="btn-reset-db" class="btn btn-outline-red btn-block btn-sm">Reset Database ⚠️</button>
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="admin-main-area">
+      <!-- TOPBAR -->
+      <header class="admin-topbar">
+        <div class="topbar-left" style="display:flex; align-items:center; gap: 1rem;">
+          <button class="mobile-toggle" id="mobile-toggle-btn">☰</button>
+          <h2 id="topbar-title">Dashboard Overview</h2>
+        </div>
+        <div class="topbar-right">
+          <a href="./index.html" class="btn btn-outline btn-sm" target="_blank">Lihat Website ↗</a>
+          <button type="button" id="btn-admin-logout" class="btn btn-outline btn-sm">Logout</button>
+          <div class="admin-user-profile">
+            <div class="avatar">A</div>
+            <div style="display:flex; flex-direction:column;">
+              <span style="font-size: 0.85rem; font-weight: 600;">Administrator</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Motechart Robotik</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="admin-content">
+        
+        <!-- Tab: OVERVIEW (NEW) -->
+        <div id="cms-overview-view" class="cms-view active" role="tabpanel">
+          <h3 style="margin-bottom: 1.5rem; font-weight: 600;">System Analytics</h3>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon icon-cyan">👥</div>
+              <div class="stat-info">
+                <h4>Total Pendaftar</h4>
+                <div class="stat-value" id="stat-total-applicants">-</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-yellow">⏳</div>
+              <div class="stat-info">
+                <h4>Menunggu Persetujuan</h4>
+                <div class="stat-value" id="stat-pending-applicants">-</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-green">📝</div>
+              <div class="stat-info">
+                <h4>Artikel Blog Aktif</h4>
+                <div class="stat-value" id="stat-total-articles">-</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-red">📂</div>
+              <div class="stat-info">
+                <h4>Proyek Portfolio</h4>
+                <div class="stat-value" id="stat-total-projects">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title">Pendaftar Terbaru (Menunggu Persetujuan)</h3>
+              <button class="btn btn-outline btn-sm" id="btn-overview-view-all">Lihat Semua</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Nama Calon Anggota</th>
+                    <th>Kelas</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="overview-recent-applicants-table">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: APPLICANTS -->
+        <div id="cms-applicants-view" class="cms-view" role="tabpanel">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title">Manajemen Pendaftar Ekskul</h3>
+              <div style="display:flex; gap: 0.75rem; align-items:center; flex-wrap: wrap;">
+                <input type="text" id="search-applicants" class="input-control" placeholder="Cari nama..." style="padding: 0.5rem; width: 200px;">
+                <select id="filter-applicant-status" class="input-control" style="padding: 0.5rem; width: 140px;">
+                  <option value="ALL">Semua Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Diterima">Diterima</option>
+                  <option value="Ditolak">Ditolak</option>
+                </select>
+                <button type="button" id="btn-export-applicants-csv" class="btn btn-yellow btn-sm">Ekspor CSV 📊</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Pendaftar</th>
+                    <th>Kelas</th>
+                    <th>No. WhatsApp</th>
+                    <th>Tanggal Daftar</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-applicants-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: BLOG -->
+        <div id="cms-blog-view" class="cms-view" role="tabpanel">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title">Manajemen Artikel Blog</h3>
+              <button type="button" id="btn-add-blog" class="btn btn-cyan btn-sm">Tambah Artikel Baru ➕</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Judul Artikel</th>
+                    <th>Kategori</th>
+                    <th>Tanggal Terbit</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-blog-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: PORTFOLIO -->
+        <div id="cms-portfolio-view" class="cms-view" role="tabpanel">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title">Manajemen Galeri Proyek</h3>
+              <button type="button" id="btn-add-portfolio" class="btn btn-cyan btn-sm">Tambah Proyek Baru ➕</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Judul Proyek</th>
+                    <th>Kategori / Divisi</th>
+                    <th>Status Proyek</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-portfolio-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: REGISTRATION SETTINGS -->
+        <div id="cms-settings-view" class="cms-view" role="tabpanel">
+          
+          <form id="cms-reg-settings-form">
+            <div class="settings-grid">
+              
+              <!-- Sistem Pendaftaran -->
+              <div class="setting-card">
+                <h4 class="setting-card-title">🔌 Kontrol Utama Sistem</h4>
+                <div class="form-group">
+                  <label class="form-label" for="reg-status-toggle">Status Pendaftaran Ekskul</label>
+                  <select id="reg-status-toggle" class="input-control">
+                    <option value="open">Buka (Terima Pendaftar Baru)</option>
+                    <option value="closed">Tutup (Aktifkan Hitung Mundur)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="reg-countdown-target">Target Waktu Pembukaan</label>
+                  <input type="datetime-local" id="reg-countdown-target" class="input-control">
+                </div>
+              </div>
+
+              <!-- Banner WhatsApp -->
+              <div class="setting-card">
+                <h4 class="setting-card-title">💬 Konfigurasi Grup WhatsApp</h4>
+                <div class="form-group">
+                  <label class="form-label" for="reg-wa-title">Judul Banner WA</label>
+                  <input type="text" id="reg-wa-title" class="input-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="reg-wa-link">Tautan Undangan (Invite Link)</label>
+                  <input type="url" id="reg-wa-link" class="input-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="reg-wa-desc">Deskripsi Petunjuk</label>
+                  <textarea id="reg-wa-desc" class="input-control" required style="height: 60px;"></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem; text-align: right;">
+              <button type="submit" class="btn btn-cyan">Simpan Pengaturan Utama 💾</button>
+            </div>
+          </form>
+
+          <div class="panel-card mt-4">
+            <div class="panel-header">
+              <h3 class="panel-title">Pertanyaan Tambahan (Formulir Pendaftaran)</h3>
+              <button type="button" id="btn-add-custom-question" class="btn btn-outline btn-sm">Tambah Pertanyaan ➕</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Label Pertanyaan</th>
+                    <th>Tipe Input</th>
+                    <th>Opsi Pilihan</th>
+                    <th>Wajib?</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-questions-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: LANDING PAGE -->
+        <div id="cms-landing-view" class="cms-view" role="tabpanel">
+          <form id="cms-landing-form">
+            <div class="settings-grid">
+              
+              <!-- Hero Content -->
+              <div class="setting-card">
+                <h4 class="setting-card-title">✨ Hero Banner</h4>
+                <div class="form-group">
+                  <label class="form-label" for="cms-hero-tag">Tagline</label>
+                  <input type="text" id="cms-hero-tag" class="input-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-hero-title">Judul Utama (Gunakan &lt;span&gt; untuk aksen)</label>
+                  <input type="text" id="cms-hero-title" class="input-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-hero-desc">Deskripsi Paragraf</label>
+                  <textarea id="cms-hero-desc" class="input-control" required style="height: 80px;"></textarea>
+                </div>
+              </div>
+
+              <!-- Visi & Footer Info -->
+              <div class="setting-card">
+                <h4 class="setting-card-title">🎯 Visi Ekskul & Kontak Footer</h4>
+                <div class="form-group">
+                  <label class="form-label" for="cms-visi-text">Visi Ekskul</label>
+                  <textarea id="cms-visi-text" class="input-control" required style="height: 60px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-footer-location">Alamat Basecamp / Lab</label>
+                  <input type="text" id="cms-footer-location" class="input-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-footer-email">Email Resmi</label>
+                  <input type="email" id="cms-footer-email" class="input-control" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Misi & Divisi (Grid bawah) -->
+            <div class="settings-grid mt-4">
+              <div class="setting-card">
+                <h4 class="setting-card-title">🚀 4 Pilar Misi Ekskul</h4>
+                <div class="form-group"><input type="text" id="cms-misi-item-1" class="input-control" required></div>
+                <div class="form-group"><input type="text" id="cms-misi-item-2" class="input-control" required></div>
+                <div class="form-group"><input type="text" id="cms-misi-item-3" class="input-control" required></div>
+                <div class="form-group"><input type="text" id="cms-misi-item-4" class="input-control" required></div>
+              </div>
+
+              <div class="setting-card">
+                <h4 class="setting-card-title">⚡ Deskripsi Divisi Keahlian</h4>
+                <div class="form-group">
+                  <label class="form-label" for="cms-div-mech-desc">Divisi Mekanik</label>
+                  <textarea id="cms-div-mech-desc" class="input-control" required style="height: 50px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-div-elec-desc">Divisi Elektronika</label>
+                  <textarea id="cms-div-elec-desc" class="input-control" required style="height: 50px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-div-prog-desc">Divisi Pemrograman</label>
+                  <textarea id="cms-div-prog-desc" class="input-control" required style="height: 50px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cms-footer-tagline">Motto/Tagline Footer</label>
+                  <input type="text" id="cms-footer-tagline" class="input-control" required>
+                </div>
+                <!-- Hidden inputs to prevent errors from admin.js if they existed before -->
+                <input type="hidden" id="cms-footer-instagram" value="">
+                <input type="hidden" id="cms-footer-youtube" value="">
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+              <button type="submit" class="btn btn-cyan">Simpan Konten Landing Page 💾</button>
+            </div>
+          </form>
+
+          <!-- Achievements -->
+          <div class="panel-card mt-4">
+            <div class="panel-header">
+              <h3 class="panel-title">Galeri Prestasi & Penghargaan</h3>
+              <button type="button" id="btn-add-custom-achievement" class="btn btn-outline btn-sm">Tambah Prestasi ➕</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="admin-achievements-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Prestasi</th>
+                    <th>Penyelenggara</th>
+                    <th>Tahun</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-achievements-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div> <!-- End .admin-content -->
+    </main>
+  </div>
+
+  <!-- ==========================================
+       MODALS (DIALOGS)
+       ========================================== -->
+
+  <!-- Editor Dialog (Blog & Portfolio) -->
+  <dialog id="cms-editor-dialog">
+    <div class="dialog-header">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <h3 class="dialog-title" id="cms-dialog-title">Editor Konten</h3>
+        <div style="display: flex; gap: 0.35rem; align-items: center;">
+          <button type="button" id="btn-cms-undo" class="btn btn-secondary btn-sm" title="Undo (Ctrl+Z)" style="padding: 0.25rem 0.5rem; min-height: auto; font-size: 0.85rem;">↩️</button>
+          <button type="button" id="btn-cms-redo" class="btn btn-secondary btn-sm" title="Redo (Ctrl+Y)" style="padding: 0.25rem 0.5rem; min-height: auto; font-size: 0.85rem;">↪️</button>
+        </div>
+      </div>
+      <button type="button" id="close-editor-dialog-btn" class="btn-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <form id="cms-editor-form" novalidate>
+        <div id="cms-form-fields-container"></div>
+        <div class="form-actions-row" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+          <button type="button" class="btn btn-outline" id="cms-editor-cancel">Batal</button>
+          <button type="submit" class="btn btn-cyan">Simpan Data 💾</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Add Question Dialog -->
+  <dialog id="custom-question-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" id="question-dialog-title">Tambah Pertanyaan Baru</h3>
+      <button type="button" id="close-question-dialog-btn" class="btn-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <form id="custom-question-form">
+        <input type="hidden" id="edit-question-id" value="">
+        <div class="form-group">
+          <label class="form-label" for="question-label">Teks Pertanyaan <span>*</span></label>
+          <input type="text" id="question-label" class="input-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="question-type">Tipe Input <span>*</span></label>
+          <select id="question-type" class="input-control" required>
+            <option value="text">Teks Singkat</option>
+            <option value="radio">Pilihan Ganda (Radio)</option>
+            <option value="select">Dropdown Menu</option>
+          </select>
+        </div>
+        <div class="form-group" id="question-options-group" style="display:none;">
+          <label class="form-label" for="question-options">Opsi (Pisahkan dengan koma) <span>*</span></label>
+          <input type="text" id="question-options" class="input-control" placeholder="Opsi 1, Opsi 2, Opsi 3">
+        </div>
+        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" id="question-required" checked>
+          <label for="question-required" style="color:var(--text-main); font-size:0.95rem;">Wajib Diisi?</label>
+        </div>
+        <div style="margin-top: 1.5rem; text-align: right;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-question-dialog" style="margin-right:0.5rem;">Batal</button>
+          <button type="submit" class="btn btn-cyan" id="btn-save-question">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Add Achievement Dialog -->
+  <dialog id="custom-achievement-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" id="achievement-dialog-title">Kelola Prestasi</h3>
+      <button type="button" id="close-achievement-dialog-btn" class="btn-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <form id="custom-achievement-form">
+        <input type="hidden" id="edit-achievement-idx" value="">
+        <div class="form-group">
+          <label class="form-label" for="achievement-juara">Nama Prestasi/Juara <span>*</span></label>
+          <textarea id="achievement-juara" class="input-control" required style="height:60px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="achievement-organizer">Penyelenggara <span>*</span></label>
+          <input type="text" id="achievement-organizer" class="input-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="achievement-year">Tahun <span>*</span></label>
+          <input type="text" id="achievement-year" class="input-control" required pattern="[0-9]{4}">
+        </div>
+        <div style="margin-top: 1.5rem; text-align: right;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-achievement-dialog" style="margin-right:0.5rem;">Batal</button>
+          <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Preview Card Dialog -->
+  <dialog id="admin-card-preview-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" id="preview-dialog-title">Kartu Anggota Digital</h3>
+      <button type="button" id="close-preview-dialog-btn" class="btn-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body" style="display:flex; justify-content:center; background:#020617;">
+      <div id="admin-card-preview-container"></div>
+    </div>
+  </dialog>
+
+  <!-- Detail Applicant Dialog -->
+  <dialog id="admin-applicant-detail-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" id="detail-dialog-title">Detail Calon Anggota</h3>
+      <button type="button" id="close-detail-dialog-btn" class="btn-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <div id="admin-applicant-detail-container" style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Populated dynamically via JS -->
+      </div>
+      <div style="margin-top: 2rem; text-align: right;">
+        <button type="button" class="btn btn-cyan" id="btn-close-detail-dialog">Tutup</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- App scripts logic -->
+  <script src="./admin.js" type="module"></script>
+</body>
+</html>

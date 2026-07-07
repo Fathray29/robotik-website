@@ -60,6 +60,7 @@ function setupCmsAuthentication() {
         
         state.regSettings = {
           isOpen: true,
+          status: 'open',
           countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
           customQuestions: [],
           waTitle: 'Grup WhatsApp Resmi Calon Anggota',
@@ -1558,9 +1559,26 @@ function setupAdminRegSettings() {
   const regSettingsForm = document.getElementById('cms-reg-settings-form');
 
   if (regSettingsForm) {
+    if (statusToggle && countdownTargetInput) {
+      const toggleCountdownTargetVisibility = () => {
+        const targetGroup = countdownTargetInput.closest('.form-group');
+        if (statusToggle.value === 'closed') {
+          if (targetGroup) targetGroup.style.display = 'block';
+          countdownTargetInput.disabled = false;
+          countdownTargetInput.required = true;
+        } else {
+          if (targetGroup) targetGroup.style.display = 'none';
+          countdownTargetInput.disabled = true;
+          countdownTargetInput.required = false;
+        }
+      };
+      statusToggle.addEventListener('change', toggleCountdownTargetVisibility);
+    }
+
     regSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       state.regSettings.isOpen = (statusToggle.value === 'open');
+      state.regSettings.status = statusToggle.value;
       state.regSettings.countdownTarget = countdownTargetInput.value;
 
       const waTitleInput = document.getElementById('reg-wa-title');
@@ -1704,12 +1722,24 @@ function populateRegSettingsCmsInputs() {
   const countdownTargetInput = document.getElementById('reg-countdown-target');
 
   if (statusToggle && countdownTargetInput) {
-    statusToggle.value = state.regSettings.isOpen ? 'open' : 'closed';
+    statusToggle.value = state.regSettings.status || (state.regSettings.isOpen ? 'open' : 'closed');
     let targetVal = state.regSettings.countdownTarget || '';
     if (targetVal.includes('T') && targetVal.length > 16) {
       targetVal = targetVal.slice(0, 16);
     }
     countdownTargetInput.value = targetVal;
+
+    // Initial visibility check
+    const targetGroup = countdownTargetInput.closest('.form-group');
+    if (statusToggle.value === 'closed') {
+      if (targetGroup) targetGroup.style.display = 'block';
+      countdownTargetInput.disabled = false;
+      countdownTargetInput.required = true;
+    } else {
+      if (targetGroup) targetGroup.style.display = 'none';
+      countdownTargetInput.disabled = true;
+      countdownTargetInput.required = false;
+    }
   }
 
   const waTitleInput = document.getElementById('reg-wa-title');

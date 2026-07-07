@@ -947,6 +947,13 @@ function setupRegistrationForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const currentStatus = regSettings.status || (regSettings.isOpen ? 'open' : 'closed');
+    if (currentStatus !== 'open') {
+      playRoboticSound('error');
+      await customAlert('Pendaftaran telah ditutup.');
+      return;
+    }
+
     // Prevent submission if not on the final step (Step 3)
     if (currentStep < 3) {
       if (currentStep === 1) {
@@ -2032,8 +2039,14 @@ function updateCountdownTimer() {
   const progressBar = document.querySelector('.progress-bar-container');
   const formContainer = document.getElementById('reg-form-container');
   const successCard = document.getElementById('reg-success-card');
+  
+  const closedTitleEl = document.getElementById('reg-closed-title');
+  const closedMessageEl = document.getElementById('reg-closed-message');
+  const countdownTimerEl = document.getElementById('reg-countdown-timer');
 
-  if (regSettings.isOpen) {
+  const currentStatus = regSettings.status || (regSettings.isOpen ? 'open' : 'closed');
+
+  if (currentStatus === 'open') {
     closedContainer.style.display = 'none';
     regLayout.style.display = '';
     
@@ -2045,12 +2058,38 @@ function updateCountdownTimer() {
       if (progressBar) progressBar.style.display = '';
       if (formContainer) formContainer.style.display = '';
     }
+  } else if (currentStatus === 'closed_permanently') {
+    closedContainer.style.display = 'block';
+    regLayout.style.display = ''; // Keep reg-layout visible so status checker is displayed
+    if (progressBar) progressBar.style.display = 'none';
+    if (formContainer) formContainer.style.display = 'none';
+    if (successCard) successCard.style.display = 'none';
+
+    if (closedTitleEl) {
+      closedTitleEl.textContent = 'Pendaftaran Telah Ditutup';
+    }
+    if (closedMessageEl) {
+      closedMessageEl.textContent = 'Penerimaan anggota baru Ekstrakurikuler Robotik telah resmi berakhir karena periode pendaftaran sudah selesai.';
+    }
+    if (countdownTimerEl) {
+      countdownTimerEl.style.display = 'none';
+    }
   } else {
     closedContainer.style.display = 'block';
     regLayout.style.display = ''; // Keep reg-layout visible so status checker is displayed
     if (progressBar) progressBar.style.display = 'none';
     if (formContainer) formContainer.style.display = 'none';
     if (successCard) successCard.style.display = 'none';
+
+    if (closedTitleEl) {
+      closedTitleEl.textContent = 'Pendaftaran Saat Ini Ditutup';
+    }
+    if (closedMessageEl) {
+      closedMessageEl.textContent = 'Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul. Tunggu hingga pendaftaran dibuka kembali dalam:';
+    }
+    if (countdownTimerEl) {
+      countdownTimerEl.style.display = '';
+    }
 
     const daysEl = document.getElementById('cd-days');
     const hoursEl = document.getElementById('cd-hours');
@@ -2069,6 +2108,7 @@ function updateCountdownTimer() {
         if (secondsEl) secondsEl.textContent = '00';
 
         regSettings.isOpen = true;
+        regSettings.status = 'open';
         saveData('robotik_reg_settings', regSettings, false);
         clearInterval(countdownInterval);
         countdownInterval = null;
@@ -2078,7 +2118,10 @@ function updateCountdownTimer() {
         if (formContainer) formContainer.style.display = '';
         
         const statusToggle = document.getElementById('reg-status-toggle');
-        if (statusToggle) statusToggle.value = 'open';
+        if (statusToggle) {
+          statusToggle.value = 'open';
+          statusToggle.dispatchEvent(new Event('change'));
+        }
         return;
       }
 

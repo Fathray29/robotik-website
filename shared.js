@@ -528,6 +528,12 @@ export function setupRealTimeApplicantsSync(onUpdateCallback) {
       state.applicants = fetched;
       saveData('robotik_applicants', state.applicants, false);
       console.log("Real-time applicants updated from Cloud Firestore!");
+      
+      // Update public telemetry count of applicants to match true total
+      state.db.collection('telemetry').doc('visitors').update({
+        applicantsCount: fetched.length
+      }).catch(err => console.warn("Failed to sync applicantsCount telemetry:", err));
+
       if (typeof onUpdateCallback === 'function') {
         onUpdateCallback(state.applicants);
       }

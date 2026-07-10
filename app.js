@@ -1065,7 +1065,13 @@ function setupRegistrationForm() {
 
       if (useFirebase) {
         db.collection('applicants').doc(regId).set(newApplicant)
-          .then(() => console.log("Applicant successfully saved to Cloud Firestore!"))
+          .then(() => {
+            console.log("Applicant successfully saved to Cloud Firestore!");
+            // Increment telemetry applicant count
+            db.collection('telemetry').doc('visitors').update({
+              applicantsCount: firebase.firestore.FieldValue.increment(1)
+            }).catch(err => console.warn("Failed to increment applicant telemetry count:", err));
+          })
           .catch(err => console.error("Firestore save applicant failed:", err));
       }
 
@@ -1613,6 +1619,15 @@ function setupSystemTelemetry() {
           if (visitorEl) {
             visitorEl.textContent = cloudCount.toLocaleString('id-ID');
           }
+
+          // Sync applicant count
+          const cloudApplicantsCount = data.applicantsCount || 0;
+          localStorage.setItem('robotik_applicants_count', cloudApplicantsCount);
+          
+          const applicantsEl = document.getElementById('telemetry-total-applicants');
+          if (applicantsEl) {
+            applicantsEl.textContent = cloudApplicantsCount.toLocaleString('id-ID');
+          }
         }
       }, err => {
         console.warn("Motechart Cloud Engine: Real-time visitors listener failed:", err);
@@ -1747,7 +1762,11 @@ function setupSystemTelemetry() {
       // If they are not declared on window, fallback to local variables in this script (as they are in scope)
       const blogCount = typeof blogArticles !== 'undefined' ? blogArticles.length : currentBlogs.length;
       const portfolioCount = typeof portfolioProjects !== 'undefined' ? portfolioProjects.length : currentPortfolios.length;
-      const applicantCount = typeof applicants !== 'undefined' ? applicants.length : currentApplicants.length;
+      
+      let applicantCount = typeof applicants !== 'undefined' ? applicants.length : currentApplicants.length;
+      if (useFirebase && db) {
+        applicantCount = parseInt(localStorage.getItem('robotik_applicants_count') || '0', 10);
+      }
 
       const currentVisitors = parseInt(localStorage.getItem('robotik_visitor_count') || '1', 10);
 

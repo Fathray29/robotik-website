@@ -2057,14 +2057,9 @@ body.light-theme .data-table td,
 
 .portfolio-gallery-content {
   width: 100%;
-  transform: translateY(0); /* Teks selalu terlihat */
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
 }
 
-.portfolio-gallery-item:hover .portfolio-gallery-content {
-  transform: translateY(0);
-}
+/* Hover state: no change needed on content wrapper */
 
 .portfolio-gallery-title {
   font-family: var(--font-heading);
@@ -2088,7 +2083,8 @@ body.light-theme .data-table td,
   line-height: 1.45;
   margin-top: 0.75rem;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -2097,6 +2093,7 @@ body.light-theme .data-table td,
 
 .portfolio-gallery-item:hover .portfolio-gallery-desc {
   opacity: 1;
+  transform: translateY(0);
   transition-delay: 0.05s;
 }
 

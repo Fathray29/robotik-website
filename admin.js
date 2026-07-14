@@ -416,6 +416,7 @@ function setupCmsTabs() {
         const creatVal = document.getElementById('edit-creators').value.trim();
         const compVal = document.getElementById('edit-components').value.trim();
         const specVal = document.getElementById('edit-specs').value.trim();
+        const descVal = document.getElementById('edit-description').value.trim();
         const codeVal = document.getElementById('edit-code').value.trim();
         const conVal = document.getElementById('edit-content').value.trim();
         const headerImgVal = document.getElementById('edit-header-image').value.trim();
@@ -432,6 +433,7 @@ function setupCmsTabs() {
             creators: creatVal,
             components: compVal,
             specs: specVal,
+            description: descVal,
             code: codeVal,
             content: conVal,
             headerImage: headerImgVal,
@@ -448,6 +450,7 @@ function setupCmsTabs() {
             proj.creators = creatVal;
             proj.components = compVal;
             proj.specs = specVal;
+            proj.description = descVal;
             proj.code = codeVal;
             proj.content = conVal;
             proj.headerImage = headerImgVal;
@@ -1090,6 +1093,10 @@ function openCmsEditor(type, mode, id = null) {
       <div class="form-group">
         <label class="form-label" for="edit-specs">Spesifikasi Fisik/Fitur <span>*</span></label>
         <input type="text" id="edit-specs" class="input-control" required value="${proj.specs || ''}" placeholder="Kecepatan maks, jangkauan sensor, kapasitas daya...">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-description">Deskripsi Singkat Proyek <span>*</span></label>
+        <textarea id="edit-description" class="input-control" required placeholder="Tulis ringkasan singkat 1-2 kalimat untuk kartu galeri..." style="height: 60px;">${proj.description || ''}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Deskripsi Lengkap Proyek <span>*</span></label>

@@ -419,6 +419,32 @@ function setupBlog() {
   renderPublicArticles();
 }
 
+// --- HELPERS FOR PORTFOLIO ---
+function getShortDesc(proj) {
+  if (proj.description && proj.description.trim()) {
+    return proj.description;
+  }
+  if (!proj.content) return '';
+  // Bersihkan markdown headings, gambar, link, tag html, dll
+  const cleanContent = proj.content
+    .replace(/#+\s+.+/g, '') // hapus headings
+    .replace(/!\[.*?\]\(.*?\)/g, '') // hapus gambar
+    .replace(/\[.*?\]\(.*?\)/g, '') // hapus link
+    .replace(/<[^>]*>/g, '') // hapus tag html
+    .replace(/[*_`#\-]/g, '') // hapus karakter markdown styling
+    .trim();
+  
+  const paragraphs = cleanContent.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+  if (paragraphs.length > 0) {
+    const firstParagraph = paragraphs[0];
+    if (firstParagraph.length > 130) {
+      return firstParagraph.substring(0, 127) + '...';
+    }
+    return firstParagraph;
+  }
+  return proj.specs || '';
+}
+
 // --- PUBLIC PORTFOLIO PAGE CONTROLLER ---
 function renderPublicPortfolio() {
   const portfolioContainer = document.getElementById('portfolio-grid');
@@ -426,38 +452,26 @@ function renderPublicPortfolio() {
 
   portfolioContainer.innerHTML = portfolioProjects.map(proj => {
     const safeCardImage = sanitizeUrl(proj.headerImage || '');
-    const cardBg = safeCardImage ? `style="background-image: linear-gradient(rgba(11, 17, 32, 0.75), rgba(11, 17, 32, 0.95)), url('${encodeURI(safeCardImage)}'); background-size: cover; background-position: center;"` : '';
+    const shortDesc = getShortDesc(proj);
+    const badgeStatus = proj.status === 'Selesai' ? 'success' : 'progress';
+    
     return `
-      <div class="glass-card portfolio-card" ${cardBg}>
-        <div class="portfolio-header">
-          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span>
-          <span class="portfolio-category">${escapeHtml(proj.category.toUpperCase())}</span>
+      <div class="portfolio-gallery-item">
+        <img src="${escapeHtml(safeCardImage)}" alt="${escapeHtml(proj.title)}" class="portfolio-gallery-img" loading="lazy">
+        <div class="portfolio-gallery-badges">
+          <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
+          <span class="portfolio-category-badge">${escapeHtml(proj.category.toUpperCase())}</span>
         </div>
-        <h3 class="portfolio-title">${escapeHtml(proj.title)}</h3>
-        <div class="portfolio-meta">
-          <strong>Pembuat:</strong> ${escapeHtml(proj.creators)}
+        <div class="portfolio-gallery-overlay">
+          <div class="portfolio-gallery-content">
+            <h3 class="portfolio-gallery-title">${escapeHtml(proj.title)}</h3>
+            <div class="portfolio-gallery-creators">Oleh: <strong>${escapeHtml(proj.creators)}</strong></div>
+            <p class="portfolio-gallery-desc">${escapeHtml(shortDesc)}</p>
+          </div>
         </div>
-        <div class="portfolio-meta">
-          <strong>Komponen:</strong> ${escapeHtml(proj.components)}
-        </div>
-        <div class="portfolio-meta">
-          <strong>Spesifikasi:</strong> ${escapeHtml(proj.specs)}
-        </div>
-        
-        <button class="btn btn-outline-cyan btn-sm btn-block view-project-detail-btn" data-id="${parseInt(proj.id) || 0}" style="margin-top: 1.5rem;">
-          Lihat Proyek & Kode Arduino 🛠️
-        </button>
       </div>
     `;
   }).join('');
-
-  document.querySelectorAll('.view-project-detail-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = parseInt(btn.getAttribute('data-id'));
-      openPortfolioDetail(id);
-    });
-    btn.addEventListener('mouseenter', () => playRoboticSound('hover'));
-  });
 }
 
 function openPortfolioDetail(id) {
@@ -467,9 +481,28 @@ function openPortfolioDetail(id) {
   playRoboticSound('click');
   const detailDialog = document.getElementById('portfolio-detail-dialog');
   
-  const safeProjImage = sanitizeUrl(proj.headerImage || '');
-  const bgStyle = safeProjImage ? `style="background-image: url('${encodeURI(safeProjImage)}')"` : '';
-  const bannerClass = safeProjImage ? 'dialog-header-banner' : 'dialog-header-banner no-image';
+  // Ekstrak semua gambar dari markdown content
+  const contentImages = [];
+  const imgRegex = /!\[.*?\]\((.*?)\)/g;
+  let match;
+  while ((match = imgRegex.exec(proj.content || '')) !== null) {
+    if (match[1]) {
+      contentImages.push(match[1]);
+    }
+  }
+
+  // Gabungkan headerImage dan sub-gambar content
+  const allImages = [];
+  if (proj.headerImage) {
+    allImages.push(proj.headerImage);
+  }
+  contentImages.forEach(url => {
+    if (!allImages.includes(url)) {
+      allImages.push(url);
+    }
+  });
+
+  const badgeStatus = proj.status === 'Selesai' ? 'success' : 'progress';
 
   detailDialog.innerHTML = `
     <div class="dialog-close-bar floating">
@@ -481,85 +514,115 @@ function openPortfolioDetail(id) {
       </button>
     </div>
     
-    <div class="${bannerClass}" ${bgStyle}></div>
-    
-    <div class="dialog-body-container">
-      <div class="dialog-title-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-          <span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span>
-          <span class="portfolio-category" style="color: var(--accent-cyan); font-weight: bold; letter-spacing: 1.2px;">${escapeHtml(proj.category.toUpperCase())}</span>
-        </div>
-        <h2 class="dialog-title" style="margin-top: 0.5rem; margin-bottom: 1.5rem; color: var(--text-white); font-size: 2.25rem;">${escapeHtml(proj.title)}</h2>
+    <div class="portfolio-detail-wrapper">
+      <div class="portfolio-detail-split">
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1.5rem;">
-          <div>
-            <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Pembuat Siswa</strong>
-            <span style="font-size: 0.95rem; color: var(--text-light);">${escapeHtml(proj.creators)}</span>
-          </div>
-          <div>
-            <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Komponen Utama</strong>
-            <span style="font-size: 0.95rem; color: var(--text-light);">${escapeHtml(proj.components)}</span>
-          </div>
-          <div>
-            <strong style="color: var(--accent-yellow); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.25rem;">Spesifikasi Fisik</strong>
-            <span style="font-size: 0.95rem; color: var(--text-light);">${escapeHtml(proj.specs)}</span>
+        <!-- Sisi Kiri: Slideshow Galeri Foto -->
+        <div class="portfolio-gallery-side">
+          <div class="portfolio-slider">
+            <div class="portfolio-slider-slides">
+              ${allImages.map((imgUrl, idx) => `
+                <div class="portfolio-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                  <img src="${escapeHtml(imgUrl)}" alt="Detail Proyek ${idx + 1}" class="portfolio-slide-img" loading="lazy">
+                </div>
+              `).join('')}
+            </div>
+            
+            ${allImages.length > 1 ? `
+              <button class="portfolio-slider-btn prev-btn" aria-label="Gambar Sebelumnya">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button class="portfolio-slider-btn next-btn" aria-label="Gambar Selanjutnya">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+              <div class="portfolio-slider-dots">
+                ${allImages.map((_, idx) => `
+                  <span class="portfolio-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></span>
+                `).join('')}
+              </div>
+            ` : ''}
           </div>
         </div>
-      </div>
-      
-      <div class="dialog-grid-container">
-        <!-- Table of Contents Sidebar -->
-        <aside class="dialog-toc-container">
-          <div class="dialog-toc-sticky">
-            <h4>Daftar Isi 📖</h4>
-            <ul class="toc-list"></ul>
-          </div>
-        </aside>
 
-        <!-- Main Content Area -->
-        <div class="dialog-content-area">
-          <div class="dialog-rich-text">
-            <h3 style="color: var(--accent-cyan); font-size: 1.5rem; margin-bottom: 1.25rem;">Deskripsi Detail Proyek 🤖</h3>
-            ${parseMarkdownToHtml(proj.content || '*Belum ada deskripsi mendalam.*')}
+        <!-- Sisi Kanan: Dashboard Panel Proyek -->
+        <div class="portfolio-info-side">
+          <div class="panel-header-info">
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;">
+              <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
+              <span class="portfolio-category-badge">${escapeHtml(proj.category.toUpperCase())}</span>
+            </div>
+            <h2 class="portfolio-detail-title">${escapeHtml(proj.title)}</h2>
+            <div class="portfolio-detail-author">Oleh: <strong>${escapeHtml(proj.creators)}</strong></div>
+          </div>
+
+          <!-- Tab Navigasi -->
+          <div class="portfolio-detail-tabs">
+            <button class="detail-tab active" data-target="tab-overview">Ringkasan 🔍</button>
+            <button class="detail-tab" data-target="tab-description">Detail 🤖</button>
+            ${proj.showCode !== false ? `<button class="detail-tab" data-target="tab-code">Kode & Skema 💻</button>` : ''}
+          </div>
+
+          <!-- Isi Tab -->
+          <div class="portfolio-detail-tab-contents">
             
+            <!-- Tab 1: Ringkasan -->
+            <div class="detail-tab-content active" id="tab-overview">
+              <p class="portfolio-detail-short-desc">${escapeHtml(getShortDesc(proj))}</p>
+              
+              <div class="portfolio-specs-grid">
+                <div class="spec-item">
+                  <span class="spec-label">🛠️ Komponen Utama:</span>
+                  <p class="spec-value">${escapeHtml(proj.components)}</p>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">⚡ Spesifikasi Fisik/Fitur:</span>
+                  <p class="spec-value">${escapeHtml(proj.specs)}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Deskripsi Lengkap (Tanpa menyertakan gambar markdown yang sudah ada di slider) -->
+            <div class="detail-tab-content" id="tab-description">
+              <div class="dialog-rich-text">
+                ${parseMarkdownToHtml((proj.content || '*Belum ada deskripsi mendalam.*').replace(/!\[.*?\]\(.*?\)/g, ''))}
+              </div>
+            </div>
+
+            <!-- Tab 3: Kode & Skema -->
             ${proj.showCode !== false ? `
-            <h3 style="margin-top: 3.5rem; margin-bottom: 1.25rem; color: var(--accent-cyan); font-size: 1.5rem;">Skema & Kode Pemrograman Robot 💻</h3>
-            
-            <div class="code-viewer-container open" style="display: block; max-height: none; margin-top: 1.5rem; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden; position: relative;">
-              <button class="btn-copy-code" id="btn-copy-arduino-code" title="Salin Kode Arduino">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span>Salin</span>
-              </button>
-              <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
-                <button class="viewer-tab active" data-tab="code" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Arduino C++ Code</button>
-                <button class="viewer-tab" data-tab="schematic" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 1rem; color: var(--text-muted); font-family: var(--font-heading); font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition-smooth);">Fisik & Koneksi</button>
-              </div>
-              <div class="viewer-content active" data-content="code" style="padding: 1.5rem; display: block; overflow-y: auto;">
-                <pre style="margin: 0;"><code style="font-family: monospace; font-size: 0.9rem; color: #a7f3d0; white-space: pre-wrap;">${escapeHtml(proj.code)}</code></pre>
-              </div>
-              <div class="viewer-content" data-content="schematic" style="padding: 1.5rem; display: none; overflow-y: auto;">
-                <div class="schematic-mock" style="display: flex; gap: 1.5rem; align-items: flex-start;">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="1.5" style="flex-shrink: 0;">
-                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                    <circle cx="8" cy="10" r="2" />
-                    <circle cx="16" cy="10" r="2" />
-                    <path d="M6 16h12" />
+            <div class="detail-tab-content" id="tab-code">
+              <div class="code-viewer-container open" style="margin-top: 0; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden; position: relative;">
+                <button class="btn-copy-code" id="btn-copy-arduino-code" title="Salin Kode Arduino">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                   </svg>
-                  <div class="schematic-info">
-                    <h4 style="color: var(--accent-yellow); font-size: 1.15rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
-                    <div style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-                      ${parseMarkdownToHtml(proj.schematic || '*Belum ada rincian koneksi fisik.*')}
+                  <span>Salin</span>
+                </button>
+                <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
+                  <button class="viewer-tab active" data-tab="code">Arduino C++ Code</button>
+                  <button class="viewer-tab" data-tab="schematic">Fisik & Koneksi</button>
+                </div>
+                <div class="viewer-content active" data-content="code" style="padding: 1rem; max-height: 280px; overflow-y: auto;">
+                  <pre style="margin: 0;"><code style="font-family: monospace; font-size: 0.85rem; color: #a7f3d0; white-space: pre-wrap;">${escapeHtml(proj.code)}</code></pre>
+                </div>
+                <div class="viewer-content" data-content="schematic" style="padding: 1rem; max-height: 280px; overflow-y: auto; display: none;">
+                  <div class="schematic-mock" style="display: flex; gap: 1rem; align-items: flex-start;">
+                    <div class="schematic-info">
+                      <h4 style="color: var(--accent-yellow); font-size: 1rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
+                      <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.55;">
+                        ${parseMarkdownToHtml(proj.schematic || '*Belum ada rincian koneksi fisik.*')}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             ` : ''}
+
           </div>
         </div>
+
       </div>
     </div>
   `;
@@ -574,7 +637,7 @@ function openPortfolioDetail(id) {
     });
   }
 
-  // Bind copy code button click & tab show/hide
+  // Bind copy code button click
   const copyBtn = detailDialog.querySelector('#btn-copy-arduino-code');
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
@@ -609,24 +672,41 @@ function openPortfolioDetail(id) {
   }
 
   // Bind tab click event inside full-screen modal
-  const tabs = detailDialog.querySelectorAll('.viewer-tab');
-  tabs.forEach(tab => {
+  const detailTabs = detailDialog.querySelectorAll('.detail-tab');
+  const tabContents = detailDialog.querySelectorAll('.detail-tab-content');
+  detailTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      playRoboticSound('click');
+      const target = tab.getAttribute('data-target');
+      
+      detailTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      tabContents.forEach(content => {
+        if (content.id === target) {
+          content.style.display = 'block';
+        } else {
+          content.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  const viewerTabs = detailDialog.querySelectorAll('.viewer-tab');
+  const viewerContents = detailDialog.querySelectorAll('.viewer-content');
+  viewerTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       playRoboticSound('click');
       const targetTab = tab.getAttribute('data-tab');
       
-      tabs.forEach(t => t.classList.remove('active'));
+      viewerTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-
+      
       if (copyBtn) {
-        if (targetTab === 'code') {
-          copyBtn.style.display = 'inline-flex';
-        } else {
-          copyBtn.style.display = 'none';
-        }
+        copyBtn.style.display = targetTab === 'code' ? 'inline-flex' : 'none';
       }
       
-      detailDialog.querySelectorAll('.viewer-content').forEach(content => {
+      viewerContents.forEach(content => {
         if (content.getAttribute('data-content') === targetTab) {
           content.style.display = 'block';
         } else {
@@ -636,8 +716,48 @@ function openPortfolioDetail(id) {
     });
   });
 
-  // Generate interactive Table of Contents
-  generateTableOfContents(detailDialog);
+  // Slider controls if multiple images exist
+  if (allImages.length > 1) {
+    let currentSlide = 0;
+    const slides = detailDialog.querySelectorAll('.portfolio-slide');
+    const dots = detailDialog.querySelectorAll('.portfolio-dot');
+    
+    function showSlide(index) {
+      if (index >= slides.length) currentSlide = 0;
+      else if (index < 0) currentSlide = slides.length - 1;
+      else currentSlide = index;
+      
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+    
+    const prevBtn = detailDialog.querySelector('.prev-btn');
+    const nextBtn = detailDialog.querySelector('.next-btn');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        playRoboticSound('click');
+        showSlide(currentSlide - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        playRoboticSound('click');
+        showSlide(currentSlide + 1);
+      });
+    }
+    
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        playRoboticSound('click');
+        const idx = parseInt(dot.getAttribute('data-index'));
+        showSlide(idx);
+      });
+    });
+  }
 
   detailDialog.showModal();
   document.body.classList.add('dialog-open');

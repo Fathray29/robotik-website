@@ -127,6 +127,7 @@ export const INITIAL_PORTFOLIO_PROJECTS = [
     creators: "Tim R&D Kelas XI (Rian, Maya, Dika)",
     components: "Arduino Mega, Driver L298N, Modul Bluetooth HC-05, Motor DC High-Torque 12v, Solenoid Kicker",
     specs: "Kecepatan 1.2 m/s, Daya Tendang Solenoid 24v, Kontrol Nirkabel via Android App",
+    description: "Robot striker berkekuatan tinggi yang dikendalikan secara nirkabel melalui aplikasi Android untuk kompetisi robot sepak bola.",
     headerImage: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?q=80&w=1200&auto=format&fit=crop",
     content: `### Robot Striker Lapangan Hijau
 
@@ -161,6 +162,7 @@ Robot ini berhasil memenangkan juara 2 kategori robot olahraga tingkat regional 
     creators: "Tim IoT Kelas XII (Sarah, Kevin)",
     components: "ESP32, Sensor Kelembaban Tanah Soil Moisture v1.2, Sensor Suhu/Kelembaban DHT22, Pompa Air 5v Mini, LCD I2C",
     specs: "Konektivitas WiFi, Pengiriman Data Telemetri via MQTT, Kontrol Pompa Air Otomatis & Manual",
+    description: "Sistem monitoring pertanian cerdas berbasis IoT untuk memantau kelembaban tanah dan menyiram tanaman secara otomatis.",
     headerImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop",
     content: `### Solusi IoT Pertanian Cerdas
 
@@ -194,6 +196,7 @@ Sangat ideal untuk diaplikasikan pada perkebunan hidroponik sekolah, menghemat k
     creators: "Tim Kompetisi Kelas X & XI (Adit, Budi, Riri)",
     components: "Arduino Nano, Sensor Ultrasonik HC-SR04 3 unit, Sensor Gyroscope MPU6050, Motor Driver TB6612FNG, Micro Metal Gearmotor",
     specs: "Algoritma Pemecah Labirin Flood-Fill, Sensor Akurasi Jarak 1mm, Kecepatan Putar 90 Derajat Instan",
+    description: "Robot otonom yang dirancang untuk bernavigasi mandiri memecahkan labirin berliku menggunakan algoritma Flood-Fill.",
     headerImage: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop",
     content: `### Robot Otonom Pemecah Labirin
 

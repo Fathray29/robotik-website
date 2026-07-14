@@ -2057,7 +2057,7 @@ body.light-theme .data-table td,
 
 .portfolio-gallery-content {
   width: 100%;
-  transform: translateY(62px); /* Menyembunyikan deskripsi di awal */
+  transform: translateY(0); /* Teks selalu terlihat */
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }

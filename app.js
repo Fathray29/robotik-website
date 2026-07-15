@@ -566,17 +566,6 @@ function openPortfolioDetail(id) {
             <!-- Tab 1: Ringkasan -->
             <div class="detail-tab-content active" id="tab-overview">
               <p class="portfolio-detail-short-desc">${escapeHtml(getShortDesc(proj))}</p>
-              
-              <div class="portfolio-specs-grid">
-                <div class="spec-item">
-                  <span class="spec-label">🛠️ Komponen Utama:</span>
-                  <p class="spec-value">${escapeHtml(proj.components)}</p>
-                </div>
-                <div class="spec-item">
-                  <span class="spec-label">⚡ Spesifikasi Fisik/Fitur:</span>
-                  <p class="spec-value">${escapeHtml(proj.specs)}</p>
-                </div>
-              </div>
             </div>
 
           </div>

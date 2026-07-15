@@ -414,8 +414,6 @@ function setupCmsTabs() {
         const catVal = document.getElementById('edit-category').value;
         const statVal = document.getElementById('edit-status').value;
         const creatVal = document.getElementById('edit-creators').value.trim();
-        const compVal = document.getElementById('edit-components').value.trim();
-        const specVal = document.getElementById('edit-specs').value.trim();
         const descVal = document.getElementById('edit-description').value.trim();
         const headerImgVal = document.getElementById('edit-header-image').value.trim();
 
@@ -427,8 +425,6 @@ function setupCmsTabs() {
             category: catVal,
             status: statVal,
             creators: creatVal,
-            components: compVal,
-            specs: specVal,
             description: descVal,
             headerImage: headerImgVal
           });
@@ -440,8 +436,6 @@ function setupCmsTabs() {
             proj.category = catVal;
             proj.status = statVal;
             proj.creators = creatVal;
-            proj.components = compVal;
-            proj.specs = specVal;
             proj.description = descVal;
             proj.headerImage = headerImgVal;
           }
@@ -1084,14 +1078,6 @@ function openCmsEditor(type, mode, id = null) {
           <div class="img-upload-preview" id="edit-image-preview"></div>
           <span id="upload-status" style="font-size: 0.8rem; color: var(--text-muted);"></span>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="edit-components">Komponen Utama <span>*</span></label>
-        <input type="text" id="edit-components" class="input-control" required value="${proj.components || ''}" placeholder="Arduino Mega, Sensor ultrasonik, driver servo...">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="edit-specs">Spesifikasi Fisik/Fitur <span>*</span></label>
-        <input type="text" id="edit-specs" class="input-control" required value="${proj.specs || ''}" placeholder="Kecepatan maks, jangkauan sensor, kapasitas daya...">
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-description">Deskripsi Singkat Proyek <span>*</span></label>

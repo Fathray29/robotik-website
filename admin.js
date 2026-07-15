@@ -628,12 +628,12 @@ function renderAdminApplicantsTable() {
     }
 
     const showLihatKartu = applicant.status === 'Diterima' 
-      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">Lihat Kartu 🪪</button>`
+      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">Lihat Kartu</button>`
       : '';
 
     const showActions = applicant.status === 'Pending'
-      ? `<button class="btn btn-yellow btn-sm btn-approve" data-id="${applicant.id}">Setujui 🟢</button>
-         <button class="btn btn-secondary btn-sm btn-reject" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Tolak 🔴</button>`
+      ? `<button class="btn btn-yellow btn-sm btn-approve" data-id="${applicant.id}">Setujui</button>
+         <button class="btn btn-secondary btn-sm btn-reject" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Tolak</button>`
       : '';
 
     return `
@@ -646,10 +646,10 @@ function renderAdminApplicantsTable() {
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
         <td>
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">Detail 🔍</button>
+            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">Detail</button>
             ${showActions}
             ${showLihatKartu}
-            <button class="btn btn-secondary btn-sm btn-delete" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.2); color: rgba(255,255,255,0.4);" aria-label="Hapus Pendaftar">Hapus 🗑️</button>
+            <button class="btn btn-secondary btn-sm btn-delete" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.2); color: rgba(255,255,255,0.4);" aria-label="Hapus Pendaftar">Hapus</button>
           </div>
         </td>
       </tr>
@@ -1003,7 +1003,7 @@ function openCmsEditor(type, mode, id = null) {
         <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
           <input type="text" id="edit-header-image" class="input-control" value="${article.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
           <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
-            Pilih File 📁
+            Pilih File
           </button>
         </div>
         <input type="file" id="edit-image-file" accept="image/*" style="display: none;">
@@ -1077,7 +1077,7 @@ function openCmsEditor(type, mode, id = null) {
         <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
           <input type="text" id="edit-header-image" class="input-control" value="${proj.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
           <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
-            Pilih File 📁
+            Pilih File
           </button>
         </div>
         <input type="file" id="edit-image-file" accept="image/*" style="display: none;">
@@ -1450,7 +1450,7 @@ function setupLocalImageUploader(item) {
       if (!file) return;
 
       if (uploadStatus) {
-        uploadStatus.textContent = 'Mengompres gambar... 🔄';
+        uploadStatus.textContent = 'Mengompres gambar...';
         uploadStatus.style.color = 'var(--accent-cyan)';
       }
 
@@ -1465,7 +1465,7 @@ function setupLocalImageUploader(item) {
         }
         if (uploadStatus) {
           const sizeInKb = Math.round((base64Url.length * 3) / 4 / 1024);
-          uploadStatus.textContent = `Sukses dikompres! ⚡ (${sizeInKb} KB)`;
+          uploadStatus.textContent = `Sukses dikompres! (${sizeInKb} KB)`;
           uploadStatus.style.color = '#34D399';
         }
         playRoboticSound('success');
@@ -1605,7 +1605,7 @@ function setupAdminRegSettings() {
       }
 
       playRoboticSound('success');
-      await customAlert('Konfigurasi pendaftaran berhasil disimpan! 💾');
+      await customAlert('Konfigurasi pendaftaran berhasil disimpan!');
     });
   }
 
@@ -1952,7 +1952,7 @@ function setupLandingPageCMS() {
     saveData('robotik_landing', state.landingData);
 
     playRoboticSound('success');
-    await customAlert('Konten landing page & footer berhasil diperbarui! 🚀');
+    await customAlert('Konten landing page & footer berhasil diperbarui!');
   });
 }
 

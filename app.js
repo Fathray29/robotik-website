@@ -558,8 +558,6 @@ function openPortfolioDetail(id) {
           <!-- Tab Navigasi -->
           <div class="portfolio-detail-tabs">
             <button class="detail-tab active" data-target="tab-overview">Ringkasan 🔍</button>
-            <button class="detail-tab" data-target="tab-description">Detail 🤖</button>
-            ${proj.showCode !== false ? `<button class="detail-tab" data-target="tab-code">Kode & Skema 💻</button>` : ''}
           </div>
 
           <!-- Isi Tab -->
@@ -580,45 +578,6 @@ function openPortfolioDetail(id) {
                 </div>
               </div>
             </div>
-
-            <!-- Tab 2: Deskripsi Lengkap (Tanpa menyertakan gambar markdown yang sudah ada di slider) -->
-            <div class="detail-tab-content" id="tab-description">
-              <div class="dialog-rich-text">
-                ${parseMarkdownToHtml((proj.content || '*Belum ada deskripsi mendalam.*').replace(/!\[.*?\]\(.*?\)/g, ''))}
-              </div>
-            </div>
-
-            <!-- Tab 3: Kode & Skema -->
-            ${proj.showCode !== false ? `
-            <div class="detail-tab-content" id="tab-code">
-              <div class="code-viewer-container open" style="margin-top: 0; background: #020617; border: 1px solid var(--border-glass); border-radius: var(--radius-md); overflow: hidden; position: relative;">
-                <button class="btn-copy-code" id="btn-copy-arduino-code" title="Salin Kode Arduino">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                  </svg>
-                  <span>Salin</span>
-                </button>
-                <div class="viewer-tabs" style="display: flex; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
-                  <button class="viewer-tab active" data-tab="code">Arduino C++ Code</button>
-                  <button class="viewer-tab" data-tab="schematic">Fisik & Koneksi</button>
-                </div>
-                <div class="viewer-content active" data-content="code" style="padding: 1rem; max-height: 280px; overflow-y: auto;">
-                  <pre style="margin: 0;"><code style="font-family: monospace; font-size: 0.85rem; color: #a7f3d0; white-space: pre-wrap;">${escapeHtml(proj.code)}</code></pre>
-                </div>
-                <div class="viewer-content" data-content="schematic" style="padding: 1rem; max-height: 280px; overflow-y: auto; display: none;">
-                  <div class="schematic-mock" style="display: flex; gap: 1rem; align-items: flex-start;">
-                    <div class="schematic-info">
-                      <h4 style="color: var(--accent-yellow); font-size: 1rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Diagram Sirkuit & Pinout Robot</h4>
-                      <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.55;">
-                        ${parseMarkdownToHtml(proj.schematic || '*Belum ada rincian koneksi fisik.*')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            ` : ''}
 
           </div>
         </div>

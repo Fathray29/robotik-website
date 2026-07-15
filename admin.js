@@ -417,11 +417,7 @@ function setupCmsTabs() {
         const compVal = document.getElementById('edit-components').value.trim();
         const specVal = document.getElementById('edit-specs').value.trim();
         const descVal = document.getElementById('edit-description').value.trim();
-        const codeVal = document.getElementById('edit-code').value.trim();
-        const conVal = document.getElementById('edit-content').value.trim();
         const headerImgVal = document.getElementById('edit-header-image').value.trim();
-        const schematicVal = document.getElementById('edit-schematic').value.trim();
-        const showCodeVal = document.getElementById('edit-show-code').value === 'true';
 
         if (mode === 'add') {
           const newId = state.portfolioProjects.length > 0 ? Math.max(...state.portfolioProjects.map(p => p.id)) + 1 : 1;
@@ -434,11 +430,7 @@ function setupCmsTabs() {
             components: compVal,
             specs: specVal,
             description: descVal,
-            code: codeVal,
-            content: conVal,
-            headerImage: headerImgVal,
-            schematic: schematicVal,
-            showCode: showCodeVal
+            headerImage: headerImgVal
           });
         } else if (mode === 'edit') {
           const id = editorForm.getAttribute('data-id');
@@ -451,11 +443,7 @@ function setupCmsTabs() {
             proj.components = compVal;
             proj.specs = specVal;
             proj.description = descVal;
-            proj.code = codeVal;
-            proj.content = conVal;
             proj.headerImage = headerImgVal;
-            proj.schematic = schematicVal;
-            proj.showCode = showCodeVal;
           }
         }
 
@@ -482,7 +470,14 @@ function renderDashboardOverview() {
   
   const recentTable = document.getElementById('overview-recent-applicants-table');
   if (recentTable) {
-    const recent = state.applicants.filter(a => a.status === 'Pending').slice(0, 5);
+    const recent = state.applicants
+      .filter(a => a.status === 'Pending')
+      .sort((a, b) => {
+        const dateA = new Date(a.tanggalDaftar || a.timestamp || 0).getTime();
+        const dateB = new Date(b.tanggalDaftar || b.timestamp || 0).getTime();
+        return dateB - dateA; // descending: pendaftar terbaru di atas
+      })
+      .slice(0, 5);
     if (recent.length === 0) {
       recentTable.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding:1rem;">Tidak ada pendaftar baru yang menunggu persetujuan.</td></tr>';
     } else {
@@ -608,6 +603,10 @@ function renderAdminApplicantsTable() {
     const matchesSearch = (app.nama || '').toLowerCase().includes(query) || (app.id || '').toLowerCase().includes(query);
     const matchesStatus = statusFilter === 'ALL' || app.status === statusFilter;
     return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    const dateA = new Date(a.tanggalDaftar || a.timestamp || 0).getTime();
+    const dateB = new Date(b.tanggalDaftar || b.timestamp || 0).getTime();
+    return dateA - dateB; // ascending: pendaftar pertama di atas
   });
 
   if (filtered.length === 0) {
@@ -1097,46 +1096,6 @@ function openCmsEditor(type, mode, id = null) {
       <div class="form-group">
         <label class="form-label" for="edit-description">Deskripsi Singkat Proyek <span>*</span></label>
         <textarea id="edit-description" class="input-control" required placeholder="Tulis ringkasan singkat 1-2 kalimat untuk kartu galeri..." style="height: 60px;">${proj.description || ''}</textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Deskripsi Lengkap Proyek <span>*</span></label>
-        <div class="rich-editor-container" style="border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); overflow: hidden; background: rgba(15, 23, 42, 0.3);">
-          <div class="rich-toolbar" style="display: flex; gap: 0.35rem; background: rgba(2, 6, 23, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="bold" title="Tebal" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; font-weight: bold;">B</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="italic" title="Miring" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; font-style: italic;">I</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="underline" title="Garis Bawah" style="padding: 0.35rem 0.6rem; min-height: auto; font-size: 0.8rem; text-decoration: underline;">U</button>
-            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="h3" title="Heading H3" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">H3</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="h4" title="Heading H4" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">H4</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="formatBlock" data-val="p" title="Paragraf Biasa" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">P</button>
-            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertUnorderedList" title="Daftar Bulatan" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">• List</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertOrderedList" title="Daftar Angka" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">1. List</button>
-            <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🔗 Tautan</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">📷 Foto</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🧹 Bersih</button>
-          </div>
-          <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 220px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-light); margin-bottom: 0; min-height: 200px;">
-            ${parseMarkdownToHtml(proj.content || '')}
-          </div>
-          <input type="hidden" id="edit-content" value="${escapeHtml(proj.content || '')}">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="edit-code">Kode Arduino C++ <span>*</span></label>
-        <textarea id="edit-code" class="input-control" required placeholder="Tempel kode pemrograman robot Arduino Anda di sini..." style="font-family: monospace; font-size: 0.9rem; height: 180px;">${proj.code || ''}</textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="edit-schematic">Fisik & Koneksi (Format Markdown) <span>*</span></label>
-        <textarea id="edit-schematic" class="input-control" required placeholder="Tulis rincian koneksi kabel, pinout mikroprosesor, baterai, dll..." style="font-family: monospace; font-size: 0.9rem; height: 120px;">${proj.schematic || ''}</textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="edit-show-code">Tampilkan Kode & Koneksi Ke Publik? <span>*</span></label>
-        <select id="edit-show-code" class="input-control" required style="appearance: auto;">
-          <option value="true" ${proj.showCode !== false ? 'selected' : ''}>Ya, Tampilkan</option>
-          <option value="false" ${proj.showCode === false ? 'selected' : ''}>Tidak, Sembunyikan</option>
-        </select>
       </div>
     `;
   }

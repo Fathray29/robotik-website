@@ -133,7 +133,7 @@ function setupCmsAuthentication() {
         playRoboticSound('error');
         const secs = Math.ceil(rateLimit.remainingMs / 1000);
         if (errMsg) {
-          errMsg.textContent = `Terlalu banyak percobaan gagal. Coba lagi dalam ${secs} detik.`;
+          errMsg.textContent = `⚠️ Terlalu banyak percobaan gagal. Coba lagi dalam ${secs} detik.`;
           errMsg.style.display = 'block';
         }
         return;
@@ -145,7 +145,7 @@ function setupCmsAuthentication() {
       if (!state.auth) {
         playRoboticSound('error');
         if (errMsg) {
-          errMsg.textContent = 'Firebase Authentication tidak aktif atau gagal diinisialisasi.';
+          errMsg.textContent = '❌ Firebase Authentication tidak aktif atau gagal diinisialisasi.';
           errMsg.style.display = 'block';
         }
         return;
@@ -163,7 +163,7 @@ function setupCmsAuthentication() {
         if (errMsg) {
           if (result.isLocked) {
             const secs = Math.ceil(result.lockoutMs / 1000);
-            errMsg.textContent = `Akun terkunci selama ${secs} detik setelah ${result.attempts} percobaan gagal.`;
+            errMsg.textContent = `🔒 Akun terkunci selama ${secs} detik setelah ${result.attempts} percobaan gagal.`;
             startLockoutCountdown();
           } else {
             const remaining = 5 - result.attempts;
@@ -216,7 +216,7 @@ function startLockoutCountdown() {
     }
     const secs = Math.ceil(rl.remainingMs / 1000);
     if (errMsg) {
-      errMsg.textContent = `Akun terkunci. Coba lagi dalam ${secs} detik...`;
+      errMsg.textContent = `🔒 Akun terkunci. Coba lagi dalam ${secs} detik...`;
       errMsg.style.display = 'block';
     }
     if (submitBtn) submitBtn.disabled = true;
@@ -628,12 +628,12 @@ function renderAdminApplicantsTable() {
     }
 
     const showLihatKartu = applicant.status === 'Diterima' 
-      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">Lihat Kartu</button>`
+      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">Lihat Kartu 🪪</button>`
       : '';
 
     const showActions = applicant.status === 'Pending'
-      ? `<button class="btn btn-yellow btn-sm btn-approve" data-id="${applicant.id}">Setujui</button>
-         <button class="btn btn-secondary btn-sm btn-reject" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Tolak</button>`
+      ? `<button class="btn btn-yellow btn-sm btn-approve" data-id="${applicant.id}">Setujui 🟢</button>
+         <button class="btn btn-secondary btn-sm btn-reject" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Tolak 🔴</button>`
       : '';
 
     return `
@@ -646,10 +646,10 @@ function renderAdminApplicantsTable() {
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
         <td>
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">Detail</button>
+            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">Detail 🔍</button>
             ${showActions}
             ${showLihatKartu}
-            <button class="btn btn-secondary btn-sm btn-delete" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.2); color: rgba(255,255,255,0.4);" aria-label="Hapus Pendaftar">Hapus</button>
+            <button class="btn btn-secondary btn-sm btn-delete" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.2); color: rgba(255,255,255,0.4);" aria-label="Hapus Pendaftar">Hapus 🗑️</button>
           </div>
         </td>
       </tr>
@@ -716,7 +716,7 @@ function approveApplicant(id) {
           saveData('robotik_applicants', state.applicants);
           renderAdminApplicantsTable();
           renderDashboardOverview();
-          await customAlert('Gagal menyetujui di Cloud Database: ' + err.message);
+          await customAlert('⚠️ Gagal menyetujui di Cloud Database: ' + err.message);
         });
     }
   }
@@ -741,7 +741,7 @@ function rejectApplicant(id) {
           saveData('robotik_applicants', state.applicants);
           renderAdminApplicantsTable();
           renderDashboardOverview();
-          await customAlert('Gagal menolak di Cloud Database: ' + err.message);
+          await customAlert('⚠️ Gagal menolak di Cloud Database: ' + err.message);
         });
     }
   }
@@ -767,7 +767,7 @@ async function deleteApplicant(id) {
             saveData('robotik_applicants', state.applicants);
             renderAdminApplicantsTable();
             renderDashboardOverview();
-            await customAlert('Gagal menghapus di Cloud Database: ' + err.message);
+            await customAlert('⚠️ Gagal menghapus di Cloud Database: ' + err.message);
           });
       }
     } else {
@@ -1003,7 +1003,7 @@ function openCmsEditor(type, mode, id = null) {
         <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
           <input type="text" id="edit-header-image" class="input-control" value="${article.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
           <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
-            Pilih File
+            Pilih File 📁
           </button>
         </div>
         <input type="file" id="edit-image-file" accept="image/*" style="display: none;">
@@ -1031,9 +1031,9 @@ function openCmsEditor(type, mode, id = null) {
             <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertUnorderedList" title="Daftar Bulatan" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">• List</button>
             <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertOrderedList" title="Daftar Angka" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">1. List</button>
             <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Tautan</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Foto</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Bersih</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🔗 Tautan</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">📷 Foto</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🧹 Bersih</button>
           </div>
           <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 250px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-light); margin-bottom: 0; min-height: 200px;">
             ${parseMarkdownToHtml(article.content || '')}
@@ -1077,7 +1077,7 @@ function openCmsEditor(type, mode, id = null) {
         <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
           <input type="text" id="edit-header-image" class="input-control" value="${proj.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
           <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
-            Pilih File
+            Pilih File 📁
           </button>
         </div>
         <input type="file" id="edit-image-file" accept="image/*" style="display: none;">
@@ -1113,9 +1113,9 @@ function openCmsEditor(type, mode, id = null) {
             <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertUnorderedList" title="Daftar Bulatan" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">• List</button>
             <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertOrderedList" title="Daftar Angka" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">1. List</button>
             <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Tautan</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Foto</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Bersih</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🔗 Tautan</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">📷 Foto</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🧹 Bersih</button>
           </div>
           <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 220px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-light); margin-bottom: 0; min-height: 200px;">
             ${parseMarkdownToHtml(proj.content || '')}
@@ -1450,7 +1450,7 @@ function setupLocalImageUploader(item) {
       if (!file) return;
 
       if (uploadStatus) {
-        uploadStatus.textContent = 'Mengompres gambar...';
+        uploadStatus.textContent = 'Mengompres gambar... 🔄';
         uploadStatus.style.color = 'var(--accent-cyan)';
       }
 
@@ -1465,7 +1465,7 @@ function setupLocalImageUploader(item) {
         }
         if (uploadStatus) {
           const sizeInKb = Math.round((base64Url.length * 3) / 4 / 1024);
-          uploadStatus.textContent = `Sukses dikompres! (${sizeInKb} KB)`;
+          uploadStatus.textContent = `Sukses dikompres! ⚡ (${sizeInKb} KB)`;
           uploadStatus.style.color = '#34D399';
         }
         playRoboticSound('success');
@@ -1605,7 +1605,7 @@ function setupAdminRegSettings() {
       }
 
       playRoboticSound('success');
-      await customAlert('Konfigurasi pendaftaran berhasil disimpan!');
+      await customAlert('Konfigurasi pendaftaran berhasil disimpan! 💾');
     });
   }
 
@@ -1952,7 +1952,7 @@ function setupLandingPageCMS() {
     saveData('robotik_landing', state.landingData);
 
     playRoboticSound('success');
-    await customAlert('Konten landing page & footer berhasil diperbarui!');
+    await customAlert('Konten landing page & footer berhasil diperbarui! 🚀');
   });
 }
 

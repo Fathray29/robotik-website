@@ -1124,6 +1124,7 @@ function setupRegistrationForm() {
         laptop: document.querySelector('input[name="laptop"]:checked')?.value || 'Tidak',
         motivasi: motivasiSiswa,
         tanggalDaftar: new Date().toISOString().split('T')[0],
+        timestamp: new Date().toISOString(),
         status: 'Pending',
         customAnswers: customAnswers
       };

@@ -450,6 +450,23 @@ function setupCmsTabs() {
   }
 }
 
+function formatRegistrationDate(applicant) {
+  if (applicant && applicant.timestamp) {
+    const dateObj = new Date(applicant.timestamp);
+    if (!isNaN(dateObj.getTime())) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const yyyy = dateObj.getFullYear();
+      const mm = pad(dateObj.getMonth() + 1);
+      const dd = pad(dateObj.getDate());
+      const hh = pad(dateObj.getHours());
+      const min = pad(dateObj.getMinutes());
+      const ss = pad(dateObj.getSeconds());
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+    }
+  }
+  return (applicant && applicant.tanggalDaftar) ? applicant.tanggalDaftar : '-';
+}
+
 // --- DASHBOARD OVERVIEW ---
 function renderDashboardOverview() {
   const totalApps = document.getElementById('stat-total-applicants');
@@ -467,11 +484,10 @@ function renderDashboardOverview() {
     const recent = state.applicants
       .filter(a => a.status === 'Pending')
       .sort((a, b) => {
-        const dateA = new Date(a.tanggalDaftar || a.timestamp || 0).getTime();
-        const dateB = new Date(b.tanggalDaftar || b.timestamp || 0).getTime();
+        const dateA = new Date(a.timestamp || a.tanggalDaftar || 0).getTime();
+        const dateB = new Date(b.timestamp || b.tanggalDaftar || 0).getTime();
         return dateB - dateA; // descending: pendaftar terbaru di atas
-      })
-      .slice(0, 5);
+      });
     if (recent.length === 0) {
       recentTable.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding:1rem;">Tidak ada pendaftar baru yang menunggu persetujuan.</td></tr>';
     } else {
@@ -598,8 +614,8 @@ function renderAdminApplicantsTable() {
     const matchesStatus = statusFilter === 'ALL' || app.status === statusFilter;
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
-    const dateA = new Date(a.tanggalDaftar || a.timestamp || 0).getTime();
-    const dateB = new Date(b.tanggalDaftar || b.timestamp || 0).getTime();
+    const dateA = new Date(a.timestamp || a.tanggalDaftar || 0).getTime();
+    const dateB = new Date(b.timestamp || b.tanggalDaftar || 0).getTime();
     return dateA - dateB; // ascending: pendaftar pertama di atas
   });
 
@@ -635,7 +651,7 @@ function renderAdminApplicantsTable() {
         <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(applicant.nama)}</td>
         <td>${escapeHtml(applicant.kelas)}</td>
         <td>${escapeHtml(applicant.noHp)}</td>
-        <td>${escapeHtml(applicant.tanggalDaftar)}</td>
+        <td>${escapeHtml(formatRegistrationDate(applicant))}</td>
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
         <td>
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -840,7 +856,7 @@ function viewApplicantDetail(id) {
       <span style="color: var(--text-white);">${escapeHtml(applicant.laptop || 'Tidak')}</span>
 
       <span style="color: var(--text-muted);">Tanggal Daftar:</span>
-      <span style="color: var(--text-white);">${escapeHtml(applicant.tanggalDaftar)}</span>
+      <span style="color: var(--text-white);">${escapeHtml(formatRegistrationDate(applicant))}</span>
 
       <span style="color: var(--text-muted);">Status:</span>
       <span><span class="status-badge ${statusClass}">${statusLabel}</span></span>

@@ -413,7 +413,12 @@ export function migrateLandingData(data) {
 export const state = {
   blogArticles: loadData('robotik_blog', INITIAL_BLOG_ARTICLES),
   portfolioProjects: loadData('robotik_portfolio', INITIAL_PORTFOLIO_PROJECTS),
-  applicants: loadData('robotik_applicants', INITIAL_APPLICANTS),
+  applicants: loadData('robotik_applicants', INITIAL_APPLICANTS).map(app => {
+    if (!app.timestamp && app.tanggalDaftar) {
+      app.timestamp = `${app.tanggalDaftar}T00:00:00.000Z`;
+    }
+    return app;
+  }),
   regSettings: loadData('robotik_reg_settings', INITIAL_REG_SETTINGS),
   landingData: loadData('robotik_landing', INITIAL_LANDING_DATA),
   soundMuted: false,
@@ -437,7 +442,12 @@ export async function syncApplicantsFromFirestore() {
     snapshot.forEach(doc => {
       fetched.push(doc.data());
     });
-    state.applicants = fetched;
+    state.applicants = fetched.map(app => {
+      if (!app.timestamp && app.tanggalDaftar) {
+        app.timestamp = `${app.tanggalDaftar}T00:00:00.000Z`;
+      }
+      return app;
+    });
     saveData('robotik_applicants', state.applicants, false);
     console.log(`Cloud sync completed: ${state.applicants.length} applicants loaded.`);
   } catch (e) {
@@ -528,7 +538,12 @@ export function setupRealTimeApplicantsSync(onUpdateCallback) {
       snapshot.forEach(doc => {
         fetched.push(doc.data());
       });
-      state.applicants = fetched;
+      state.applicants = fetched.map(app => {
+        if (!app.timestamp && app.tanggalDaftar) {
+          app.timestamp = `${app.tanggalDaftar}T00:00:00.000Z`;
+        }
+        return app;
+      });
       saveData('robotik_applicants', state.applicants, false);
       console.log("Real-time applicants updated from Cloud Firestore!");
       

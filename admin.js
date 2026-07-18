@@ -519,9 +519,13 @@ function renderAdminBlogTable() {
       <td><span class="table-badge">${escapeHtml(article.category.toUpperCase())}</span></td>
       <td>${escapeHtml(article.date || '-')}</td>
       <td>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn btn-outline-cyan btn-sm edit-blog-btn" data-id="${article.id}" aria-label="Ubah Artikel">Edit</button>
-          <button class="btn btn-secondary btn-sm delete-blog-btn" data-id="${article.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;" aria-label="Hapus Artikel">Hapus</button>
+        <div class="action-buttons-group">
+          <button class="btn btn-outline-cyan btn-sm edit-blog-btn" data-id="${article.id}" aria-label="Ubah Artikel" title="Ubah Artikel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button class="btn btn-delete-action btn-sm delete-blog-btn" data-id="${article.id}" aria-label="Hapus Artikel" title="Hapus Artikel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
         </div>
       </td>
     </tr>
@@ -567,9 +571,13 @@ function renderAdminPortfolioTable() {
       <td><span class="table-badge">${escapeHtml(proj.category.toUpperCase())}</span></td>
       <td><span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span></td>
       <td>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn btn-outline-cyan btn-sm edit-portfolio-btn" data-id="${proj.id}" aria-label="Ubah Proyek">Edit</button>
-          <button class="btn btn-secondary btn-sm delete-portfolio-btn" data-id="${proj.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;" aria-label="Hapus Proyek">Hapus</button>
+        <div class="action-buttons-group">
+          <button class="btn btn-outline-cyan btn-sm edit-portfolio-btn" data-id="${proj.id}" aria-label="Ubah Proyek" title="Ubah Proyek">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button class="btn btn-delete-action btn-sm delete-portfolio-btn" data-id="${proj.id}" aria-label="Hapus Proyek" title="Hapus Proyek">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
         </div>
       </td>
     </tr>
@@ -637,20 +645,17 @@ function renderAdminApplicantsTable() {
     }
 
     const showLihatKartu = applicant.status === 'Diterima' 
-      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="13" y2="16"></line></svg>
-          <span>Lihat Kartu</span>
+      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}" title="Lihat Kartu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="13" y2="16"></line></svg>
          </button>`
       : '';
 
     const showActions = applicant.status === 'Pending'
-      ? `<button class="btn btn-green btn-sm btn-approve" data-id="${applicant.id}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <span>Setujui</span>
+      ? `<button class="btn btn-green btn-sm btn-approve" data-id="${applicant.id}" title="Setujui">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
          </button>
-         <button class="btn btn-reject btn-sm btn-reject" data-id="${applicant.id}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          <span>Tolak</span>
+         <button class="btn btn-reject btn-sm btn-reject" data-id="${applicant.id}" title="Tolak">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
          </button>`
       : '';
 
@@ -664,15 +669,13 @@ function renderAdminApplicantsTable() {
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
         <td style="width: 1%; white-space: nowrap;">
           <div class="action-buttons-group">
-            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-              <span>Detail</span>
+            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}" title="Detail">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
             ${showActions}
             ${showLihatKartu}
-            <button class="btn btn-delete-action btn-sm btn-delete" data-id="${applicant.id}" aria-label="Hapus Pendaftar">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-              <span>Hapus</span>
+            <button class="btn btn-delete-action btn-sm btn-delete" data-id="${applicant.id}" aria-label="Hapus Pendaftar" title="Hapus">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
         </td>
@@ -1815,9 +1818,13 @@ function renderAdminQuestionsTable() {
         </span>
       </td>
       <td>
-        <div style="display: flex; gap: 0.5rem;">
-          <button type="button" class="btn btn-outline-cyan btn-sm edit-question-btn" data-id="${q.id}">Edit</button>
-          <button type="button" class="btn btn-secondary btn-sm delete-question-btn" data-id="${q.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Hapus</button>
+        <div class="action-buttons-group">
+          <button type="button" class="btn btn-outline-cyan btn-sm edit-question-btn" data-id="${q.id}" title="Edit Pertanyaan">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button type="button" class="btn btn-delete-action btn-sm delete-question-btn" data-id="${q.id}" title="Hapus Pertanyaan">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
         </div>
       </td>
     </tr>
@@ -2008,9 +2015,13 @@ function renderAdminAchievementsTable() {
       <td style="color: var(--text-muted);">${escapeHtml(ach.organizer || '')}</td>
       <td style="text-align: center;"><span class="table-badge" style="background: rgba(6,182,212,0.1); color: var(--accent-cyan); font-weight: bold; border: 1px solid rgba(6,182,212,0.2);">${escapeHtml(ach.year || '')}</span></td>
       <td style="text-align: center;">
-        <div style="display: flex; gap: 0.5rem; justify-content: center;">
-          <button type="button" class="btn btn-outline-cyan btn-sm edit-ach-btn" data-index="${idx}">Edit</button>
-          <button type="button" class="btn btn-secondary btn-sm delete-ach-btn" data-index="${idx}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Hapus</button>
+        <div class="action-buttons-group" style="justify-content: center;">
+          <button type="button" class="btn btn-outline-cyan btn-sm edit-ach-btn" data-index="${idx}" title="Edit Prestasi">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button type="button" class="btn btn-delete-action btn-sm delete-ach-btn" data-index="${idx}" title="Hapus Prestasi">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
         </div>
       </td>
     </tr>

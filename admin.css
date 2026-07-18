@@ -784,6 +784,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  white-space: nowrap;
 }
 .table-badge { background: rgba(255,255,255,0.08); color: var(--text-main); border: 1px solid var(--border-light); }
 

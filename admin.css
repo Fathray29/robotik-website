@@ -383,6 +383,46 @@ body {
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* Table Action Buttons Layout & Custom Colors */
+.action-buttons-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.btn-green {
+  background: var(--accent-green);
+  color: #022c22;
+}
+.btn-green:hover {
+  background: #34d399;
+  color: #022c22;
+  box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
+}
+
+.btn-reject {
+  background: transparent;
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: #fb7185;
+}
+.btn-reject:hover {
+  background: rgba(244, 63, 94, 0.1);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+}
+
+.btn-delete-action {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.45);
+}
+.btn-delete-action:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+}
+
 /* ---------------------------------------------------
    DASHBOARD LAYOUT
    --------------------------------------------------- */

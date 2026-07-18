@@ -637,12 +637,21 @@ function renderAdminApplicantsTable() {
     }
 
     const showLihatKartu = applicant.status === 'Diterima' 
-      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">Lihat Kartu</button>`
+      ? `<button class="btn btn-outline-cyan btn-sm btn-view-card" data-id="${applicant.id}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="13" y2="16"></line></svg>
+          <span>Lihat Kartu</span>
+         </button>`
       : '';
 
     const showActions = applicant.status === 'Pending'
-      ? `<button class="btn btn-yellow btn-sm btn-approve" data-id="${applicant.id}">Setujui</button>
-         <button class="btn btn-secondary btn-sm btn-reject" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.3); color: #FB7185;">Tolak</button>`
+      ? `<button class="btn btn-green btn-sm btn-approve" data-id="${applicant.id}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Setujui</span>
+         </button>
+         <button class="btn btn-reject btn-sm btn-reject" data-id="${applicant.id}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>Tolak</span>
+         </button>`
       : '';
 
     return `
@@ -653,12 +662,18 @@ function renderAdminApplicantsTable() {
         <td>${escapeHtml(applicant.noHp)}</td>
         <td>${escapeHtml(formatRegistrationDate(applicant))}</td>
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-        <td>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">Detail</button>
+        <td style="width: 1%; white-space: nowrap;">
+          <div class="action-buttons-group">
+            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <span>Detail</span>
+            </button>
             ${showActions}
             ${showLihatKartu}
-            <button class="btn btn-secondary btn-sm btn-delete" data-id="${applicant.id}" style="border-color: rgba(244,63,94,0.2); color: rgba(255,255,255,0.4);" aria-label="Hapus Pendaftar">Hapus</button>
+            <button class="btn btn-delete-action btn-sm btn-delete" data-id="${applicant.id}" aria-label="Hapus Pendaftar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>Hapus</span>
+            </button>
           </div>
         </td>
       </tr>
@@ -706,53 +721,67 @@ function renderAdminApplicantsTable() {
   });
 }
 
-function approveApplicant(id) {
-  const idx = state.applicants.findIndex(a => a.id === id);
-  if (idx !== -1) {
-    const originalStatus = state.applicants[idx].status;
-    playRoboticSound('success');
-    state.applicants[idx].status = 'Diterima';
-    saveData('robotik_applicants', state.applicants);
-    renderAdminApplicantsTable();
-    renderDashboardOverview();
+async function approveApplicant(id) {
+  const applicant = state.applicants.find(a => a.id === id);
+  if (!applicant) return;
 
-    if (state.useFirebase) {
-      state.db.collection('applicants').doc(id).update({ status: 'Diterima' })
-        .then(() => console.log("Applicant approval successfully synced to Cloud Firestore!"))
-        .catch(async (err) => {
-          console.error("Firestore approval sync failed:", err);
-          state.applicants[idx].status = originalStatus;
-          saveData('robotik_applicants', state.applicants);
-          renderAdminApplicantsTable();
-          renderDashboardOverview();
-          await customAlert('⚠️ Gagal menyetujui di Cloud Database: ' + err.message);
-        });
+  if (await customConfirm(`Apakah Anda yakin ingin menyetujui pendaftaran ${applicant.nama}?`)) {
+    const idx = state.applicants.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      const originalStatus = state.applicants[idx].status;
+      playRoboticSound('success');
+      state.applicants[idx].status = 'Diterima';
+      saveData('robotik_applicants', state.applicants);
+      renderAdminApplicantsTable();
+      renderDashboardOverview();
+
+      if (state.useFirebase) {
+        state.db.collection('applicants').doc(id).update({ status: 'Diterima' })
+          .then(() => console.log("Applicant approval successfully synced to Cloud Firestore!"))
+          .catch(async (err) => {
+            console.error("Firestore approval sync failed:", err);
+            state.applicants[idx].status = originalStatus;
+            saveData('robotik_applicants', state.applicants);
+            renderAdminApplicantsTable();
+            renderDashboardOverview();
+            await customAlert('⚠️ Gagal menyetujui di Cloud Database: ' + err.message);
+          });
+      }
     }
+  } else {
+    playRoboticSound('error');
   }
 }
 
-function rejectApplicant(id) {
-  const idx = state.applicants.findIndex(a => a.id === id);
-  if (idx !== -1) {
-    const originalStatus = state.applicants[idx].status;
-    playRoboticSound('error');
-    state.applicants[idx].status = 'Ditolak';
-    saveData('robotik_applicants', state.applicants);
-    renderAdminApplicantsTable();
-    renderDashboardOverview();
+async function rejectApplicant(id) {
+  const applicant = state.applicants.find(a => a.id === id);
+  if (!applicant) return;
 
-    if (state.useFirebase) {
-      state.db.collection('applicants').doc(id).update({ status: 'Ditolak' })
-        .then(() => console.log("Applicant rejection successfully synced to Cloud Firestore!"))
-        .catch(async (err) => {
-          console.error("Firestore rejection sync failed:", err);
-          state.applicants[idx].status = originalStatus;
-          saveData('robotik_applicants', state.applicants);
-          renderAdminApplicantsTable();
-          renderDashboardOverview();
-          await customAlert('⚠️ Gagal menolak di Cloud Database: ' + err.message);
-        });
+  if (await customConfirm(`Apakah Anda yakin ingin menolak pendaftaran ${applicant.nama}?`)) {
+    const idx = state.applicants.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      const originalStatus = state.applicants[idx].status;
+      playRoboticSound('error');
+      state.applicants[idx].status = 'Ditolak';
+      saveData('robotik_applicants', state.applicants);
+      renderAdminApplicantsTable();
+      renderDashboardOverview();
+
+      if (state.useFirebase) {
+        state.db.collection('applicants').doc(id).update({ status: 'Ditolak' })
+          .then(() => console.log("Applicant rejection successfully synced to Cloud Firestore!"))
+          .catch(async (err) => {
+            console.error("Firestore rejection sync failed:", err);
+            state.applicants[idx].status = originalStatus;
+            saveData('robotik_applicants', state.applicants);
+            renderAdminApplicantsTable();
+            renderDashboardOverview();
+            await customAlert('⚠️ Gagal menolak di Cloud Database: ' + err.message);
+          });
+      }
     }
+  } else {
+    playRoboticSound('error');
   }
 }
 
@@ -807,7 +836,8 @@ function viewApplicantDetail(id) {
   if (!applicant) return;
 
   const container = document.getElementById('admin-applicant-detail-container');
-  if (!container) return;
+  const footer = document.getElementById('admin-detail-dialog-footer');
+  if (!container || !footer) return;
 
   let statusClass = 'status-pending';
   let statusLabel = 'Menunggu Persetujuan';
@@ -870,8 +900,53 @@ function viewApplicantDetail(id) {
     ${customQuestionsHtml}
   `;
 
+  // Render footer actions dynamically based on applicant status
+  let actionButtonsHtml = '';
+  if (applicant.status === 'Pending') {
+    actionButtonsHtml = `
+      <button type="button" class="btn btn-green dialog-approve-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Setujui</span>
+      </button>
+      <button type="button" class="btn btn-reject dialog-reject-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <span>Tolak</span>
+      </button>
+    `;
+  }
+
+  footer.innerHTML = `
+    ${actionButtonsHtml}
+    <button type="button" class="btn btn-cyan dialog-close-btn">Tutup</button>
+  `;
+
   const dialog = document.getElementById('admin-applicant-detail-dialog');
   if (dialog) {
+    // Add event listeners for dynamic buttons inside footer
+    const closeBtn = footer.querySelector('.dialog-close-btn');
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        playRoboticSound('click');
+        dialog.close();
+      };
+    }
+
+    const approveBtn = footer.querySelector('.dialog-approve-btn');
+    if (approveBtn) {
+      approveBtn.onclick = async () => {
+        dialog.close();
+        await approveApplicant(id);
+      };
+    }
+
+    const rejectBtn = footer.querySelector('.dialog-reject-btn');
+    if (rejectBtn) {
+      rejectBtn.onclick = async () => {
+        dialog.close();
+        await rejectApplicant(id);
+      };
+    }
+
     playRoboticSound('click');
     dialog.showModal();
     document.body.classList.add('dialog-open');

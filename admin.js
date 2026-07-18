@@ -29,6 +29,10 @@ import {
 // --- CMS AUTHENTICATION ---
 let lockoutTimerInterval = null;
 
+// --- CMS TABLE SORTING STATE ---
+let currentSortField = 'timestamp';
+let currentSortOrder = 'asc';
+
 function setupCmsAuthentication() {
   const loginForm = document.getElementById('cms-login-form');
   const logoutBtn = document.getElementById('btn-admin-logout');
@@ -617,14 +621,45 @@ function renderAdminApplicantsTable() {
   const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
   const statusFilter = statusSelect ? statusSelect.value : 'ALL';
 
+  // Update sort icons dynamically
+  const fields = ['nama', 'kelas', 'timestamp', 'status'];
+  fields.forEach(field => {
+    const iconEl = document.getElementById(`sort-icon-${field}`);
+    if (iconEl) {
+      if (currentSortField === field) {
+        iconEl.innerHTML = currentSortOrder === 'asc' 
+          ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="3.5" style="vertical-align: middle; margin-left: 4px; display: inline-block;"><polyline points="18 15 12 9 6 15"></polyline></svg>`
+          : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="3.5" style="vertical-align: middle; margin-left: 4px; display: inline-block;"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+      } else {
+        iconEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="vertical-align: middle; margin-left: 4px; opacity: 0.3; display: inline-block;"><polyline points="7 15 12 20 17 15"></polyline><polyline points="7 9 12 4 17 9"></polyline></svg>`;
+      }
+    }
+  });
+
   const filtered = state.applicants.filter(app => {
     const matchesSearch = (app.nama || '').toLowerCase().includes(query) || (app.id || '').toLowerCase().includes(query);
     const matchesStatus = statusFilter === 'ALL' || app.status === statusFilter;
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
-    const dateA = new Date(a.timestamp || a.tanggalDaftar || 0).getTime();
-    const dateB = new Date(b.timestamp || b.tanggalDaftar || 0).getTime();
-    return dateA - dateB; // ascending: pendaftar pertama di atas
+    let comparison = 0;
+    if (currentSortField === 'nama') {
+      const valA = (a.nama || '').toString().toLowerCase();
+      const valB = (b.nama || '').toString().toLowerCase();
+      comparison = valA.localeCompare(valB);
+    } else if (currentSortField === 'kelas') {
+      const valA = (a.kelas || '').toString().toLowerCase();
+      const valB = (b.kelas || '').toString().toLowerCase();
+      comparison = valA.localeCompare(valB);
+    } else if (currentSortField === 'status') {
+      const valA = (a.status || '').toString().toLowerCase();
+      const valB = (b.status || '').toString().toLowerCase();
+      comparison = valA.localeCompare(valB);
+    } else { // default or 'timestamp'
+      const dateA = new Date(a.timestamp || a.tanggalDaftar || 0).getTime();
+      const dateB = new Date(b.timestamp || b.tanggalDaftar || 0).getTime();
+      comparison = dateA - dateB;
+    }
+    return currentSortOrder === 'asc' ? comparison : -comparison;
   });
 
   if (filtered.length === 0) {
@@ -1551,6 +1586,24 @@ function setupApplicantsFilterAndExport() {
       await exportApplicantsToCsv();
     });
   }
+
+  // Set up sorting header click event listeners
+  document.querySelectorAll('th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const field = th.getAttribute('data-sort');
+      if (currentSortField === field) {
+        currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortField = field;
+        currentSortOrder = 'asc';
+      }
+      playRoboticSound('click');
+      renderAdminApplicantsTable();
+    });
+    th.addEventListener('mouseenter', () => {
+      playRoboticSound('hover');
+    });
+  });
 }
 
 async function exportApplicantsToCsv() {

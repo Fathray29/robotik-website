@@ -742,6 +742,21 @@ body {
   white-space: nowrap;
 }
 
+.data-table th.sortable {
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.data-table th.sortable:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-white);
+}
+
+.sort-icon {
+  display: inline-block;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+}
+
 .data-table tbody tr {
   transition: background 0.2s ease;
 }

@@ -2273,7 +2273,19 @@ function updateCountdownTimer() {
         const pad = (num) => String(num).padStart(2, '0');
 
         if (announcementBar && showHeaderCountdown) {
-          announcementBar.innerHTML = `⏰ Pendaftaran Motechart Robotik akan ditutup dalam: <strong>${pad(days)}</strong> Hari <strong>${pad(hours)}</strong> Jam <strong>${pad(minutes)}</strong> Menit <strong>${pad(seconds)}</strong> Detik <a href="#pendaftaran" class="bar-cta">Daftar Sekarang &rarr;</a>`;
+          announcementBar.innerHTML = `
+            <div class="announcement-bar-content">
+              <span class="bar-title-desktop">⏰ Pendaftaran Motechart Robotik akan ditutup dalam:</span>
+              <span class="bar-title-mobile">⏰ Sisa Waktu:</span>
+              <span class="bar-timer">
+                <strong>${pad(days)}</strong><span class="bar-unit">d</span>
+                <strong>${pad(hours)}</strong><span class="bar-unit">h</span>
+                <strong>${pad(minutes)}</strong><span class="bar-unit">m</span>
+                <strong>${pad(seconds)}</strong><span class="bar-unit">s</span>
+              </span>
+              <a href="#pendaftaran" class="bar-cta">Daftar Sekarang &rarr;</a>
+            </div>
+          `;
         }
       }
 
@@ -2395,7 +2407,18 @@ function updateCountdownTimer() {
         const pad = (num) => String(num).padStart(2, '0');
 
         if (announcementBar && showHeaderCountdown) {
-          announcementBar.innerHTML = `🚀 Pendaftaran Motechart Robotik dibuka dalam: <strong>${pad(days)}</strong> Hari <strong>${pad(hours)}</strong> Jam <strong>${pad(minutes)}</strong> Menit <strong>${pad(seconds)}</strong> Detik`;
+          announcementBar.innerHTML = `
+            <div class="announcement-bar-content">
+              <span class="bar-title-desktop">🚀 Pendaftaran Motechart Robotik dibuka dalam:</span>
+              <span class="bar-title-mobile">🚀 Buka dalam:</span>
+              <span class="bar-timer">
+                <strong>${pad(days)}</strong><span class="bar-unit">d</span>
+                <strong>${pad(hours)}</strong><span class="bar-unit">h</span>
+                <strong>${pad(minutes)}</strong><span class="bar-unit">m</span>
+                <strong>${pad(seconds)}</strong><span class="bar-unit">s</span>
+              </span>
+            </div>
+          `;
         }
 
         if (daysEl) daysEl.textContent = pad(days);

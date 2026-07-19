@@ -328,8 +328,12 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="reg-countdown-target">Target Waktu Pembukaan</label>
-                  <input type="datetime-local" id="reg-countdown-target" class="input-control">
+                  <label class="form-label" id="reg-countdown-label">Target Waktu Pembukaan</label>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <input type="date" id="reg-countdown-date" class="input-control" style="flex: 2; min-width: 150px;">
+                    <select id="reg-countdown-hour" class="input-control" style="flex: 1; min-width: 70px;"></select>
+                    <select id="reg-countdown-minute" class="input-control" style="flex: 1; min-width: 70px;"></select>
+                  </div>
                 </div>
                 <div class="form-group" style="margin-top: 1.25rem;">
                   <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">

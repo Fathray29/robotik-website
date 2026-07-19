@@ -308,10 +308,43 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
   z-index: 101;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.announcement-bar-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.bar-title-desktop {
+  display: inline;
+}
+
+.bar-title-mobile {
+  display: none;
+}
+
+.announcement-bar .bar-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  font-weight: 600;
+}
+
+.announcement-bar .bar-unit {
+  color: rgba(248, 113, 113, 0.6);
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-right: 0.2rem;
+}
+
+.announcement-bar.opening .bar-unit {
+  color: rgba(6, 182, 212, 0.6);
 }
 
 .announcement-bar.opening {
@@ -325,10 +358,9 @@ a {
   font-size: 0.95rem;
   font-weight: 700;
   background: rgba(2, 6, 23, 0.8);
-  padding: 0.15rem 0.35rem;
+  padding: 0.1rem 0.3rem;
   border-radius: var(--radius-xs);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  margin: 0 0.1rem;
   box-shadow: inset 0 0 5px rgba(239, 68, 68, 0.1);
   text-shadow: 0 0 5px rgba(255, 74, 74, 0.4);
 }
@@ -344,17 +376,41 @@ a {
   color: var(--accent-yellow);
   text-decoration: none;
   font-weight: 700;
-  margin-left: 0.65rem;
+  margin-left: 0.4rem;
   border-bottom: 1px dashed var(--accent-yellow);
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .announcement-bar .bar-cta:hover {
   color: var(--text-white);
   border-bottom-color: var(--text-white);
+}
+
+@media (max-width: 640px) {
+  .bar-title-desktop {
+    display: none;
+  }
+  .bar-title-mobile {
+    display: inline;
+  }
+  .announcement-bar {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  .announcement-bar strong {
+    font-size: 0.85rem;
+    padding: 0.05rem 0.2rem;
+  }
+  .announcement-bar .bar-unit {
+    font-size: 0.65rem;
+    margin-right: 0.1rem;
+  }
+  .announcement-bar .bar-cta {
+    margin-left: 0.2rem;
+  }
 }
 
 /* --- HEADER / NAVIGATION BAR --- */

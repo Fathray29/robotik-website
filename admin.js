@@ -1702,29 +1702,60 @@ async function exportApplicantsToCsv() {
 // --- REGISTRATION SETTINGS CMS ---
 function setupAdminRegSettings() {
   const statusToggle = document.getElementById('reg-status-toggle');
-  const countdownTargetInput = document.getElementById('reg-countdown-target');
+  const dateInput = document.getElementById('reg-countdown-date');
+  const hourSelect = document.getElementById('reg-countdown-hour');
+  const minuteSelect = document.getElementById('reg-countdown-minute');
   const regSettingsForm = document.getElementById('cms-reg-settings-form');
 
   if (regSettingsForm) {
-    if (statusToggle && countdownTargetInput) {
+    // Populate hour options (00 to 23)
+    if (hourSelect && hourSelect.children.length === 0) {
+      for (let i = 0; i < 24; i++) {
+        const val = String(i).padStart(2, '0');
+        hourSelect.add(new Option(val, val));
+      }
+    }
+
+    // Populate minute options (00 to 59)
+    if (minuteSelect && minuteSelect.children.length === 0) {
+      for (let i = 0; i < 60; i++) {
+        const val = String(i).padStart(2, '0');
+        minuteSelect.add(new Option(val, val));
+      }
+    }
+
+    if (statusToggle && dateInput) {
       const toggleCountdownTargetVisibility = () => {
-        const targetGroup = countdownTargetInput.closest('.form-group');
-        const targetLabel = targetGroup ? targetGroup.querySelector('.form-label') : null;
-        
+        const targetGroup = dateInput.closest('.form-group');
+        const targetLabel = document.getElementById('reg-countdown-label');
+        const inputs = [dateInput, hourSelect, minuteSelect];
+
         if (statusToggle.value === 'closed') {
           if (targetGroup) targetGroup.style.display = 'block';
           if (targetLabel) targetLabel.textContent = 'Target Waktu Pembukaan';
-          countdownTargetInput.disabled = false;
-          countdownTargetInput.required = true;
+          inputs.forEach(inp => {
+            if (inp) {
+              inp.disabled = false;
+              inp.required = true;
+            }
+          });
         } else if (statusToggle.value === 'open') {
           if (targetGroup) targetGroup.style.display = 'block';
           if (targetLabel) targetLabel.textContent = 'Target Waktu Penutupan (Opsional)';
-          countdownTargetInput.disabled = false;
-          countdownTargetInput.required = false;
+          inputs.forEach(inp => {
+            if (inp) {
+              inp.disabled = false;
+              inp.required = false;
+            }
+          });
         } else {
           if (targetGroup) targetGroup.style.display = 'none';
-          countdownTargetInput.disabled = true;
-          countdownTargetInput.required = false;
+          inputs.forEach(inp => {
+            if (inp) {
+              inp.disabled = true;
+              inp.required = false;
+            }
+          });
         }
       };
       statusToggle.addEventListener('change', toggleCountdownTargetVisibility);
@@ -1734,7 +1765,14 @@ function setupAdminRegSettings() {
       e.preventDefault();
       state.regSettings.isOpen = (statusToggle.value === 'open');
       state.regSettings.status = statusToggle.value;
-      state.regSettings.countdownTarget = countdownTargetInput.value;
+
+      if (dateInput && hourSelect && minuteSelect) {
+        if (dateInput.value) {
+          state.regSettings.countdownTarget = `${dateInput.value}T${hourSelect.value}:${minuteSelect.value}`;
+        } else {
+          state.regSettings.countdownTarget = '';
+        }
+      }
 
       const headerCountdownToggle = document.getElementById('reg-header-countdown-toggle');
       if (headerCountdownToggle) {
@@ -1879,33 +1917,58 @@ function setupAdminRegSettings() {
 
 function populateRegSettingsCmsInputs() {
   const statusToggle = document.getElementById('reg-status-toggle');
-  const countdownTargetInput = document.getElementById('reg-countdown-target');
+  const dateInput = document.getElementById('reg-countdown-date');
+  const hourSelect = document.getElementById('reg-countdown-hour');
+  const minuteSelect = document.getElementById('reg-countdown-minute');
 
-  if (statusToggle && countdownTargetInput) {
+  if (statusToggle && dateInput && hourSelect && minuteSelect) {
     statusToggle.value = state.regSettings.status || (state.regSettings.isOpen ? 'open' : 'closed');
     let targetVal = state.regSettings.countdownTarget || '';
-    if (targetVal.includes('T') && targetVal.length > 16) {
-      targetVal = targetVal.slice(0, 16);
+    if (targetVal.includes('T')) {
+      const parts = targetVal.split('T');
+      dateInput.value = parts[0];
+      const timeParts = parts[1].split(':');
+      if (timeParts.length >= 2) {
+        hourSelect.value = timeParts[0];
+        minuteSelect.value = timeParts[1];
+      }
+    } else {
+      dateInput.value = '';
+      hourSelect.value = '00';
+      minuteSelect.value = '00';
     }
-    countdownTargetInput.value = targetVal;
 
     // Initial visibility check
-    const targetGroup = countdownTargetInput.closest('.form-group');
-    const targetLabel = targetGroup ? targetGroup.querySelector('.form-label') : null;
+    const targetGroup = dateInput.closest('.form-group');
+    const targetLabel = document.getElementById('reg-countdown-label');
+    const inputs = [dateInput, hourSelect, minuteSelect];
+
     if (statusToggle.value === 'closed') {
       if (targetGroup) targetGroup.style.display = 'block';
       if (targetLabel) targetLabel.textContent = 'Target Waktu Pembukaan';
-      countdownTargetInput.disabled = false;
-      countdownTargetInput.required = true;
+      inputs.forEach(inp => {
+        if (inp) {
+          inp.disabled = false;
+          inp.required = true;
+        }
+      });
     } else if (statusToggle.value === 'open') {
       if (targetGroup) targetGroup.style.display = 'block';
       if (targetLabel) targetLabel.textContent = 'Target Waktu Penutupan (Opsional)';
-      countdownTargetInput.disabled = false;
-      countdownTargetInput.required = false;
+      inputs.forEach(inp => {
+        if (inp) {
+          inp.disabled = false;
+          inp.required = false;
+        }
+      });
     } else {
       if (targetGroup) targetGroup.style.display = 'none';
-      countdownTargetInput.disabled = true;
-      countdownTargetInput.required = false;
+      inputs.forEach(inp => {
+        if (inp) {
+          inp.disabled = true;
+          inp.required = false;
+        }
+      });
     }
   }
 

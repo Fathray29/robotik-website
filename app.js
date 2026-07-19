@@ -2227,39 +2227,40 @@ function updateCountdownTimer() {
     const diff = targetTime - now;
 
     if (!isNaN(targetTime) && diff > 0) {
-      // Show closing countdown banner in form
       if (formContainer && successCard && successCard.style.display !== 'block') {
         let closingBanner = document.getElementById('reg-closing-countdown-banner');
         if (!closingBanner) {
           closingBanner = document.createElement('div');
           closingBanner.id = 'reg-closing-countdown-banner';
           closingBanner.className = 'glass-card';
-          closingBanner.style.padding = '1.25rem';
-          closingBanner.style.marginBottom = '1.5rem';
+          closingBanner.style.padding = '1.5rem';
+          closingBanner.style.marginBottom = '2rem';
           closingBanner.style.textAlign = 'center';
-          closingBanner.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-          closingBanner.style.background = 'rgba(239, 68, 68, 0.05)';
+          closingBanner.style.border = '1px solid rgba(239, 68, 68, 0.25)';
+          closingBanner.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(2, 6, 23, 0.4) 100%)';
+          closingBanner.style.boxShadow = '0 8px 32px 0 rgba(239, 68, 68, 0.05), inset 0 0 12px rgba(239, 68, 68, 0.05)';
+          closingBanner.style.borderRadius = 'var(--radius-lg)';
           closingBanner.innerHTML = `
-            <p style="color: #F87171; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.75rem; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-              <span class="pulsing-radar-icon" style="width: 10px; height: 10px; border-color: #EF4444; background: #EF4444; margin: 0; display: inline-block;"></span>
-              WAKTU PENDAFTARAN TERSISA:
+            <p style="color: #F87171; font-weight: 700; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 0.1em; display: flex; align-items: center; justify-content: center; gap: 0.6rem; text-shadow: 0 0 8px rgba(248, 113, 113, 0.25);">
+              <span class="pulsing-radar-icon" style="width: 10px; height: 10px; border-color: #EF4444; background: #EF4444; margin: 0; display: inline-block; box-shadow: 0 0 10px #EF4444;"></span>
+              WAKTU PENDAFTARAN TERSISA
             </p>
-            <div class="countdown-grid mini" id="reg-closing-countdown-timer" style="margin: 0 auto; width: fit-content; display: flex; gap: 0.75rem; justify-content: center;">
-              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
-                <span class="countdown-val" id="closing-cd-days" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
-                <span class="countdown-unit" style="font-size: 0.6rem;">Hari</span>
+            <div class="countdown-grid mini" id="reg-closing-countdown-timer" style="margin: 0 auto !important; width: fit-content; display: grid !important; grid-template-columns: repeat(4, 75px) !important; gap: 0.6rem !important; justify-content: center;">
+              <div class="countdown-item" style="padding: 0.65rem 0.5rem !important; background: rgba(2, 6, 23, 0.75) !important; border: 1px solid rgba(239, 68, 68, 0.3) !important; border-radius: var(--radius-md) !important; box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.05) !important;">
+                <span class="countdown-val" id="closing-cd-days" style="font-size: 1.5rem !important; color: #FF4A4A !important; text-shadow: 0 0 12px rgba(255, 74, 74, 0.6) !important; font-weight: 800 !important; line-height: 1.1 !important; margin-bottom: 0.2rem !important;">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem !important; color: rgba(248, 113, 113, 0.6) !important; font-weight: 700 !important;">Hari</span>
               </div>
-              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
-                <span class="countdown-val" id="closing-cd-hours" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
-                <span class="countdown-unit" style="font-size: 0.6rem;">Jam</span>
+              <div class="countdown-item" style="padding: 0.65rem 0.5rem !important; background: rgba(2, 6, 23, 0.75) !important; border: 1px solid rgba(239, 68, 68, 0.3) !important; border-radius: var(--radius-md) !important; box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.05) !important;">
+                <span class="countdown-val" id="closing-cd-hours" style="font-size: 1.5rem !important; color: #FF4A4A !important; text-shadow: 0 0 12px rgba(255, 74, 74, 0.6) !important; font-weight: 800 !important; line-height: 1.1 !important; margin-bottom: 0.2rem !important;">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem !important; color: rgba(248, 113, 113, 0.6) !important; font-weight: 700 !important;">Jam</span>
               </div>
-              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
-                <span class="countdown-val" id="closing-cd-minutes" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
-                <span class="countdown-unit" style="font-size: 0.6rem;">Menit</span>
+              <div class="countdown-item" style="padding: 0.65rem 0.5rem !important; background: rgba(2, 6, 23, 0.75) !important; border: 1px solid rgba(239, 68, 68, 0.3) !important; border-radius: var(--radius-md) !important; box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.05) !important;">
+                <span class="countdown-val" id="closing-cd-minutes" style="font-size: 1.5rem !important; color: #FF4A4A !important; text-shadow: 0 0 12px rgba(255, 74, 74, 0.6) !important; font-weight: 800 !important; line-height: 1.1 !important; margin-bottom: 0.2rem !important;">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem !important; color: rgba(248, 113, 113, 0.6) !important; font-weight: 700 !important;">Menit</span>
               </div>
-              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
-                <span class="countdown-val" id="closing-cd-seconds" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
-                <span class="countdown-unit" style="font-size: 0.6rem;">Detik</span>
+              <div class="countdown-item" style="padding: 0.65rem 0.5rem !important; background: rgba(2, 6, 23, 0.75) !important; border: 1px solid rgba(239, 68, 68, 0.3) !important; border-radius: var(--radius-md) !important; box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.05) !important;">
+                <span class="countdown-val" id="closing-cd-seconds" style="font-size: 1.5rem !important; color: #FF4A4A !important; text-shadow: 0 0 12px rgba(255, 74, 74, 0.6) !important; font-weight: 800 !important; line-height: 1.1 !important; margin-bottom: 0.2rem !important;">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem !important; color: rgba(248, 113, 113, 0.6) !important; font-weight: 700 !important;">Detik</span>
               </div>
             </div>
           `;

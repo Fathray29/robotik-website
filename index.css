@@ -1968,7 +1968,16 @@ body.light-theme .data-table td,
   overflow: hidden;
   box-shadow: var(--shadow-card);
   transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
+}
+
+.portfolio-gallery-item.winner-card {
+  border: 1.5px solid rgba(234, 179, 8, 0.45);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 10px rgba(234, 179, 8, 0.15);
+}
+
+.portfolio-gallery-item.winner-card:hover {
+  border-color: rgba(234, 179, 8, 0.85);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(234, 179, 8, 0.45);
 }
 
 .portfolio-gallery-item:hover {
@@ -2037,6 +2046,25 @@ body.light-theme .data-table td,
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+.portfolio-award-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 5px rgba(234, 179, 8, 0.3);
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.1);
 }
 
 .portfolio-award-banner {

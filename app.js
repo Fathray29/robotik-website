@@ -454,19 +454,18 @@ function renderPublicPortfolio() {
     const safeCardImage = sanitizeUrl(proj.headerImage || '');
     const shortDesc = getShortDesc(proj);
     const badgeStatus = proj.status === 'Selesai' ? 'success' : 'progress';
+    const winnerClass = proj.isWinner ? 'winner-card' : '';
     
     return `
-      <div class="portfolio-gallery-item" data-id="${proj.id}">
+      <div class="portfolio-gallery-item ${winnerClass}">
         <img src="${escapeHtml(safeCardImage)}" alt="${escapeHtml(proj.title)}" class="portfolio-gallery-img" loading="lazy">
         <div class="portfolio-gallery-badges">
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
-            ${proj.isWinner ? `<span class="portfolio-badge badge-winner" title="${escapeHtml(proj.awardName)}">🏆 Winner</span>` : ''}
-          </div>
+          <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
           <span class="portfolio-category-badge">${escapeHtml(proj.category.toUpperCase())}</span>
         </div>
         <div class="portfolio-gallery-overlay">
           <div class="portfolio-gallery-content">
+            ${proj.isWinner ? `<div class="portfolio-award-tag">🏆 ${escapeHtml(proj.awardName)}</div>` : ''}
             <h3 class="portfolio-gallery-title">${escapeHtml(proj.title)}</h3>
             <div class="portfolio-gallery-creators">Oleh: <strong>${escapeHtml(proj.creators)}</strong></div>
             <p class="portfolio-gallery-desc">${escapeHtml(shortDesc)}</p>
@@ -476,12 +475,8 @@ function renderPublicPortfolio() {
     `;
   }).join('');
 
-  // Bind click event for detail dialog
+  // Bind hover sound
   portfolioContainer.querySelectorAll('.portfolio-gallery-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const id = item.getAttribute('data-id');
-      openPortfolioDetail(id);
-    });
     item.addEventListener('mouseenter', () => playRoboticSound('hover'));
   });
 }

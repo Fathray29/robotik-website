@@ -1736,6 +1736,11 @@ function setupAdminRegSettings() {
       state.regSettings.status = statusToggle.value;
       state.regSettings.countdownTarget = countdownTargetInput.value;
 
+      const headerCountdownToggle = document.getElementById('reg-header-countdown-toggle');
+      if (headerCountdownToggle) {
+        state.regSettings.showHeaderCountdown = headerCountdownToggle.checked;
+      }
+
       const waTitleInput = document.getElementById('reg-wa-title');
       const waDescInput = document.getElementById('reg-wa-desc');
       const waLinkInput = document.getElementById('reg-wa-link');
@@ -1902,6 +1907,11 @@ function populateRegSettingsCmsInputs() {
       countdownTargetInput.disabled = true;
       countdownTargetInput.required = false;
     }
+  }
+
+  const headerCountdownToggle = document.getElementById('reg-header-countdown-toggle');
+  if (headerCountdownToggle) {
+    headerCountdownToggle.checked = (state.regSettings.showHeaderCountdown !== false);
   }
 
   const waTitleInput = document.getElementById('reg-wa-title');

@@ -234,6 +234,7 @@ export const INITIAL_APPLICANTS = [];
 export const INITIAL_REG_SETTINGS = {
   isOpen: true,
   status: 'open',
+  showHeaderCountdown: true,
   countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
   customQuestions: [
     {

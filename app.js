@@ -2189,13 +2189,12 @@ function updateCountdownTimer() {
   const closedMessageEl = document.getElementById('reg-closed-message');
   const countdownTimerEl = document.getElementById('reg-countdown-timer');
   
-  const heroCountdownContainer = document.getElementById('hero-countdown-container');
-  const heroCountdownMessage = document.getElementById('hero-countdown-message');
   const heroDaftarBtn = document.getElementById('hero-btn-daftar');
   
   const announcementBar = document.getElementById('top-announcement-bar');
 
   const currentStatus = regSettings.status || (regSettings.isOpen ? 'open' : 'closed');
+  const showHeaderCountdown = (regSettings.showHeaderCountdown !== false);
 
   // Ensure top announcement bar navigation listener is attached once
   if (announcementBar && !announcementBar.dataset.listenerAttached) {
@@ -2241,24 +2240,15 @@ function updateCountdownTimer() {
     const diff = targetTime - now;
 
     if (!isNaN(targetTime) && diff > 0) {
-      // Show countdown on Top Announcement Bar
+      // Show countdown on Top Announcement Bar if enabled
       if (announcementBar) {
-        announcementBar.style.display = 'flex';
-        announcementBar.classList.remove('opening');
-      }
-
-      // Show countdown on Landing Page Hero
-      if (heroCountdownContainer) {
-        heroCountdownContainer.style.display = 'block';
-        if (heroCountdownMessage) {
-          heroCountdownMessage.innerHTML = `⚠️ PENDAFTARAN DITUTUP DALAM:`;
+        if (showHeaderCountdown) {
+          announcementBar.style.display = 'flex';
+          announcementBar.classList.remove('opening');
+        } else {
+          announcementBar.style.display = 'none';
         }
       }
-
-      const hDaysEl = document.getElementById('hero-cd-days');
-      const hHoursEl = document.getElementById('hero-cd-hours');
-      const hMinutesEl = document.getElementById('hero-cd-minutes');
-      const hSecondsEl = document.getElementById('hero-cd-seconds');
 
       function tickClosing() {
         const now = Date.now();
@@ -2266,7 +2256,6 @@ function updateCountdownTimer() {
 
         if (diff <= 0) {
           if (announcementBar) announcementBar.style.display = 'none';
-          if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
           regSettings.isOpen = false;
           regSettings.status = 'closed_permanently';
           saveData('robotik_reg_settings', regSettings, false);
@@ -2283,21 +2272,15 @@ function updateCountdownTimer() {
 
         const pad = (num) => String(num).padStart(2, '0');
 
-        if (announcementBar) {
+        if (announcementBar && showHeaderCountdown) {
           announcementBar.innerHTML = `⏰ Pendaftaran Motechart Robotik akan ditutup dalam: <strong>${pad(days)}</strong> Hari <strong>${pad(hours)}</strong> Jam <strong>${pad(minutes)}</strong> Menit <strong>${pad(seconds)}</strong> Detik <a href="#pendaftaran" class="bar-cta">Daftar Sekarang &rarr;</a>`;
         }
-
-        if (hDaysEl) hDaysEl.textContent = pad(days);
-        if (hHoursEl) hHoursEl.textContent = pad(hours);
-        if (hMinutesEl) hMinutesEl.textContent = pad(minutes);
-        if (hSecondsEl) hSecondsEl.textContent = pad(seconds);
       }
 
       tickClosing();
       countdownInterval = setInterval(tickClosing, 1000);
     } else {
       if (announcementBar) announcementBar.style.display = 'none';
-      if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
     }
 
   } else if (currentStatus === 'closed_permanently') {
@@ -2318,7 +2301,6 @@ function updateCountdownTimer() {
     }
 
     if (announcementBar) announcementBar.style.display = 'none';
-    if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
     
     if (heroDaftarBtn) {
       heroDaftarBtn.textContent = 'Pendaftaran Ditutup';
@@ -2357,14 +2339,11 @@ function updateCountdownTimer() {
 
     if (!isNaN(targetTime) && diff > 0) {
       if (announcementBar) {
-        announcementBar.style.display = 'flex';
-        announcementBar.classList.add('opening');
-      }
-
-      if (heroCountdownContainer) {
-        heroCountdownContainer.style.display = 'block';
-        if (heroCountdownMessage) {
-          heroCountdownMessage.innerHTML = `🚀 PENDAFTARAN DIBUKA DALAM:`;
+        if (showHeaderCountdown) {
+          announcementBar.style.display = 'flex';
+          announcementBar.classList.add('opening');
+        } else {
+          announcementBar.style.display = 'none';
         }
       }
 
@@ -2372,11 +2351,6 @@ function updateCountdownTimer() {
       const hoursEl = document.getElementById('cd-hours');
       const minutesEl = document.getElementById('cd-minutes');
       const secondsEl = document.getElementById('cd-seconds');
-
-      const hDaysEl = document.getElementById('hero-cd-days');
-      const hHoursEl = document.getElementById('hero-cd-hours');
-      const hMinutesEl = document.getElementById('hero-cd-minutes');
-      const hSecondsEl = document.getElementById('hero-cd-seconds');
 
       function tick() {
         const now = Date.now();
@@ -2387,11 +2361,6 @@ function updateCountdownTimer() {
           if (hoursEl) hoursEl.textContent = '00';
           if (minutesEl) minutesEl.textContent = '00';
           if (secondsEl) secondsEl.textContent = '00';
-
-          if (hDaysEl) hDaysEl.textContent = '00';
-          if (hHoursEl) hHoursEl.textContent = '00';
-          if (hMinutesEl) hMinutesEl.textContent = '00';
-          if (hSecondsEl) hSecondsEl.textContent = '00';
 
           if (announcementBar) announcementBar.style.display = 'none';
 
@@ -2404,7 +2373,6 @@ function updateCountdownTimer() {
           regLayout.style.display = '';
           if (progressBar) progressBar.style.display = '';
           if (formContainer) formContainer.style.display = '';
-          if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
           if (heroDaftarBtn) {
             heroDaftarBtn.textContent = 'Daftar Sekarang';
             heroDaftarBtn.disabled = false;
@@ -2426,7 +2394,7 @@ function updateCountdownTimer() {
 
         const pad = (num) => String(num).padStart(2, '0');
 
-        if (announcementBar) {
+        if (announcementBar && showHeaderCountdown) {
           announcementBar.innerHTML = `🚀 Pendaftaran Motechart Robotik dibuka dalam: <strong>${pad(days)}</strong> Hari <strong>${pad(hours)}</strong> Jam <strong>${pad(minutes)}</strong> Menit <strong>${pad(seconds)}</strong> Detik`;
         }
 
@@ -2434,18 +2402,12 @@ function updateCountdownTimer() {
         if (hoursEl) hoursEl.textContent = pad(hours);
         if (minutesEl) minutesEl.textContent = pad(minutes);
         if (secondsEl) secondsEl.textContent = pad(seconds);
-
-        if (hDaysEl) hDaysEl.textContent = pad(days);
-        if (hHoursEl) hHoursEl.textContent = pad(hours);
-        if (hMinutesEl) hMinutesEl.textContent = pad(minutes);
-        if (hSecondsEl) hSecondsEl.textContent = pad(seconds);
       }
 
       tick();
       countdownInterval = setInterval(tick, 1000);
     } else {
       if (announcementBar) announcementBar.style.display = 'none';
-      if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
     }
   }
 }

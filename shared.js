@@ -1286,6 +1286,64 @@ export function customAlert(message) {
   });
 }
 
+export function showToast(message, type = 'success') {
+  ensurePopupStyles();
+  
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.position = 'fixed';
+    container.style.bottom = '2rem';
+    container.style.right = '2rem';
+    container.style.zIndex = '9999';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '0.5rem';
+    container.style.pointerEvents = 'none';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast-item toast-${type}`;
+  toast.style.background = 'rgba(11, 17, 32, 0.95)';
+  toast.style.backdropFilter = 'blur(8px)';
+  toast.style.border = type === 'error' ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(6, 182, 212, 0.4)';
+  toast.style.color = 'var(--text-white)';
+  toast.style.padding = '0.75rem 1.25rem';
+  toast.style.borderRadius = 'var(--radius-md)';
+  toast.style.boxShadow = '0 10px 25px -5px rgba(0,0,0,0.3)';
+  toast.style.fontSize = '0.85rem';
+  toast.style.fontWeight = '500';
+  toast.style.display = 'flex';
+  toast.style.alignItems = 'center';
+  toast.style.gap = '0.5rem';
+  toast.style.pointerEvents = 'auto';
+  toast.style.opacity = '0';
+  toast.style.transform = 'translateY(1rem)';
+  toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+
+  const icon = type === 'error' ? '❌' : '✅';
+  toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-1rem)';
+    toast.addEventListener('transitionend', () => {
+      toast.remove();
+      if (container.children.length === 0) {
+        container.remove();
+      }
+    });
+  }, 3000);
+}
+
 export function customConfirm(message) {
   return new Promise((resolve) => {
     ensurePopupStyles();

@@ -12,6 +12,7 @@ import {
   recordFormSubmission,
   customAlert,
   customConfirm,
+  showToast,
   setupRealTimeRegSettingsSync,
   setupRealTimeLandingDataSync,
   syncLandingDataFromFirestore,
@@ -750,10 +751,60 @@ function setupPortfolio() {
   renderPublicPortfolio();
 }
 
-// --- MULTI-STEP REGISTRATION FORM ---
 function setupRegistrationForm() {
   const form = document.getElementById('robotics-reg-form');
   if (!form) return;
+
+  const saveFormDraft = () => {
+    const formData = {};
+    const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea, select');
+    inputs.forEach(inp => {
+      if (inp.id) formData[inp.id] = inp.value;
+    });
+    const checkedRadios = form.querySelectorAll('input[type="radio"]:checked');
+    checkedRadios.forEach(rad => {
+      if (rad.name) formData[rad.name] = rad.value;
+    });
+    sessionStorage.setItem('robotics_reg_draft', JSON.stringify(formData));
+  };
+
+  const loadFormDraft = () => {
+    try {
+      const raw = sessionStorage.getItem('robotics_reg_draft');
+      if (!raw) return;
+      const formData = JSON.parse(raw);
+      Object.keys(formData).forEach(id => {
+        const val = formData[id];
+        const input = document.getElementById(id);
+        if (input) {
+          input.value = val;
+          input.dispatchEvent(new Event('input'));
+        }
+      });
+      // Handle radio groups separately since their name is the key
+      const radioGroups = new Set();
+      form.querySelectorAll('input[type="radio"]').forEach(rad => {
+        if (rad.name) radioGroups.add(rad.name);
+      });
+      radioGroups.forEach(name => {
+        if (formData[name]) {
+          const targetRad = form.querySelector(`input[name="${name}"][value="${formData[name]}"]`);
+          if (targetRad) {
+            targetRad.checked = true;
+            targetRad.dispatchEvent(new Event('change'));
+          }
+        }
+      });
+    } catch (e) {
+      console.warn("Failed to load registration draft:", e);
+    }
+  };
+
+  form.addEventListener('input', saveFormDraft);
+  form.addEventListener('change', saveFormDraft);
+  
+  // Load draft after custom questions rendering completes
+  setTimeout(loadFormDraft, 200);
 
   const steps = document.querySelectorAll('.form-step-content');
   const stepIndicators = document.querySelectorAll('.step-track');
@@ -1115,6 +1166,28 @@ function setupRegistrationForm() {
       if (cardClassEl) cardClassEl.textContent = 'KELAS ' + kelasSiswa;
       if (cardIdEl) cardIdEl.textContent = regId;
 
+      const btnCopyId = document.getElementById('btn-copy-registered-id');
+      if (btnCopyId) {
+        const newBtnCopyId = btnCopyId.cloneNode(true);
+        btnCopyId.parentNode.replaceChild(newBtnCopyId, btnCopyId);
+        newBtnCopyId.addEventListener('click', () => {
+          navigator.clipboard.writeText(regId).then(() => {
+            const originalText = newBtnCopyId.innerHTML;
+            newBtnCopyId.textContent = 'Tersalin!';
+            newBtnCopyId.style.borderColor = 'var(--accent-yellow)';
+            newBtnCopyId.style.color = 'var(--accent-yellow)';
+            playRoboticSound('click');
+            setTimeout(() => {
+              newBtnCopyId.innerHTML = originalText;
+              newBtnCopyId.style.borderColor = '';
+              newBtnCopyId.style.color = '';
+            }, 2000);
+          }).catch(err => {
+            console.error("Gagal menyalin ID:", err);
+          });
+        });
+      }
+
       // Toggle pending review display active, hide approved student card display
       const pendingWrapper = document.getElementById('review-pending-wrapper');
       const approvedWrapper = document.getElementById('card-approved-wrapper');
@@ -1168,6 +1241,7 @@ function setupRegistrationForm() {
       // Refresh admin table
       // renderAdminApplicantsTable();
 
+      sessionStorage.removeItem('robotics_reg_draft');
       // Show success screen and scroll
       formContainer.style.display = 'none';
       successCard.style.display = 'block';
@@ -2571,7 +2645,12 @@ function setupStatusChecker() {
 
   if (btnCheckStatus && inputCheckStatus) {
     const handleCheck = async () => {
-      const id = inputCheckStatus.value.trim();
+      let id = inputCheckStatus.value.trim().toUpperCase();
+      if (id && /^\d+$/.test(id)) {
+        id = 'ROBO-' + id;
+      }
+      inputCheckStatus.value = id;
+
       if (!id) {
         await customAlert('Silakan masukkan ID Pendaftaran Anda terlebih dahulu.');
         playRoboticSound('error');
@@ -2585,6 +2664,14 @@ function setupStatusChecker() {
     inputCheckStatus.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         handleCheck();
+      }
+    });
+    inputCheckStatus.addEventListener('blur', () => {
+      let val = inputCheckStatus.value.trim().toUpperCase();
+      if (val && /^\d+$/.test(val)) {
+        inputCheckStatus.value = 'ROBO-' + val;
+      } else if (val) {
+        inputCheckStatus.value = val;
       }
     });
   }

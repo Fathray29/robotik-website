@@ -4,8 +4,7 @@
    Features: Glassmorphism, CSS Custom Properties, Discrete Dialog Transitions
    ========================================================================== */
 
-/* --- GOOGLE FONTS IMPORT --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+/* --- CUSTOM PROPERTIES --- */
 
 /* --- CUSTOM PROPERTIES --- */
 :root {
@@ -390,7 +389,8 @@ a {
   margin-bottom: 3.5rem;
 }
 
-.page-title-section h1 {
+.page-title-section h1,
+.page-title-section h2 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--text-white) 40%, var(--accent-cyan) 100%);
@@ -3292,7 +3292,8 @@ select.input-control option {
     gap: 1.5rem;
   }
 
-  .page-title-section h1 {
+  .page-title-section h1,
+  .page-title-section h2 {
     font-size: 2.5rem;
   }
 
@@ -3365,12 +3366,13 @@ select.input-control option {
   }
 
   .portfolio-gallery-overlay {
+    height: 60%;
     background: linear-gradient(to top, 
-      rgba(11, 17, 32, 0.94) 0%, 
-      rgba(11, 17, 32, 0.45) 45%, 
-      transparent 80%
+      rgba(11, 17, 32, 0.96) 0%, 
+      rgba(11, 17, 32, 0.6) 40%, 
+      transparent 100%
     );
-    padding: 1.15rem;
+    padding: 1rem;
   }
 
   .portfolio-gallery-item {

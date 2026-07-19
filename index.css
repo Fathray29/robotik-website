@@ -3944,4 +3944,11 @@ select.input-control option {
    STANDALONE ADMIN STYLING
    ========================================================================== */
 
-
+.blog-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  margin: 1.5rem auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}

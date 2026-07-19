@@ -783,7 +783,7 @@ export function parseMarkdownToHtml(markdown) {
   escaped = escaped.replace(/_([^_]+)_/g, '<em>$1</em>');
   escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
   escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-  escaped = escaped.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="blog-img">');
+  escaped = escaped.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="blog-img" loading="lazy">');
 
   codeBlocks.forEach((block, idx) => {
     escaped = escaped.replace(`__CODE_BLOCK_${idx}__`, block);

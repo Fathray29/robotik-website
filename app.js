@@ -1228,6 +1228,29 @@ async function initializeCloudDataSync() {
     // Privacy Fix: Removed syncApplicantsFromFirestore() and setupRealTimeApplicantsSync() 
     // from the public frontend so we don't leak all PII to unauthorized users.
     
+    // Setup real-time listeners to keep page updated without reload
+    setupRealTimeRegSettingsSync((updatedRegSettings) => {
+      regSettings = updatedRegSettings;
+      renderCustomQuestionsInForm();
+      updateCountdownTimer();
+      renderWhatsAppBanner();
+    });
+
+    setupRealTimeLandingDataSync((updatedLandingData) => {
+      landingData = updatedLandingData;
+      renderLandingPage();
+    });
+
+    setupRealTimeBlogSync((updatedBlogArticles) => {
+      blogArticles = updatedBlogArticles;
+      renderPublicArticles();
+    });
+
+    setupRealTimePortfolioSync((updatedPortfolioProjects) => {
+      portfolioProjects = updatedPortfolioProjects;
+      renderPublicPortfolio();
+    });
+
     // Re-render components with newly synced cloud data
     renderLandingPage();
     renderCustomQuestionsInForm();
@@ -2165,8 +2188,18 @@ function updateCountdownTimer() {
   const closedTitleEl = document.getElementById('reg-closed-title');
   const closedMessageEl = document.getElementById('reg-closed-message');
   const countdownTimerEl = document.getElementById('reg-countdown-timer');
+  
+  const heroCountdownContainer = document.getElementById('hero-countdown-container');
+  const heroCountdownMessage = document.getElementById('hero-countdown-message');
+  const heroDaftarBtn = document.getElementById('hero-btn-daftar');
 
   const currentStatus = regSettings.status || (regSettings.isOpen ? 'open' : 'closed');
+
+  // Helper to remove active closing banner if it exists
+  const removeClosingBanner = () => {
+    const existing = document.getElementById('reg-closing-countdown-banner');
+    if (existing) existing.remove();
+  };
 
   if (currentStatus === 'open') {
     closedContainer.style.display = 'none';
@@ -2180,7 +2213,121 @@ function updateCountdownTimer() {
       if (progressBar) progressBar.style.display = '';
       if (formContainer) formContainer.style.display = '';
     }
+
+    if (heroDaftarBtn) {
+      heroDaftarBtn.textContent = 'Daftar Sekarang';
+      heroDaftarBtn.disabled = false;
+      heroDaftarBtn.style.opacity = '1';
+      heroDaftarBtn.style.cursor = 'pointer';
+    }
+
+    // Is there a target date set for closing?
+    const targetTime = regSettings.countdownTarget ? new Date(regSettings.countdownTarget).getTime() : NaN;
+    const now = Date.now();
+    const diff = targetTime - now;
+
+    if (!isNaN(targetTime) && diff > 0) {
+      // Show closing countdown banner in form
+      if (formContainer && successCard && successCard.style.display !== 'block') {
+        let closingBanner = document.getElementById('reg-closing-countdown-banner');
+        if (!closingBanner) {
+          closingBanner = document.createElement('div');
+          closingBanner.id = 'reg-closing-countdown-banner';
+          closingBanner.className = 'glass-card';
+          closingBanner.style.padding = '1.25rem';
+          closingBanner.style.marginBottom = '1.5rem';
+          closingBanner.style.textAlign = 'center';
+          closingBanner.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+          closingBanner.style.background = 'rgba(239, 68, 68, 0.05)';
+          closingBanner.innerHTML = `
+            <p style="color: #F87171; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.75rem; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <span class="pulsing-radar-icon" style="width: 10px; height: 10px; border-color: #EF4444; background: #EF4444; margin: 0; display: inline-block;"></span>
+              WAKTU PENDAFTARAN TERSISA:
+            </p>
+            <div class="countdown-grid mini" id="reg-closing-countdown-timer" style="margin: 0 auto; width: fit-content; display: flex; gap: 0.75rem; justify-content: center;">
+              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
+                <span class="countdown-val" id="closing-cd-days" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem;">Hari</span>
+              </div>
+              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
+                <span class="countdown-val" id="closing-cd-hours" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem;">Jam</span>
+              </div>
+              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
+                <span class="countdown-val" id="closing-cd-minutes" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem;">Menit</span>
+              </div>
+              <div class="countdown-item" style="padding: 0.5rem 0.75rem;">
+                <span class="countdown-val" id="closing-cd-seconds" style="font-size: 1.35rem; color: #F87171; text-shadow: 0 0 10px rgba(239,68,68,0.3);">00</span>
+                <span class="countdown-unit" style="font-size: 0.6rem;">Detik</span>
+              </div>
+            </div>
+          `;
+          formContainer.prepend(closingBanner);
+        }
+      }
+
+      // Show countdown on Landing Page Hero
+      if (heroCountdownContainer) {
+        heroCountdownContainer.style.display = 'block';
+        if (heroCountdownMessage) {
+          heroCountdownMessage.innerHTML = `⚠️ PENDAFTARAN DITUTUP DALAM:`;
+        }
+      }
+
+      const daysEl = document.getElementById('closing-cd-days');
+      const hoursEl = document.getElementById('closing-cd-hours');
+      const minutesEl = document.getElementById('closing-cd-minutes');
+      const secondsEl = document.getElementById('closing-cd-seconds');
+
+      const hDaysEl = document.getElementById('hero-cd-days');
+      const hHoursEl = document.getElementById('hero-cd-hours');
+      const hMinutesEl = document.getElementById('hero-cd-minutes');
+      const hSecondsEl = document.getElementById('hero-cd-seconds');
+
+      function tickClosing() {
+        const now = Date.now();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+          removeClosingBanner();
+          if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
+          regSettings.isOpen = false;
+          regSettings.status = 'closed_permanently';
+          saveData('robotik_reg_settings', regSettings, false);
+          clearInterval(countdownInterval);
+          countdownInterval = null;
+          updateCountdownTimer();
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const pad = (num) => String(num).padStart(2, '0');
+
+        if (daysEl) daysEl.textContent = pad(days);
+        if (hoursEl) hoursEl.textContent = pad(hours);
+        if (minutesEl) minutesEl.textContent = pad(minutes);
+        if (secondsEl) secondsEl.textContent = pad(seconds);
+
+        if (hDaysEl) hDaysEl.textContent = pad(days);
+        if (hHoursEl) hHoursEl.textContent = pad(hours);
+        if (hMinutesEl) hMinutesEl.textContent = pad(minutes);
+        if (hSecondsEl) hSecondsEl.textContent = pad(seconds);
+      }
+
+      tickClosing();
+      countdownInterval = setInterval(tickClosing, 1000);
+    } else {
+      removeClosingBanner();
+      if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
+    }
+
   } else if (currentStatus === 'closed_permanently') {
+    removeClosingBanner();
     closedContainer.style.display = 'block';
     regLayout.style.display = ''; // Keep reg-layout visible so status checker is displayed
     if (progressBar) progressBar.style.display = 'none';
@@ -2196,7 +2343,16 @@ function updateCountdownTimer() {
     if (countdownTimerEl) {
       countdownTimerEl.style.display = 'none';
     }
+
+    if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
+    if (heroDaftarBtn) {
+      heroDaftarBtn.textContent = 'Pendaftaran Ditutup';
+      heroDaftarBtn.disabled = true;
+      heroDaftarBtn.style.opacity = '0.5';
+      heroDaftarBtn.style.cursor = 'not-allowed';
+    }
   } else {
+    removeClosingBanner();
     closedContainer.style.display = 'block';
     regLayout.style.display = ''; // Keep reg-layout visible so status checker is displayed
     if (progressBar) progressBar.style.display = 'none';
@@ -2213,10 +2369,29 @@ function updateCountdownTimer() {
       countdownTimerEl.style.display = '';
     }
 
+    if (heroDaftarBtn) {
+      heroDaftarBtn.textContent = 'Lihat Countdown';
+      heroDaftarBtn.disabled = false;
+      heroDaftarBtn.style.opacity = '1';
+      heroDaftarBtn.style.cursor = 'pointer';
+    }
+
+    if (heroCountdownContainer) {
+      heroCountdownContainer.style.display = 'block';
+      if (heroCountdownMessage) {
+        heroCountdownMessage.innerHTML = `🚀 PENDAFTARAN DIBUKA DALAM:`;
+      }
+    }
+
     const daysEl = document.getElementById('cd-days');
     const hoursEl = document.getElementById('cd-hours');
     const minutesEl = document.getElementById('cd-minutes');
     const secondsEl = document.getElementById('cd-seconds');
+
+    const hDaysEl = document.getElementById('hero-cd-days');
+    const hHoursEl = document.getElementById('hero-cd-hours');
+    const hMinutesEl = document.getElementById('hero-cd-minutes');
+    const hSecondsEl = document.getElementById('hero-cd-seconds');
 
     function tick() {
       const targetTime = new Date(regSettings.countdownTarget).getTime();
@@ -2229,6 +2404,11 @@ function updateCountdownTimer() {
         if (minutesEl) minutesEl.textContent = '00';
         if (secondsEl) secondsEl.textContent = '00';
 
+        if (hDaysEl) hDaysEl.textContent = '00';
+        if (hHoursEl) hHoursEl.textContent = '00';
+        if (hMinutesEl) hMinutesEl.textContent = '00';
+        if (hSecondsEl) hSecondsEl.textContent = '00';
+
         regSettings.isOpen = true;
         regSettings.status = 'open';
         saveData('robotik_reg_settings', regSettings, false);
@@ -2238,6 +2418,12 @@ function updateCountdownTimer() {
         regLayout.style.display = '';
         if (progressBar) progressBar.style.display = '';
         if (formContainer) formContainer.style.display = '';
+        if (heroCountdownContainer) heroCountdownContainer.style.display = 'none';
+        if (heroDaftarBtn) {
+          heroDaftarBtn.textContent = 'Daftar Sekarang';
+          heroDaftarBtn.disabled = false;
+          heroDaftarBtn.style.opacity = '1';
+        }
         
         const statusToggle = document.getElementById('reg-status-toggle');
         if (statusToggle) {
@@ -2258,6 +2444,11 @@ function updateCountdownTimer() {
       if (hoursEl) hoursEl.textContent = pad(hours);
       if (minutesEl) minutesEl.textContent = pad(minutes);
       if (secondsEl) secondsEl.textContent = pad(seconds);
+
+      if (hDaysEl) hDaysEl.textContent = pad(days);
+      if (hHoursEl) hHoursEl.textContent = pad(hours);
+      if (hMinutesEl) hMinutesEl.textContent = pad(minutes);
+      if (hSecondsEl) hSecondsEl.textContent = pad(seconds);
     }
 
     tick();

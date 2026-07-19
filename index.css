@@ -3711,6 +3711,25 @@ select.input-control option {
 
 /* Question Option Wrapper */
 
+/* Mini Countdown Modifier */
+.countdown-grid.mini {
+  grid-template-columns: repeat(4, 75px) !important;
+  gap: 0.5rem !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+.countdown-grid.mini .countdown-item {
+  padding: 0.5rem 0.25rem !important;
+  border-radius: var(--radius-sm) !important;
+}
+.countdown-grid.mini .countdown-val {
+  font-size: 1.35rem !important;
+  margin-bottom: 0.15rem !important;
+}
+.countdown-grid.mini .countdown-unit {
+  font-size: 0.6rem !important;
+}
+
 /* Responsive Countdown Grid */
 @media (max-width: 480px) {
   .countdown-grid {

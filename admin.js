@@ -1709,10 +1709,18 @@ function setupAdminRegSettings() {
     if (statusToggle && countdownTargetInput) {
       const toggleCountdownTargetVisibility = () => {
         const targetGroup = countdownTargetInput.closest('.form-group');
+        const targetLabel = targetGroup ? targetGroup.querySelector('.form-label') : null;
+        
         if (statusToggle.value === 'closed') {
           if (targetGroup) targetGroup.style.display = 'block';
+          if (targetLabel) targetLabel.textContent = 'Target Waktu Pembukaan';
           countdownTargetInput.disabled = false;
           countdownTargetInput.required = true;
+        } else if (statusToggle.value === 'open') {
+          if (targetGroup) targetGroup.style.display = 'block';
+          if (targetLabel) targetLabel.textContent = 'Target Waktu Penutupan (Opsional)';
+          countdownTargetInput.disabled = false;
+          countdownTargetInput.required = false;
         } else {
           if (targetGroup) targetGroup.style.display = 'none';
           countdownTargetInput.disabled = true;
@@ -1878,10 +1886,17 @@ function populateRegSettingsCmsInputs() {
 
     // Initial visibility check
     const targetGroup = countdownTargetInput.closest('.form-group');
+    const targetLabel = targetGroup ? targetGroup.querySelector('.form-label') : null;
     if (statusToggle.value === 'closed') {
       if (targetGroup) targetGroup.style.display = 'block';
+      if (targetLabel) targetLabel.textContent = 'Target Waktu Pembukaan';
       countdownTargetInput.disabled = false;
       countdownTargetInput.required = true;
+    } else if (statusToggle.value === 'open') {
+      if (targetGroup) targetGroup.style.display = 'block';
+      if (targetLabel) targetLabel.textContent = 'Target Waktu Penutupan (Opsional)';
+      countdownTargetInput.disabled = false;
+      countdownTargetInput.required = false;
     } else {
       if (targetGroup) targetGroup.style.display = 'none';
       countdownTargetInput.disabled = true;

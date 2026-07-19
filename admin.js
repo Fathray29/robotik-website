@@ -7,6 +7,7 @@ import {
   parseMarkdownToHtml,
   sanitizeRichHtml,
   setupRealTimeApplicantsSync,
+  unsubscribeRealTimeApplicants,
   customAlert,
   customConfirm,
   setupRealTimeRegSettingsSync,
@@ -253,6 +254,11 @@ function setupAuthStateListener() {
         if (state.useFirebase) {
           try {
             await initializeCloudDataSync();
+            // Setup real-time sync for applicants now that we are authenticated
+            setupRealTimeApplicantsSync((updatedApplicants) => {
+              renderAdminApplicantsTable();
+              renderDashboardOverview();
+            });
           } catch (e) {
             console.error("Failed to sync cloud data on auth change:", e);
           }
@@ -268,6 +274,7 @@ function setupAuthStateListener() {
       } else {
         loginSection.style.display = 'flex';
         panelSection.style.display = 'none';
+        unsubscribeRealTimeApplicants();
       }
     });
   } else {
@@ -2263,10 +2270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Setup Realtime Cloud Sync callbacks
-  setupRealTimeApplicantsSync((updatedApplicants) => {
-    renderAdminApplicantsTable();
-    renderDashboardOverview();
-  });
 
   setupRealTimeRegSettingsSync((updatedRegSettings) => {
     populateRegSettingsCmsInputs();

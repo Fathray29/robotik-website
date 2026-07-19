@@ -585,6 +585,12 @@ export function setupRealTimeApplicantsSync(onUpdateCallback) {
   if (!state.useFirebase) return;
   if (applicantsUnsubscribe) return;
   
+  const currentUser = state.auth ? state.auth.currentUser : null;
+  if (!currentUser) {
+    console.warn("setupRealTimeApplicantsSync: User is not authenticated. Deferring real-time subscription.");
+    return;
+  }
+  
   try {
     applicantsUnsubscribe = state.db.collection('applicants').onSnapshot(snapshot => {
       const fetched = [];
@@ -608,9 +614,24 @@ export function setupRealTimeApplicantsSync(onUpdateCallback) {
       if (typeof onUpdateCallback === 'function') {
         onUpdateCallback(state.applicants);
       }
+    }, err => {
+      console.error("Firestore real-time applicants subscription failed:", err);
+      applicantsUnsubscribe = null;
     });
   } catch (e) {
     console.error("Failed to setup Firestore real-time listener:", e);
+  }
+}
+
+export function unsubscribeRealTimeApplicants() {
+  if (applicantsUnsubscribe) {
+    try {
+      applicantsUnsubscribe();
+      console.log("Unsubscribed from real-time applicants sync.");
+    } catch (e) {
+      console.error("Failed to unsubscribe from real-time applicants sync:", e);
+    }
+    applicantsUnsubscribe = null;
   }
 }
 

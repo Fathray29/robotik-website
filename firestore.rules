@@ -35,12 +35,21 @@ service cloud.firestore {
     // 5. Statistik Pengunjung (Telemetry)
     match /telemetry/visitors {
       allow read: if true;           // Semua pengunjung bisa membaca jumlah counter pengunjung
-      allow write: if true;          // Semua pengunjung diperbolehkan melakukan increment (+1) saat berkunjung
+      // Only allow updates (not create/delete), and only allow incrementing numeric counter fields.
+      // This prevents attackers from overwriting or deleting the entire telemetry document.
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['totalVisitors', 'totalApplicants'])
+                    && request.resource.data.totalVisitors is int
+                    && request.resource.data.totalApplicants is int
+                    && request.resource.data.totalVisitors >= resource.data.totalVisitors
+                    && request.resource.data.totalApplicants >= resource.data.totalApplicants;
     }
 
     // 6. Data Pendaftar (Applicants)
+    // SECURITY NOTE: Registration IDs use crypto.getRandomValues (alphanumeric, 8 chars)
+    // making brute-force enumeration computationally infeasible (~2.8 trillion combinations).
     match /applicants/{applicantId} {
-      allow get: if true;            // Pengunjung boleh cek status pendaftarannya secara spesifik menggunakan ID (ROBO-xxxxxx)
+      allow get: if true;            // Pengunjung boleh cek status pendaftarannya secara spesifik menggunakan ID (ROBO-xxxxxxxx)
       allow create: if true;         // Pengunjung diperbolehkan mendaftar (membuat entri pendaftar baru)
       
       allow list: if isAdmin();      // Hanya admin yang diperbolehkan menampilkan seluruh daftar pendaftar

@@ -5,6 +5,7 @@ import {
   sanitizeInput, 
   escapeHtml, 
   parseMarkdownToHtml,
+  sanitizeRichHtml,
   setupRealTimeApplicantsSync,
   customAlert,
   customConfirm,
@@ -1236,9 +1237,9 @@ function setupRichTextEditor() {
   const hiddenInput = document.getElementById('edit-content');
   if (!richDiv || !hiddenInput) return;
 
-  // Sync contenteditable div content to hidden input
+  // Sync contenteditable div content to hidden input (sanitized to prevent Stored XSS)
   richDiv.addEventListener('input', () => {
-    hiddenInput.value = richDiv.innerHTML;
+    hiddenInput.value = sanitizeRichHtml(richDiv.innerHTML);
     hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
   });
 
@@ -1277,7 +1278,7 @@ function setupRichTextEditor() {
       }
 
       // Sync and trigger event for CMS undo/redo stack
-      hiddenInput.value = richDiv.innerHTML;
+      hiddenInput.value = sanitizeRichHtml(richDiv.innerHTML);
       hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
       richDiv.focus();
       

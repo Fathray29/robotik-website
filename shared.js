@@ -272,6 +272,10 @@ export const INITIAL_LANDING_DATA = {
 
 
 // --- LOCAL STORAGE DATA HELPERS (CMS PERSISTENCE WITH OBFUSCATION) ---
+// SECURITY NOTE: This is NOT encryption. It is simple obfuscation (Base64 + XOR)
+// to prevent casual inspection of localStorage. It does NOT protect against
+// a determined attacker with DevTools access. Sensitive data should only be
+// stored server-side (Firestore) and protected by security rules.
 export function obfuscate(text) {
   try {
     const b64 = btoa(unescape(encodeURIComponent(text)));
@@ -672,9 +676,10 @@ export function playRoboticSound(type) {
 export function parseMarkdownToHtml(markdown) {
   if (!markdown) return '';
 
-  // If content is already HTML, do not parse it as markdown, return as-is.
+  // If content is already HTML, sanitize it to prevent Stored XSS.
+  // Only allow safe tags and strip all event handlers and dangerous attributes.
   if (markdown.trim().startsWith('<') || /<\/?[a-z][\s\S]*>/i.test(markdown)) {
-    return markdown;
+    return sanitizeRichHtml(markdown);
   }
 
   let escaped = markdown
@@ -751,6 +756,96 @@ export function sanitizeInput(text) {
   }
 }
 
+/**
+ * Sanitizes rich HTML content (from CMS Rich Text Editor) to prevent Stored XSS.
+ * Allows only a safe whitelist of tags and attributes. Strips everything else.
+ */
+export function sanitizeRichHtml(html) {
+  if (typeof html !== 'string') return '';
+  try {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const ALLOWED_TAGS = new Set([
+      'P', 'BR', 'B', 'I', 'U', 'STRONG', 'EM', 'S', 'STRIKE',
+      'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+      'UL', 'OL', 'LI', 'BLOCKQUOTE', 'PRE', 'CODE',
+      'A', 'IMG', 'SPAN', 'DIV', 'TABLE', 'THEAD', 'TBODY', 'TR', 'TH', 'TD',
+      'FIGURE', 'FIGCAPTION', 'HR', 'SUB', 'SUP'
+    ]);
+    const ALLOWED_ATTRS = new Set([
+      'href', 'src', 'alt', 'title', 'class', 'id',
+      'target', 'rel', 'width', 'height', 'loading',
+      'colspan', 'rowspan', 'scope'
+    ]);
+    // Safe style properties whitelist
+    const SAFE_STYLE_PROPS = /^(color|background-color|font-size|font-weight|font-style|text-align|text-decoration|margin|padding|border|border-radius|max-width|display|line-height|letter-spacing|white-space|vertical-align|opacity)/i;
+
+    function sanitizeNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) return;
+      if (node.nodeType === Node.COMMENT_NODE) {
+        node.remove();
+        return;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+      if (!ALLOWED_TAGS.has(node.tagName)) {
+        // Replace disallowed tags with their text content
+        const text = document.createTextNode(node.textContent || '');
+        node.parentNode.replaceChild(text, node);
+        return;
+      }
+
+      // Remove all disallowed attributes
+      const attrs = Array.from(node.attributes);
+      for (const attr of attrs) {
+        const name = attr.name.toLowerCase();
+        // Remove ALL event handlers (onclick, onerror, onload, etc.)
+        if (name.startsWith('on')) {
+          node.removeAttribute(attr.name);
+          continue;
+        }
+        if (name === 'style') {
+          // Sanitize inline styles: only allow safe properties
+          const safeStyles = attr.value.split(';')
+            .map(s => s.trim())
+            .filter(s => s && SAFE_STYLE_PROPS.test(s.split(':')[0].trim()))
+            .join('; ');
+          if (safeStyles) {
+            node.setAttribute('style', safeStyles);
+          } else {
+            node.removeAttribute('style');
+          }
+          continue;
+        }
+        if (!ALLOWED_ATTRS.has(name)) {
+          node.removeAttribute(attr.name);
+          continue;
+        }
+        // Validate URL attributes
+        if (name === 'href' || name === 'src') {
+          const val = attr.value.trim().toLowerCase();
+          if (val.startsWith('javascript:') || val.startsWith('vbscript:') || val.startsWith('data:text')) {
+            node.removeAttribute(attr.name);
+          }
+        }
+      }
+
+      // Force safe link attributes
+      if (node.tagName === 'A') {
+        node.setAttribute('rel', 'noopener noreferrer');
+      }
+
+      // Recurse into children (copy array since DOM may mutate)
+      Array.from(node.childNodes).forEach(sanitizeNode);
+    }
+
+    sanitizeNode(doc.body);
+    return doc.body.innerHTML;
+  } catch (e) {
+    // Fallback: strip ALL HTML if parsing fails
+    return html.replace(/<[^>]*>/g, '').replace(/on\w+\s*=/gi, '');
+  }
+}
+
 export function escapeHtml(text) {
   if (typeof text !== 'string') return text;
   return text
@@ -794,6 +889,7 @@ export function sanitizeHeroHtml(html) {
 
 
 // --- LOGIN RATE LIMITER ---
+// Uses localStorage (not sessionStorage) so rate limits persist across tabs and page refreshes.
 const LOGIN_STORAGE_KEY = 'robotik_login_attempts';
 
 /**
@@ -802,7 +898,7 @@ const LOGIN_STORAGE_KEY = 'robotik_login_attempts';
  */
 export function getLoginRateLimit() {
   try {
-    const data = JSON.parse(sessionStorage.getItem(LOGIN_STORAGE_KEY) || '{}');
+    const data = JSON.parse(localStorage.getItem(LOGIN_STORAGE_KEY) || '{}');
     const attempts = data.attempts || 0;
     const lockoutUntil = data.lockoutUntil || null;
     const now = Date.now();
@@ -811,7 +907,7 @@ export function getLoginRateLimit() {
     }
     // If lockout expired, reset
     if (lockoutUntil && now >= lockoutUntil) {
-      sessionStorage.removeItem(LOGIN_STORAGE_KEY);
+      localStorage.removeItem(LOGIN_STORAGE_KEY);
       return { attempts: 0, lockoutUntil: null, isLocked: false, remainingMs: 0 };
     }
     return { attempts, lockoutUntil: null, isLocked: false, remainingMs: 0 };
@@ -834,7 +930,7 @@ export function recordFailedLogin() {
   else if (newAttempts >= 5) lockoutMs = 30000;    // 30 seconds
 
   const lockoutUntil = lockoutMs > 0 ? Date.now() + lockoutMs : null;
-  sessionStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify({ attempts: newAttempts, lockoutUntil }));
+  localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify({ attempts: newAttempts, lockoutUntil }));
   return { attempts: newAttempts, lockoutUntil, isLocked: !!lockoutUntil, lockoutMs };
 }
 
@@ -842,12 +938,13 @@ export function recordFailedLogin() {
  * Resets the login rate limiter on successful login.
  */
 export function resetLoginRateLimit() {
-  sessionStorage.removeItem(LOGIN_STORAGE_KEY);
+  localStorage.removeItem(LOGIN_STORAGE_KEY);
 }
 
 // --- FORM SUBMISSION RATE LIMITER ---
-let lastFormSubmitTime = 0;
+// Uses sessionStorage to persist cooldown across page refreshes within the same session.
 const FORM_COOLDOWN_MS = 5000; // 5 seconds between submissions
+const FORM_SUBMIT_KEY = 'robotik_form_last_submit';
 
 /**
  * Checks if a form submission is allowed (cooldown-based).
@@ -855,7 +952,8 @@ const FORM_COOLDOWN_MS = 5000; // 5 seconds between submissions
  */
 export function checkFormRateLimit() {
   const now = Date.now();
-  const elapsed = now - lastFormSubmitTime;
+  const lastSubmit = parseInt(sessionStorage.getItem(FORM_SUBMIT_KEY) || '0', 10);
+  const elapsed = now - lastSubmit;
   if (elapsed < FORM_COOLDOWN_MS) {
     return { allowed: false, remainingMs: FORM_COOLDOWN_MS - elapsed };
   }
@@ -866,7 +964,7 @@ export function checkFormRateLimit() {
  * Records a form submission timestamp.
  */
 export function recordFormSubmission() {
-  lastFormSubmitTime = Date.now();
+  sessionStorage.setItem(FORM_SUBMIT_KEY, String(Date.now()));
 }
 
 // --- REAL-TIME SETTINGS & LANDING SYNC LISTENERS ---

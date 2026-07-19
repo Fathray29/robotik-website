@@ -1954,8 +1954,8 @@ body.light-theme .data-table td,
 
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
 }
 
 .portfolio-gallery-item {
@@ -3271,9 +3271,9 @@ select.input-control option {
   }
 
   .portfolio-grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    max-width: 650px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 850px;
     margin: 0 auto;
   }
 }
@@ -3362,6 +3362,15 @@ select.input-control option {
     gap: 1.5rem;
     max-width: 500px;
     margin: 0 auto;
+  }
+
+  .portfolio-gallery-overlay {
+    background: linear-gradient(to top, 
+      rgba(11, 17, 32, 0.94) 0%, 
+      rgba(11, 17, 32, 0.45) 45%, 
+      transparent 80%
+    );
+    padding: 1.15rem;
   }
 
   .portfolio-gallery-item {

@@ -13,19 +13,19 @@
   
   --accent-cyan: #06b6d4;      /* Cyan 500 */
   --accent-cyan-hover: #0891b2;/* Cyan 600 */
-  --accent-cyan-glow: rgba(6, 182, 212, 0.3);
+  --accent-cyan-glow: rgba(6, 182, 212, 0.15);
   
   --accent-yellow: #facc15;    /* Yellow 400 */
   --accent-yellow-hover: #eab308; /* Yellow 500 */
-  --accent-yellow-glow: rgba(250, 204, 21, 0.3);
+  --accent-yellow-glow: rgba(250, 204, 21, 0.15);
 
   --accent-green: #10b981;     /* Emerald 500 */
   --accent-red: #ef4444;       /* Red 500 */
   
   --text-main: #f8fafc;        /* Slate 50 */
   --text-muted: #94a3b8;       /* Slate 400 */
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-light: rgba(255, 255, 255, 0.05);
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-light: rgba(255, 255, 255, 0.03);
 
   /* Layout Metrics */
   --sidebar-width: 260px;
@@ -728,7 +728,7 @@ body {
 }
 
 .data-table th, .data-table td {
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -762,8 +762,8 @@ body {
 }
 
 .data-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 4px 0 0 var(--accent-cyan);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 3px 0 0 var(--accent-cyan);
 }
 
 .data-table td {

@@ -38,11 +38,15 @@ service cloud.firestore {
       // Only allow updates (not create/delete), and only allow incrementing numeric counter fields.
       // This prevents attackers from overwriting or deleting the entire telemetry document.
       allow update: if request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['totalVisitors', 'totalApplicants'])
-                    && request.resource.data.totalVisitors is int
-                    && request.resource.data.totalApplicants is int
-                    && request.resource.data.totalVisitors >= resource.data.totalVisitors
-                    && request.resource.data.totalApplicants >= resource.data.totalApplicants;
+                       .hasOnly(['count', 'applicantsCount'])
+                    && request.resource.data.count is int
+                    && request.resource.data.applicantsCount is int
+                    && request.resource.data.count >= resource.data.count
+                    && request.resource.data.applicantsCount >= resource.data.applicantsCount;
+      // Allow creation of telemetry if it does not exist (for initial setup/seeding)
+      allow create: if request.resource.data.keys().hasOnly(['count', 'applicantsCount'])
+                    && request.resource.data.count is int
+                    && (!('applicantsCount' in request.resource.data) || request.resource.data.applicantsCount is int);
     }
 
     // 6. Data Pendaftar (Applicants)

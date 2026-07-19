@@ -14,6 +14,7 @@ import {
   initializeCloudDataSync,
   setupRealTimeBlogSync,
   setupRealTimePortfolioSync,
+  ensureFirebaseInitialized,
 
   getLoginRateLimit,
   recordFailedLogin,
@@ -2206,6 +2207,9 @@ function setupInteractiveCircuit() {
 
 // --- BOOTSTRAP ---
 document.addEventListener('DOMContentLoaded', async () => {
+  // Asynchronously initialize Firebase before loading admin features
+  await ensureFirebaseInitialized();
+
   // Check login state first (async: verifies HMAC session token)
   setupAuthStateListener();
   setupCmsAuthentication();

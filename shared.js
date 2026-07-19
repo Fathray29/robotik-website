@@ -344,22 +344,22 @@ export function saveData(key, data, syncToCloud = true) {
     const encrypted = obfuscate(serialized);
     localStorage.setItem(key, encrypted);
 
-    const currentUser = state.auth ? state.auth.currentUser : null;
-    if (state.useFirebase && syncToCloud && currentUser) {
+    const currentUser = auth ? auth.currentUser : null;
+    if (useFirebase && syncToCloud && currentUser) {
       if (key === 'robotik_reg_settings') {
-        state.db.collection('settings').doc('registration').set(data)
+        db.collection('settings').doc('registration').set(data)
           .then(() => console.log("Cloud Sync: Registration settings successfully updated!"))
           .catch(err => console.error("Cloud Sync Error: Settings sync failed:", err));
       } else if (key === 'robotik_landing') {
-        state.db.collection('landing').doc('content').set(data)
+        db.collection('landing').doc('content').set(data)
           .then(() => console.log("Cloud Sync: Landing page content successfully updated!"))
           .catch(err => console.error("Cloud Sync Error: Landing content sync failed:", err));
       } else if (key === 'robotik_blog') {
-        state.db.collection('blog').doc('articles').set({ articles: data })
+        db.collection('blog').doc('articles').set({ articles: data })
           .then(() => console.log("Cloud Sync: Blog articles successfully updated!"))
           .catch(err => console.error("Cloud Sync Error: Blog articles sync failed:", err));
       } else if (key === 'robotik_portfolio') {
-        state.db.collection('portfolio').doc('projects').set({ projects: data })
+        db.collection('portfolio').doc('projects').set({ projects: data })
           .then(() => console.log("Cloud Sync: Portfolio projects successfully updated!"))
           .catch(err => console.error("Cloud Sync Error: Portfolio projects sync failed:", err));
       }
@@ -387,15 +387,58 @@ let db = null;
 let auth = null;
 let useFirebase = false;
 
-if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER_PROJECT_ID') {
-  try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    auth = firebase.auth();
-    useFirebase = true;
-    console.log("Motechart Cloud Engine: Firebase Firestore & Auth initialized successfully! ☁️");
-  } catch (e) {
-    console.error("Motechart Cloud Engine: Firebase initialization failed:", e);
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load script ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+export async function loadFirebaseSDKs() {
+  if (typeof firebase !== 'undefined') return;
+  await loadScript("https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js");
+  await Promise.all([
+    loadScript("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"),
+    loadScript("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js")
+  ]);
+}
+
+export async function ensureFirebaseInitialized() {
+  if (useFirebase && db && auth) {
+    return;
+  }
+  if (typeof firebase === 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER_PROJECT_ID') {
+    try {
+      await loadFirebaseSDKs();
+    } catch (e) {
+      console.error("Failed to load Firebase scripts dynamically:", e);
+      return;
+    }
+  }
+  if (typeof firebase !== 'undefined' && firebaseConfig.projectId !== 'PLACEHOLDER_PROJECT_ID' && !useFirebase) {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      auth = firebase.auth();
+      useFirebase = true;
+      
+      // Update state object properties
+      state.db = db;
+      state.auth = auth;
+      state.useFirebase = useFirebase;
+      
+      console.log("Motechart Cloud Engine: Firebase Firestore & Auth initialized successfully! ☁️");
+    } catch (e) {
+      console.error("Motechart Cloud Engine: Firebase initialization failed:", e);
+    }
   }
 }
 

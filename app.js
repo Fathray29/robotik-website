@@ -19,7 +19,8 @@ import {
   syncBlogFromFirestore,
   syncPortfolioFromFirestore,
   setupRealTimeBlogSync,
-  setupRealTimePortfolioSync
+  setupRealTimePortfolioSync,
+  ensureFirebaseInitialized
 } from './shared.js';
 
 // Central shared state shortcuts
@@ -28,8 +29,8 @@ let portfolioProjects = state.portfolioProjects;
 let applicants = state.applicants;
 let regSettings = state.regSettings;
 let landingData = state.landingData;
-const useFirebase = state.useFirebase;
-const db = state.db;
+let useFirebase = state.useFirebase;
+let db = state.db;
 
 // --- CLIENT-SIDE ROUTER ---
 function setupRouter() {
@@ -1267,7 +1268,19 @@ function setupInteractiveCircuit() {
 }
 
 // --- APP BOOTSTRAP ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Asynchronously initialize Firebase without blocking the critical rendering path
+  await ensureFirebaseInitialized();
+  
+  // Re-assign dynamic shortcuts once Firebase is initialized
+  useFirebase = state.useFirebase;
+  db = state.db;
+  blogArticles = state.blogArticles;
+  portfolioProjects = state.portfolioProjects;
+  applicants = state.applicants;
+  regSettings = state.regSettings;
+  landingData = state.landingData;
+
   setupRouter();
   setupInteractiveElements();
   // setupAudioToggle();
@@ -1687,7 +1700,8 @@ function setupSystemTelemetry() {
           } else {
             // Seed the initial value if document does not exist
             visitorDocRef.set({
-              count: 1
+              count: 1,
+              applicantsCount: 0
             }).then(() => {
               sessionStorage.setItem('robotik_visited_session', 'true');
             });

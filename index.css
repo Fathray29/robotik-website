@@ -1968,6 +1968,7 @@ body.light-theme .data-table td,
   overflow: hidden;
   box-shadow: var(--shadow-card);
   transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
 .portfolio-gallery-item:hover {
@@ -2025,6 +2026,76 @@ body.light-theme .data-table td,
   color: #fde68a;
   box-shadow: 0 0 14px rgba(245, 158, 11, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
   text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.badge-winner {
+  background: rgba(234, 179, 8, 0.35);
+  border: 1.5px solid rgba(234, 179, 8, 0.8);
+  color: #fef08a;
+  box-shadow: 0 0 14px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.portfolio-award-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.03) 100%);
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.25rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-award-banner::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.15) 50%, transparent 55%);
+  transform: rotate(45deg);
+  animation: shine-gold 4s infinite;
+  pointer-events: none;
+}
+
+@keyframes shine-gold {
+  0% { transform: translate(-30%, -30%) rotate(45deg); }
+  100% { transform: translate(30%, 30%) rotate(45deg); }
+}
+
+.award-banner-icon {
+  font-size: 1.85rem;
+  filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.6));
+  line-height: 1;
+}
+
+.award-banner-text {
+  flex-grow: 1;
+}
+
+.award-banner-label {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 1px;
+  margin-bottom: 0.15rem;
+}
+
+.award-banner-title {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-white);
 }
 
 .portfolio-category-badge {

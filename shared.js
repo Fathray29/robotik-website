@@ -152,7 +152,9 @@ Robot ini berhasil memenangkan juara 2 kategori robot olahraga tingkat regional 
 - **Motor Left F/B** -> PWM Pins D5, D6 (Koneksi ke L298N)
 - **Motor Right F/B** -> PWM Pins D9, D10
 - **Solenoid Pin** -> Digital Pin D12 (Memicu Relay Solenoid 24V)`,
-    showCode: true
+    showCode: true,
+    isWinner: true,
+    awardName: "Juara 2 Robot Sepak Bola Regional"
   },
   {
     id: 2,
@@ -186,7 +188,9 @@ Sangat ideal untuk diaplikasikan pada perkebunan hidroponik sekolah, menghemat k
 - **GND** -> Ground Bersama
 - **Sensor Soil** -> Pin Analog GPIO34
 - **Relay Pompa** -> Pin Digital GPIO23 (Mengendalikan Pompa Air 5V)`,
-    showCode: true
+    showCode: true,
+    isWinner: false,
+    awardName: ""
   },
   {
     id: 3,
@@ -219,7 +223,9 @@ Saat ini robot berada dalam fase optimasi PID motor agar pergerakan belokan bisa
 - **Sensor Ultrasonik** -> Pin D2 & D3 (Kiri), D4 & D5 (Depan)
 - **MPU6050 Gyro** -> Pin I2C A4 (SDA), A5 (SCL)
 - **Motor Driver** -> Pin TB6612FNG Control`,
-    showCode: true
+    showCode: true,
+    isWinner: false,
+    awardName: ""
   }
 ];
 

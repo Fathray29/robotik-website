@@ -456,10 +456,13 @@ function renderPublicPortfolio() {
     const badgeStatus = proj.status === 'Selesai' ? 'success' : 'progress';
     
     return `
-      <div class="portfolio-gallery-item">
+      <div class="portfolio-gallery-item" data-id="${proj.id}">
         <img src="${escapeHtml(safeCardImage)}" alt="${escapeHtml(proj.title)}" class="portfolio-gallery-img" loading="lazy">
         <div class="portfolio-gallery-badges">
-          <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
+            ${proj.isWinner ? `<span class="portfolio-badge badge-winner" title="${escapeHtml(proj.awardName)}">🏆 Winner</span>` : ''}
+          </div>
           <span class="portfolio-category-badge">${escapeHtml(proj.category.toUpperCase())}</span>
         </div>
         <div class="portfolio-gallery-overlay">
@@ -472,6 +475,15 @@ function renderPublicPortfolio() {
       </div>
     `;
   }).join('');
+
+  // Bind click event for detail dialog
+  portfolioContainer.querySelectorAll('.portfolio-gallery-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const id = item.getAttribute('data-id');
+      openPortfolioDetail(id);
+    });
+    item.addEventListener('mouseenter', () => playRoboticSound('hover'));
+  });
 }
 
 function openPortfolioDetail(id) {
@@ -549,10 +561,20 @@ function openPortfolioDetail(id) {
           <div class="panel-header-info">
             <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;">
               <span class="portfolio-badge badge-${badgeStatus}">${escapeHtml(proj.status)}</span>
+              ${proj.isWinner ? `<span class="portfolio-badge badge-winner">🏆 Winner</span>` : ''}
               <span class="portfolio-category-badge">${escapeHtml(proj.category.toUpperCase())}</span>
             </div>
             <h2 class="portfolio-detail-title">${escapeHtml(proj.title)}</h2>
-            <div class="portfolio-detail-author">Oleh: <strong>${escapeHtml(proj.creators)}</strong></div>
+            <div class="portfolio-detail-author" style="margin-bottom: 0.5rem;">Oleh: <strong>${escapeHtml(proj.creators)}</strong></div>
+            ${proj.isWinner ? `
+              <div class="portfolio-award-banner">
+                <div class="award-banner-icon">🏆</div>
+                <div class="award-banner-text">
+                  <div class="award-banner-label">PRESTASI PROYEK</div>
+                  <div class="award-banner-title">${escapeHtml(proj.awardName)}</div>
+                </div>
+              </div>
+            ` : ''}
           </div>
 
           <!-- Tab Navigasi -->

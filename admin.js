@@ -421,6 +421,8 @@ function setupCmsTabs() {
         const creatVal = document.getElementById('edit-creators').value.trim();
         const descVal = document.getElementById('edit-description').value.trim();
         const headerImgVal = document.getElementById('edit-header-image').value.trim();
+        const isWinnerVal = document.getElementById('edit-is-winner').checked;
+        const awardNameVal = isWinnerVal ? document.getElementById('edit-award-name').value.trim() : '';
 
         if (mode === 'add') {
           const newId = state.portfolioProjects.length > 0 ? Math.max(...state.portfolioProjects.map(p => p.id)) + 1 : 1;
@@ -431,7 +433,9 @@ function setupCmsTabs() {
             status: statVal,
             creators: creatVal,
             description: descVal,
-            headerImage: headerImgVal
+            headerImage: headerImgVal,
+            isWinner: isWinnerVal,
+            awardName: awardNameVal
           });
         } else if (mode === 'edit') {
           const id = editorForm.getAttribute('data-id');
@@ -443,6 +447,8 @@ function setupCmsTabs() {
             proj.creators = creatVal;
             proj.description = descVal;
             proj.headerImage = headerImgVal;
+            proj.isWinner = isWinnerVal;
+            proj.awardName = awardNameVal;
           }
         }
 
@@ -572,7 +578,10 @@ function renderAdminPortfolioTable() {
   tableBody.innerHTML = state.portfolioProjects.map((proj, index) => `
     <tr>
       <td>${index + 1}</td>
-      <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(proj.title)}</td>
+      <td style="font-weight: 600; color: var(--text-white);">
+        ${proj.isWinner ? '<span style="color: #fbbf24; margin-right: 4px;" title="Pemenang Lomba">🏆</span>' : ''}
+        ${escapeHtml(proj.title)}
+      </td>
       <td><span class="table-badge">${escapeHtml(proj.category.toUpperCase())}</span></td>
       <td><span class="portfolio-badge badge-${proj.status === 'Selesai' ? 'success' : 'progress'}">${escapeHtml(proj.status)}</span></td>
       <td>
@@ -1213,7 +1222,37 @@ function openCmsEditor(type, mode, id = null) {
         <label class="form-label" for="edit-description">Deskripsi Singkat Proyek <span>*</span></label>
         <textarea id="edit-description" class="input-control" required placeholder="Tulis ringkasan singkat 1-2 kalimat untuk kartu galeri..." style="height: 60px;">${proj.description || ''}</textarea>
       </div>
+      <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; margin-bottom: 0.5rem;">
+        <input type="checkbox" id="edit-is-winner" style="width: 18px; height: 18px; cursor: pointer;" ${proj.isWinner ? 'checked' : ''}>
+        <label class="form-label" for="edit-is-winner" style="margin-bottom: 0; cursor: pointer; font-weight: 600; color: var(--accent-cyan);">Pernah Menang Lomba / Prestasi?</label>
+      </div>
+      <div class="form-group" id="award-name-container" style="display: ${proj.isWinner ? 'block' : 'none'};">
+        <label class="form-label" for="edit-award-name">Nama Penghargaan / Juara <span>*</span></label>
+        <input type="text" id="edit-award-name" class="input-control" value="${proj.awardName || ''}" placeholder="Contoh: Juara 2 Robot Sepak Bola Regional...">
+      </div>
     `;
+  }
+
+  // Toggle award name input visibility based on winner checkbox
+  const isWinnerCheckbox = document.getElementById('edit-is-winner');
+  const awardNameContainer = document.getElementById('award-name-container');
+  const awardNameInput = document.getElementById('edit-award-name');
+  if (isWinnerCheckbox && awardNameContainer && awardNameInput) {
+    isWinnerCheckbox.addEventListener('change', () => {
+      if (isWinnerCheckbox.checked) {
+        awardNameContainer.style.display = 'block';
+        awardNameInput.setAttribute('required', '');
+      } else {
+        awardNameContainer.style.display = 'none';
+        awardNameInput.removeAttribute('required');
+      }
+    });
+    // Ensure initial required status matches checked state
+    if (isWinnerCheckbox.checked) {
+      awardNameInput.setAttribute('required', '');
+    } else {
+      awardNameInput.removeAttribute('required');
+    }
   }
 
   setupRichTextEditor();

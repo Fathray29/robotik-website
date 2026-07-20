@@ -944,7 +944,7 @@ function viewApplicantDetail(id) {
   }
 
   container.innerHTML = `
-    <div style="display: grid; grid-template-columns: 120px 1fr; gap: 0.5rem; font-size: 0.95rem; line-height: 1.5; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem;">
+    <div class="applicant-detail-grid">
       <span style="color: var(--text-muted);">ID Pendaftaran:</span>
       <strong style="color: var(--accent-cyan); font-family: monospace;">${escapeHtml(applicant.id)}</strong>
 

@@ -11,6 +11,9 @@
   <title>CMS Admin Dashboard - Motechart Robotik</title>
 
   <!-- Menggunakan styling mandiri khusus admin -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="./admin.css">
 </head>
 <body>
@@ -521,7 +524,7 @@
     <div class="dialog-body">
       <form id="cms-editor-form" novalidate>
         <div id="cms-form-fields-container"></div>
-        <div class="form-actions-row" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+        <div class="form-actions-row dialog-footer">
           <button type="button" class="btn btn-outline" id="cms-editor-cancel">Batal</button>
           <button type="submit" class="btn btn-cyan">Simpan Data</button>
         </div>
@@ -560,8 +563,8 @@
           <input type="checkbox" id="question-required" checked>
           <label for="question-required" style="color:var(--text-main); font-size:0.95rem;">Wajib Diisi?</label>
         </div>
-        <div style="margin-top: 1.5rem; text-align: right;">
-          <button type="button" class="btn btn-outline" id="btn-cancel-question-dialog" style="margin-right:0.5rem;">Batal</button>
+        <div class="dialog-footer">
+          <button type="button" class="btn btn-outline" id="btn-cancel-question-dialog">Batal</button>
           <button type="submit" class="btn btn-cyan" id="btn-save-question">Simpan</button>
         </div>
       </form>
@@ -591,8 +594,8 @@
           <label class="form-label" for="achievement-year">Tahun <span>*</span></label>
           <input type="text" id="achievement-year" class="input-control" required pattern="[0-9]{4}">
         </div>
-        <div style="margin-top: 1.5rem; text-align: right;">
-          <button type="button" class="btn btn-outline" id="btn-cancel-achievement-dialog" style="margin-right:0.5rem;">Batal</button>
+        <div class="dialog-footer">
+          <button type="button" class="btn btn-outline" id="btn-cancel-achievement-dialog">Batal</button>
           <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan</button>
         </div>
       </form>
@@ -624,7 +627,7 @@
       <div id="admin-applicant-detail-container" style="display: flex; flex-direction: column; gap: 1rem;">
         <!-- Populated dynamically via JS -->
       </div>
-      <div id="admin-detail-dialog-footer" style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem; align-items: center;">
+      <div id="admin-detail-dialog-footer" class="dialog-footer">
         <!-- Populated dynamically via JS -->
       </div>
     </div>

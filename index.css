@@ -867,11 +867,12 @@ a {
   width: 4px;
   background: transparent;
   transition: background 0.3s ease;
+  display: none; /* Menyembunyikan bar biru indikator aktif sesuai permintaan */
 }
 
 .divisi-nav-btn.active .nav-btn-indicator {
-  background: var(--accent-cyan);
-  box-shadow: 0 0 10px var(--accent-cyan);
+  background: transparent;
+  box-shadow: none;
 }
 
 .nav-btn-icon {

@@ -316,9 +316,15 @@
         <!-- Tab: REGISTRATION SETTINGS -->
         <div id="cms-settings-view" class="cms-view" role="tabpanel">
           
+          <!-- Sub-tab Navigation -->
+          <div class="sub-tab-container">
+            <button type="button" class="sub-tab-btn active" data-sub-target="sub-settings-main">Kontrol Utama</button>
+            <button type="button" class="sub-tab-btn" data-sub-target="sub-settings-wa">Grup WhatsApp</button>
+            <button type="button" class="sub-tab-btn" data-sub-target="sub-settings-questions">Pertanyaan Tambahan</button>
+          </div>
+
           <form id="cms-reg-settings-form">
-            <div class="settings-grid">
-              
+            <div class="sub-tab-content active" id="sub-settings-main">
               <!-- Sistem Pendaftaran -->
               <div class="setting-card">
                 <h4 class="setting-card-title">Kontrol Utama Sistem</h4>
@@ -345,7 +351,12 @@
                   </label>
                 </div>
               </div>
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-cyan">Simpan Pengaturan Utama</button>
+              </div>
+            </div>
 
+            <div class="sub-tab-content" id="sub-settings-wa">
               <!-- Banner WhatsApp -->
               <div class="setting-card">
                 <h4 class="setting-card-title">Konfigurasi Grup WhatsApp</h4>
@@ -362,43 +373,53 @@
                   <textarea id="reg-wa-desc" class="input-control" required style="height: 60px;"></textarea>
                 </div>
               </div>
-            </div>
-            
-            <div style="margin-top: 1.5rem; text-align: right;">
-              <button type="submit" class="btn btn-cyan">Simpan Pengaturan Utama</button>
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-cyan">Simpan Pengaturan Utama</button>
+              </div>
             </div>
           </form>
 
-          <div class="panel-card mt-4">
-            <div class="panel-header">
-              <h3 class="panel-title">Pertanyaan Tambahan (Formulir Pendaftaran)</h3>
-              <button type="button" id="btn-add-custom-question" class="btn btn-outline btn-sm">Tambah Pertanyaan</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Label Pertanyaan</th>
-                    <th>Tipe Input</th>
-                    <th>Opsi Pilihan</th>
-                    <th>Wajib?</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-questions-table-body">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+          <div class="sub-tab-content" id="sub-settings-questions">
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3 class="panel-title">Pertanyaan Tambahan (Formulir Pendaftaran)</h3>
+                <button type="button" id="btn-add-custom-question" class="btn btn-outline btn-sm">Tambah Pertanyaan</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Label Pertanyaan</th>
+                      <th>Tipe Input</th>
+                      <th>Opsi Pilihan</th>
+                      <th>Wajib?</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-questions-table-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Tab: LANDING PAGE -->
         <div id="cms-landing-view" class="cms-view" role="tabpanel">
+          
+          <!-- Sub-tab Navigation -->
+          <div class="sub-tab-container">
+            <button type="button" class="sub-tab-btn active" data-sub-target="sub-landing-hero">Hero Banner</button>
+            <button type="button" class="sub-tab-btn" data-sub-target="sub-landing-visi">Visi & Footer</button>
+            <button type="button" class="sub-tab-btn" data-sub-target="sub-landing-misi">4 Pilar Misi</button>
+            <button type="button" class="sub-tab-btn" data-sub-target="sub-landing-divisi">Divisi Keahlian</button>
+            <button type="button" class="sub-tab-btn" data-sub-target="sub-landing-achievements">Prestasi & Penghargaan</button>
+          </div>
+
           <form id="cms-landing-form">
-            <div class="settings-grid">
-              
+            <div class="sub-tab-content active" id="sub-landing-hero">
               <!-- Hero Content -->
               <div class="setting-card">
                 <h4 class="setting-card-title">Hero Banner</h4>
@@ -415,7 +436,12 @@
                   <textarea id="cms-hero-desc" class="input-control" required style="height: 80px;"></textarea>
                 </div>
               </div>
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-cyan">Simpan Konten Landing Page</button>
+              </div>
+            </div>
 
+            <div class="sub-tab-content" id="sub-landing-visi">
               <!-- Visi & Footer Info -->
               <div class="setting-card">
                 <h4 class="setting-card-title">Visi Ekskul & Kontak Footer</h4>
@@ -432,10 +458,13 @@
                   <input type="email" id="cms-footer-email" class="input-control" required>
                 </div>
               </div>
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-cyan">Simpan Konten Landing Page</button>
+              </div>
             </div>
 
-            <!-- Misi & Divisi (Grid bawah) -->
-            <div class="settings-grid mt-4">
+            <div class="sub-tab-content" id="sub-landing-misi">
+              <!-- 4 Pilar Misi Ekskul -->
               <div class="setting-card">
                 <h4 class="setting-card-title">4 Pilar Misi Ekskul</h4>
                 <div class="form-group"><input type="text" id="cms-misi-item-1" class="input-control" required></div>
@@ -443,7 +472,13 @@
                 <div class="form-group"><input type="text" id="cms-misi-item-3" class="input-control" required></div>
                 <div class="form-group"><input type="text" id="cms-misi-item-4" class="input-control" required></div>
               </div>
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-cyan">Simpan Konten Landing Page</button>
+              </div>
+            </div>
 
+            <div class="sub-tab-content" id="sub-landing-divisi">
+              <!-- Deskripsi Divisi Keahlian -->
               <div class="setting-card">
                 <h4 class="setting-card-title">Deskripsi Divisi Keahlian</h4>
                 <div class="form-group">
@@ -466,34 +501,35 @@
                 <input type="hidden" id="cms-footer-instagram" value="">
                 <input type="hidden" id="cms-footer-youtube" value="">
               </div>
-            </div>
-
-            <div style="margin-top: 1.5rem; text-align: right;">
-              <button type="submit" class="btn btn-cyan">Simpan Konten Landing Page</button>
+              <div style="margin-top: 1.5rem; text-align: right;">
+                <button type="submit" class="btn btn-cyan">Simpan Konten Landing Page</button>
+              </div>
             </div>
           </form>
 
-          <!-- Achievements -->
-          <div class="panel-card mt-4">
-            <div class="panel-header">
-              <h3 class="panel-title">Galeri Prestasi & Penghargaan</h3>
-              <button type="button" id="btn-add-custom-achievement" class="btn btn-outline btn-sm">Tambah Prestasi</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table" id="admin-achievements-table">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Nama Prestasi</th>
-                    <th>Penyelenggara</th>
-                    <th>Tahun</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-achievements-table-body">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+          <div class="sub-tab-content" id="sub-landing-achievements">
+            <!-- Achievements -->
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3 class="panel-title">Galeri Prestasi & Penghargaan</h3>
+                <button type="button" id="btn-add-custom-achievement" class="btn btn-outline btn-sm">Tambah Prestasi</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table" id="admin-achievements-table">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Nama Prestasi</th>
+                      <th>Penyelenggara</th>
+                      <th>Tahun</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-achievements-table-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 

@@ -329,6 +329,40 @@ function showAdminPanel() {
   }
 }
 
+// --- CMS SUB-TAB SYSTEM ---
+function setupSubTabs() {
+  const tabContainers = document.querySelectorAll('.sub-tab-container');
+  tabContainers.forEach(container => {
+    const tabButtons = container.querySelectorAll('.sub-tab-btn');
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-sub-target');
+        if (!targetId) return;
+
+        if (typeof playRoboticSound === 'function') {
+          playRoboticSound('click');
+        }
+
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          const parent = targetElement.parentElement;
+          const contentSiblings = parent.querySelectorAll('.sub-tab-content');
+          contentSiblings.forEach(sibling => sibling.classList.remove('active'));
+          targetElement.classList.add('active');
+        }
+      });
+      btn.addEventListener('mouseenter', () => {
+        if (typeof playRoboticSound === 'function') {
+          playRoboticSound('hover');
+        }
+      });
+    });
+  });
+}
+
 // --- CMS TAB SYSTEM ---
 function setupCmsTabs() {
   const tabs = document.querySelectorAll('.nav-item');
@@ -2331,6 +2365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupAuthStateListener();
   setupCmsAuthentication();
   setupCmsTabs();
+  setupSubTabs();
   setupLocalImageUploader();
   setupApplicantsFilterAndExport();
   setupAdminRegSettings();

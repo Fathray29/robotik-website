@@ -348,9 +348,11 @@ function setupSubTabs() {
 
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-          const parent = targetElement.parentElement;
-          const contentSiblings = parent.querySelectorAll('.sub-tab-content');
-          contentSiblings.forEach(sibling => sibling.classList.remove('active'));
+          const cmsView = targetElement.closest('.cms-view');
+          if (cmsView) {
+            const allSubContents = cmsView.querySelectorAll('.sub-tab-content');
+            allSubContents.forEach(content => content.classList.remove('active'));
+          }
           targetElement.classList.add('active');
         }
       });

@@ -1130,7 +1130,7 @@ function setupRegistrationForm() {
 
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Memproses Enkripsi Data...';
+    submitBtn.textContent = 'Memproses Formulir...';
 
     recordFormSubmission();
     playRoboticSound('success');
@@ -1165,28 +1165,6 @@ function setupRegistrationForm() {
       if (cardNameEl) cardNameEl.textContent = namaSiswa;
       if (cardClassEl) cardClassEl.textContent = 'KELAS ' + kelasSiswa;
       if (cardIdEl) cardIdEl.textContent = regId;
-
-      const btnCopyId = document.getElementById('btn-copy-registered-id');
-      if (btnCopyId) {
-        const newBtnCopyId = btnCopyId.cloneNode(true);
-        btnCopyId.parentNode.replaceChild(newBtnCopyId, btnCopyId);
-        newBtnCopyId.addEventListener('click', () => {
-          navigator.clipboard.writeText(regId).then(() => {
-            const originalText = newBtnCopyId.innerHTML;
-            newBtnCopyId.textContent = 'Tersalin!';
-            newBtnCopyId.style.borderColor = 'var(--accent-yellow)';
-            newBtnCopyId.style.color = 'var(--accent-yellow)';
-            playRoboticSound('click');
-            setTimeout(() => {
-              newBtnCopyId.innerHTML = originalText;
-              newBtnCopyId.style.borderColor = '';
-              newBtnCopyId.style.color = '';
-            }, 2000);
-          }).catch(err => {
-            console.error("Gagal menyalin ID:", err);
-          });
-        });
-      }
 
       // Toggle pending review display active, hide approved student card display
       const pendingWrapper = document.getElementById('review-pending-wrapper');

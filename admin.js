@@ -1719,27 +1719,57 @@ async function exportApplicantsToCsv() {
     return;
   }
 
-  const headers = ['No', 'ID Pendaftaran', 'Nama Lengkap', 'Kelas', 'Email', 'No. WhatsApp', 'Motivasi', 'Tanggal Daftar', 'Status'];
+  // Ambil pertanyaan kustom yang aktif
+  const customQuestions = state.regSettings.customQuestions || [];
+
+  // Tentukan header kolom
+  const headers = [
+    'No',
+    'ID Pendaftaran',
+    'Nama Lengkap',
+    'Kelas',
+    'Email',
+    'No. WhatsApp',
+    'Kepemilikan Laptop',
+    'Motivasi Bergabung',
+    'Tanggal Daftar',
+    'Status',
+    ...customQuestions.map(q => q.label)
+  ];
+
+  // Susun baris data pendaftar
   const rows = state.applicants.map((app, index) => {
-    return [
+    const row = [
       index + 1,
       app.id || '',
       app.nama || '',
       app.kelas || '',
       app.email || '',
       app.noHp || '',
+      app.laptop || 'Tidak',
       (app.motivasi || '').replace(/\r?\n/g, ' '),
-      app.tanggalDaftar || '',
+      formatRegistrationDate(app),
       app.status || ''
     ];
+
+    // Tambahkan jawaban untuk pertanyaan kustom
+    customQuestions.forEach(q => {
+      const ans = app.customAnswers && app.customAnswers[q.id]
+        ? app.customAnswers[q.id]
+        : '-';
+      row.push(String(ans).replace(/\r?\n/g, ' '));
+    });
+
+    return row;
   });
 
+  // Gabungkan header dan baris menggunakan pemisah koma (comma delimiter) standar RFC 4180
   const csvContent = [
-    headers.join(';'),
+    headers.map(h => `"${String(h).replace(/"/g, '""')}"`).join(','),
     ...rows.map(row => row.map(val => {
       const strVal = String(val).replace(/"/g, '""');
       return `"${strVal}"`;
-    }).join(';'))
+    }).join(','))
   ].join('\r\n');
 
   const BOM = '\uFEFF';

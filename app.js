@@ -1052,6 +1052,11 @@ function setupRegistrationForm() {
   }
 
   btnNext1.addEventListener('click', async () => {
+    if (regSettings.status !== 'open') {
+      playRoboticSound('error');
+      await customAlert('Pendaftaran saat ini sedang ditutup.');
+      return;
+    }
     if (await validateStep(1)) {
       currentStep = 2;
       renderStep(currentStep);
@@ -1060,6 +1065,11 @@ function setupRegistrationForm() {
   });
 
   btnNext2.addEventListener('click', async () => {
+    if (regSettings.status !== 'open') {
+      playRoboticSound('error');
+      await customAlert('Pendaftaran saat ini sedang ditutup.');
+      return;
+    }
     if (await validateStep(2)) {
       currentStep = 3;
       renderStep(currentStep);
@@ -1084,10 +1094,9 @@ function setupRegistrationForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const currentStatus = regSettings.status || (regSettings.isOpen ? 'open' : 'closed');
-    if (currentStatus !== 'open') {
+    if (regSettings.status !== 'open') {
       playRoboticSound('error');
-      await customAlert('Pendaftaran telah ditutup.');
+      await customAlert('Pendaftaran saat ini sedang ditutup.');
       return;
     }
 
@@ -2242,7 +2251,6 @@ function updateCountdownTimer() {
   const countdownTimerEl = document.getElementById('reg-countdown-timer');
   
   const heroDaftarBtn = document.getElementById('hero-btn-daftar');
-  
   const announcementBar = document.getElementById('top-announcement-bar');
 
   const currentStatus = regSettings.status || (regSettings.isOpen ? 'open' : 'closed');
@@ -2258,6 +2266,8 @@ function updateCountdownTimer() {
     });
     announcementBar.dataset.listenerAttached = 'true';
   }
+
+  const pad = (num) => String(num).padStart(2, '0');
 
   // Helper to remove any old closing banner from form container just in case
   const removeClosingBanner = () => {
@@ -2292,7 +2302,6 @@ function updateCountdownTimer() {
     const diff = targetTime - now;
 
     if (!isNaN(targetTime) && diff > 0) {
-      // Show countdown on Top Announcement Bar if enabled
       if (announcementBar) {
         if (showHeaderCountdown) {
           announcementBar.style.display = 'flex';
@@ -2311,8 +2320,13 @@ function updateCountdownTimer() {
           regSettings.isOpen = false;
           regSettings.status = 'closed_permanently';
           saveData('robotik_reg_settings', regSettings, false);
-          clearInterval(countdownInterval);
-          countdownInterval = null;
+          if (useFirebase && db) {
+            db.collection('settings').doc('registration').set(regSettings).catch(e => console.error("Auto close sync failed:", e));
+          }
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+          }
           updateCountdownTimer();
           return;
         }
@@ -2321,8 +2335,6 @@ function updateCountdownTimer() {
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        const pad = (num) => String(num).padStart(2, '0');
 
         if (announcementBar && showHeaderCountdown) {
           announcementBar.innerHTML = `
@@ -2373,6 +2385,7 @@ function updateCountdownTimer() {
       heroDaftarBtn.style.cursor = 'not-allowed';
     }
   } else {
+    // Mode 'closed' (temporary close with countdown)
     closedContainer.style.display = 'block';
     regLayout.style.display = ''; // Keep reg-layout visible so status checker is displayed
     if (progressBar) progressBar.style.display = 'none';
@@ -2382,26 +2395,26 @@ function updateCountdownTimer() {
     if (closedTitleEl) {
       closedTitleEl.textContent = 'Pendaftaran Saat Ini Ditutup';
     }
-    if (closedMessageEl) {
-      closedMessageEl.textContent = 'Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul. Tunggu hingga pendaftaran dibuka kembali dalam:';
-    }
-    if (countdownTimerEl) {
-      countdownTimerEl.style.display = '';
-    }
 
-    if (heroDaftarBtn) {
-      heroDaftarBtn.textContent = 'Lihat Countdown';
-      heroDaftarBtn.disabled = false;
-      heroDaftarBtn.style.opacity = '1';
-      heroDaftarBtn.style.cursor = 'pointer';
-    }
-
-    // Is there a target date set for opening?
-    const targetTime = new Date(regSettings.countdownTarget).getTime();
+    const targetTime = regSettings.countdownTarget ? new Date(regSettings.countdownTarget).getTime() : NaN;
     const now = Date.now();
     const diff = targetTime - now;
 
     if (!isNaN(targetTime) && diff > 0) {
+      if (closedMessageEl) {
+        closedMessageEl.textContent = 'Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul. Tunggu hingga pendaftaran dibuka kembali dalam:';
+      }
+      if (countdownTimerEl) {
+        countdownTimerEl.style.display = '';
+      }
+
+      if (heroDaftarBtn) {
+        heroDaftarBtn.textContent = 'Lihat Countdown';
+        heroDaftarBtn.disabled = false;
+        heroDaftarBtn.style.opacity = '1';
+        heroDaftarBtn.style.cursor = 'pointer';
+      }
+
       if (announcementBar) {
         if (showHeaderCountdown) {
           announcementBar.style.display = 'flex';
@@ -2431,23 +2444,14 @@ function updateCountdownTimer() {
           regSettings.isOpen = true;
           regSettings.status = 'open';
           saveData('robotik_reg_settings', regSettings, false);
-          clearInterval(countdownInterval);
-          countdownInterval = null;
-          closedContainer.style.display = 'none';
-          regLayout.style.display = '';
-          if (progressBar) progressBar.style.display = '';
-          if (formContainer) formContainer.style.display = '';
-          if (heroDaftarBtn) {
-            heroDaftarBtn.textContent = 'Daftar Sekarang';
-            heroDaftarBtn.disabled = false;
-            heroDaftarBtn.style.opacity = '1';
+          if (useFirebase && db) {
+            db.collection('settings').doc('registration').set(regSettings).catch(e => console.error("Auto open sync failed:", e));
           }
-          
-          const statusToggle = document.getElementById('reg-status-toggle');
-          if (statusToggle) {
-            statusToggle.value = 'open';
-            statusToggle.dispatchEvent(new Event('change'));
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
           }
+          updateCountdownTimer();
           return;
         }
 
@@ -2455,8 +2459,6 @@ function updateCountdownTimer() {
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        const pad = (num) => String(num).padStart(2, '0');
 
         if (announcementBar && showHeaderCountdown) {
           announcementBar.innerHTML = `
@@ -2482,7 +2484,21 @@ function updateCountdownTimer() {
       tick();
       countdownInterval = setInterval(tick, 1000);
     } else {
-      if (announcementBar) announcementBar.style.display = 'none';
+      if (closedMessageEl) {
+        closedMessageEl.textContent = 'Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul.';
+      }
+      if (countdownTimerEl) {
+        countdownTimerEl.style.display = 'none';
+      }
+      if (announcementBar) {
+        announcementBar.style.display = 'none';
+      }
+      if (heroDaftarBtn) {
+        heroDaftarBtn.textContent = 'Pendaftaran Ditutup';
+        heroDaftarBtn.disabled = true;
+        heroDaftarBtn.style.opacity = '0.5';
+        heroDaftarBtn.style.cursor = 'not-allowed';
+      }
     }
   }
 }

@@ -250,6 +250,20 @@ export const INITIAL_REG_SETTINGS = {
   waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
 };
 
+export function normalizeRegSettings(settings) {
+  if (!settings) return { ...INITIAL_REG_SETTINGS };
+  const validStatus = ['open', 'closed', 'closed_permanently'].includes(settings.status)
+    ? settings.status
+    : (settings.isOpen ? 'open' : 'closed');
+
+  settings.status = validStatus;
+  settings.isOpen = (validStatus === 'open');
+  if (settings.showHeaderCountdown === undefined) {
+    settings.showHeaderCountdown = true;
+  }
+  return settings;
+}
+
 export const INITIAL_LANDING_DATA = {
   heroTag: 'Ekstrakurikuler Unggulan',
   heroTitle: 'Rancang Masa Depanmu Bersama <span>Robotik</span>!',
@@ -473,7 +487,7 @@ export const state = {
     }
     return app;
   }),
-  regSettings: loadData('robotik_reg_settings', INITIAL_REG_SETTINGS),
+  regSettings: normalizeRegSettings(loadData('robotik_reg_settings', INITIAL_REG_SETTINGS)),
   landingData: loadData('robotik_landing', INITIAL_LANDING_DATA),
   soundMuted: false,
   useFirebase: useFirebase,
@@ -514,10 +528,11 @@ export async function syncRegSettingsFromFirestore() {
   try {
     const doc = await state.db.collection('settings').doc('registration').get();
     if (doc.exists) {
-      state.regSettings = doc.data();
+      state.regSettings = normalizeRegSettings(doc.data());
       saveData('robotik_reg_settings', state.regSettings, false);
       console.log("Cloud sync completed: Registration settings loaded.");
     } else {
+      state.regSettings = normalizeRegSettings(state.regSettings);
       await state.db.collection('settings').doc('registration').set(state.regSettings);
       console.log("Firestore seeded with initial registration settings.");
     }
@@ -1046,7 +1061,7 @@ export function setupRealTimeRegSettingsSync(onUpdateCallback) {
   try {
     regSettingsUnsubscribe = state.db.collection('settings').doc('registration').onSnapshot(doc => {
       if (doc.exists) {
-        state.regSettings = doc.data();
+        state.regSettings = normalizeRegSettings(doc.data());
         saveData('robotik_reg_settings', state.regSettings, false);
         console.log("Real-time registration settings updated from Cloud Firestore!");
         if (typeof onUpdateCallback === 'function') {

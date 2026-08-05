@@ -1787,6 +1787,25 @@ async function exportApplicantsToCsv() {
   playRoboticSound('success');
 }
 
+function populateTimeDropdowns() {
+  const hourSelect = document.getElementById('reg-countdown-hour');
+  const minuteSelect = document.getElementById('reg-countdown-minute');
+
+  if (hourSelect && hourSelect.children.length === 0) {
+    for (let i = 0; i < 24; i++) {
+      const val = String(i).padStart(2, '0');
+      hourSelect.add(new Option(val, val));
+    }
+  }
+
+  if (minuteSelect && minuteSelect.children.length === 0) {
+    for (let i = 0; i < 60; i++) {
+      const val = String(i).padStart(2, '0');
+      minuteSelect.add(new Option(val, val));
+    }
+  }
+}
+
 // --- REGISTRATION SETTINGS CMS ---
 function setupAdminRegSettings() {
   const statusToggle = document.getElementById('reg-status-toggle');
@@ -1796,21 +1815,7 @@ function setupAdminRegSettings() {
   const regSettingsForm = document.getElementById('cms-reg-settings-form');
 
   if (regSettingsForm) {
-    // Populate hour options (00 to 23)
-    if (hourSelect && hourSelect.children.length === 0) {
-      for (let i = 0; i < 24; i++) {
-        const val = String(i).padStart(2, '0');
-        hourSelect.add(new Option(val, val));
-      }
-    }
-
-    // Populate minute options (00 to 59)
-    if (minuteSelect && minuteSelect.children.length === 0) {
-      for (let i = 0; i < 60; i++) {
-        const val = String(i).padStart(2, '0');
-        minuteSelect.add(new Option(val, val));
-      }
-    }
+    populateTimeDropdowns();
 
     if (statusToggle && dateInput) {
       const toggleCountdownTargetVisibility = () => {
@@ -1851,12 +1856,15 @@ function setupAdminRegSettings() {
 
     regSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      state.regSettings.isOpen = (statusToggle.value === 'open');
-      state.regSettings.status = statusToggle.value;
+      const statusVal = statusToggle ? statusToggle.value : 'open';
+      state.regSettings.status = statusVal;
+      state.regSettings.isOpen = (statusVal === 'open');
 
       if (dateInput && hourSelect && minuteSelect) {
-        if (dateInput.value) {
-          state.regSettings.countdownTarget = `${dateInput.value}T${hourSelect.value}:${minuteSelect.value}`;
+        if (dateInput.value && statusVal !== 'closed_permanently') {
+          const hr = hourSelect.value || '00';
+          const mn = minuteSelect.value || '00';
+          state.regSettings.countdownTarget = `${dateInput.value}T${hr}:${mn}`;
         } else {
           state.regSettings.countdownTarget = '';
         }
@@ -2004,6 +2012,7 @@ function setupAdminRegSettings() {
 }
 
 function populateRegSettingsCmsInputs() {
+  populateTimeDropdowns();
   const statusToggle = document.getElementById('reg-status-toggle');
   const dateInput = document.getElementById('reg-countdown-date');
   const hourSelect = document.getElementById('reg-countdown-hour');

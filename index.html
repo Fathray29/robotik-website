@@ -2,1125 +2,999 @@
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-  <!-- Security Headers -->
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; font-src 'self' https:; frame-src 'self' https://website-motechart.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Motechart Robotik — Ekstrakurikuler Robotika MAN 1 Bogor</title>
+  <meta
+    name="description"
+    content="Belajar rakit, solder, dan program robot nyata dari nol di Motechart Robotik MAN 1 Bogor. Daftar sekarang."
+  />
+  <meta name="author" content="Motechart Robotik MAN 1 Bogor" />
+  <meta name="robots" content="index, follow" />
 
-  <!-- SEO Optimization -->
-  <title>Motechart Robotik - Ekstrakurikuler Robotik Sekolah Unggulan</title>
-  <meta name="description"
-    content="Situs Resmi Ekstrakurikuler Motechart Robotik. Bergabunglah bersama kami untuk merancang, memprogram, dan membangun teknologi masa depan. Pendaftaran dibuka!">
-  <meta name="keywords"
-    content="robotik, ekstrakurikuler sekolah, arduino, pemrograman, mekanik, elektronika, IoT, pendaftaran ekskul, motechart">
-  <meta name="author" content="Motechart Robotik Team">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://Rayyan.github.io/robotik-website/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Motechart Robotik — Ekstrakurikuler Robotika MAN 1 Bogor" />
+  <meta
+    property="og:description"
+    content="Belajar rakit, solder, dan program robot nyata dari nol di Motechart Robotik MAN 1 Bogor."
+  />
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://Rayyan.github.io/robotik-website/">
-  <meta property="og:title" content="Motechart Robotik - Ekstrakurikuler Robotik Sekolah Unggulan">
-  <meta property="og:description"
-    content="Situs Resmi Ekstrakurikuler Motechart Robotik. Bergabunglah bersama kami untuk merancang, memprogram, dan membangun teknologi masa depan. Pendaftaran dibuka!">
-  <meta property="og:image"
-    content="https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop">
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='100' r='95' fill='%23090D16' stroke='%23FACC15' stroke-width='5'/><circle cx='66' cy='108' r='11' fill='%2322D3EE'/><circle cx='134' cy='108' r='11' fill='%2322D3EE'/><path d='M100 45L36 45L36 125L48 154L76 108L82 90L118 90L124 108L152 154L164 125L164 45Z' stroke='%23FACC15' stroke-width='5' fill='none'/><circle cx='100' cy='150' r='8' fill='%23FACC15'/></svg>"
+  />
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://Rayyan.github.io/robotik-website/">
-  <meta property="twitter:title" content="Motechart Robotik - Ekstrakurikuler Robotik Sekolah Unggulan">
-  <meta property="twitter:description"
-    content="Situs Resmi Ekstrakurikuler Motechart Robotik. Bergabunglah bersama kami untuk merancang, memprogram, dan membangun teknologi masa depan. Pendaftaran dibuka!">
-  <meta property="twitter:image"
-    content="https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop">
-
-  <!-- Preconnect & DNS Prefetch for performance optimization -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://www.gstatic.com">
-  <link rel="preconnect" href="https://firestore.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-  <link rel="dns-prefetch" href="https://www.gstatic.com">
-  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
-
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='100' height='100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFEFA6'/><stop offset='50%25' stop-color='%23E5C158'/><stop offset='100%25' stop-color='%23805C15'/></linearGradient><linearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='50%25' stop-color='%23AEAEB2'/><stop offset='100%25' stop-color='%233A3A3C'/></linearGradient><radialGradient id='c' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%2300F0FF'/><stop offset='100%25' stop-color='%23083344'/></radialGradient></defs><circle cx='100' cy='100' r='95' fill='%230B1120' stroke='%23FACC15' stroke-width='4'/><g transform='translate(64,108)'><circle cx='0' cy='0' r='14' fill='url(%23s)'/><circle cx='0' cy='0' r='8' fill='url(%23c)'/><circle cx='0' cy='0' r='4' fill='%23000'/></g><g transform='translate(136,108)'><circle cx='0' cy='0' r='14' fill='url(%23s)'/><circle cx='0' cy='0' r='8' fill='url(%23c)'/><circle cx='0' cy='0' r='4' fill='%23000'/></g><g transform='translate(100,150)'><circle cx='0' cy='0' r='19' fill='url(%23s)'/></g><path d='M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z' stroke='url(%23g)' stroke-width='4.5' fill='none'/><circle cx='100' cy='150' r='6' fill='url(%23g)'/></svg>">
-
-  <!-- Google Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
-
-  <!-- Core stylesheets -->
-  <link rel="stylesheet" href="./index.css">
+  <!-- Typography: Outfit (display), Plus Jakarta Sans (body), JetBrains Mono (code/specs) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+  />
 </head>
 
-<body>
+<body class="bg-[#090D16] text-slate-200 antialiased flex flex-col min-h-screen">
 
-  <!-- Background visual circuit layout & glows -->
-  <div class="bg-grid-glows">
-    <div class="bg-glow-spot cyan" aria-hidden="true"></div>
-    <div class="bg-glow-spot yellow" aria-hidden="true"></div>
-  </div>
-
-  <svg class="bg-circuit-lines" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <!-- Robotic circuit traces in yellow and cyan -->
-    <path d="M 50,100 L 150,200 L 300,200 L 350,250 M 800,100 L 900,200 L 1050,200" stroke="rgba(6, 182, 212, 0.15)"
-      stroke-width="2" fill="none" />
-    <path d="M 100,500 L 200,600 L 200,700 L 250,750" stroke="rgba(250, 204, 21, 0.12)" stroke-width="2" fill="none" />
-    <path d="M 1100,600 L 1000,700 L 850,700 L 800,750" stroke="rgba(6, 182, 212, 0.15)" stroke-width="2" fill="none" />
-    <circle cx="350" cy="250" r="4" fill="#06B6D4" />
-    <circle cx="250" cy="750" r="4" fill="#FACC15" />
-    <circle cx="800" cy="750" r="4" fill="#06B6D4" />
-  </svg>
-
-  <!-- TOP ANNOUNCEMENT BAR (COUNTDOWN) -->
-  <div id="top-announcement-bar" class="announcement-bar" style="display: none;"></div>
-
-  <!-- NAVIGATION HEADER -->
-  <header class="main-header">
-    <div class="container header-container">
-      <a href="#home" class="brand" id="brand-link" aria-label="Motechart Robotik Home">
-        <!-- High-fidelity custom brand logo in SVG representing Motechart Robotik -->
-        <svg class="brand-logo-svg" width="40" height="40" viewBox="0 0 200 200" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="gold-grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#FFEFA6" />
-              <stop offset="30%" stop-color="#E5C158" />
-              <stop offset="70%" stop-color="#B28C32" />
-              <stop offset="100%" stop-color="#805C15" />
-            </linearGradient>
-            <linearGradient id="silver-grad-header" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#FFFFFF" />
-              <stop offset="25%" stop-color="#E5E5EA" />
-              <stop offset="50%" stop-color="#AEAEB2" />
-              <stop offset="75%" stop-color="#636366" />
-              <stop offset="100%" stop-color="#3A3A3C" />
-            </linearGradient>
-            <radialGradient id="cyan-glow-header" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#00F0FF" />
-              <stop offset="70%" stop-color="#06B6D4" />
-              <stop offset="100%" stop-color="#083344" />
-            </radialGradient>
-          </defs>
-          <!-- Left Eye Gear -->
-          <g transform="translate(64, 108)">
-            <g fill="url(#silver-grad-header)">
-              <rect x="-3" y="-18" width="6" height="5" rx="1" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(30)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(60)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(90)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(120)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(150)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(180)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(210)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(240)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(270)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(300)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(330)" />
-            </g>
-            <circle cx="0" cy="0" r="14" fill="url(#silver-grad-header)" stroke="#1E293B" stroke-width="0.5" />
-            <circle cx="0" cy="0" r="10" fill="#020617" />
-            <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-header)" />
-            <circle cx="0" cy="0" r="5" fill="#000000" />
-            <circle cx="2.5" cy="-2.5" r="2" fill="#FFFFFF" />
-          </g>
-          <!-- Right Eye Gear -->
-          <g transform="translate(136, 108)">
-            <g fill="url(#silver-grad-header)">
-              <rect x="-3" y="-18" width="6" height="5" rx="1" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(30)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(60)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(90)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(120)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(150)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(180)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(210)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(240)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(270)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(300)" />
-              <rect x="-3" y="-18" width="6" height="5" rx="1" transform="rotate(330)" />
-            </g>
-            <circle cx="0" cy="0" r="14" fill="url(#silver-grad-header)" stroke="#1E293B" stroke-width="0.5" />
-            <circle cx="0" cy="0" r="10" fill="#020617" />
-            <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-header)" />
-            <circle cx="0" cy="0" r="5" fill="#000000" />
-            <circle cx="2.5" cy="-2.5" r="2" fill="#FFFFFF" />
-          </g>
-          <!-- Bottom Mouth/Chin Gear -->
-          <g transform="translate(100, 150)">
-            <g fill="url(#silver-grad-header)">
-              <rect x="-4" y="-23" width="8" height="6" rx="1" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(30)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(60)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(90)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(120)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(150)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(180)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(210)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(240)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(270)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(300)" />
-              <rect x="-4" y="-23" width="8" height="6" rx="1" transform="rotate(330)" />
-            </g>
-            <circle cx="0" cy="0" r="19" fill="url(#silver-grad-header)" stroke="#1E293B" stroke-width="0.5" />
-            <circle cx="0" cy="0" r="13" fill="#020617" />
-          </g>
-          <!-- Golden Mask / Shield Shape -->
-          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
-              stroke="url(#gold-grad-header)" stroke-width="4.5" />
-            <path
-              d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z"
-              stroke="url(#gold-grad-header)" stroke-width="3" />
-            <path
-              d="M 100,61 L 51,61 L 51,117 L 58,133 L 74,106 L 78,106 L 100,106 L 122,106 L 126,106 L 142,133 L 149,117 L 149,61 Z"
-              stroke="url(#gold-grad-header)" stroke-width="2" />
-            <path d="M 100,69 L 59,69 L 59,113 L 73,105 L 100,105 L 127,105 L 141,113 L 141,69 Z"
-              stroke="url(#gold-grad-header)" stroke-width="1.5" />
-            <path d="M 94,45 L 94,142" stroke="url(#gold-grad-header)" stroke-width="2" />
-            <path d="M 100,45 L 100,142" stroke="url(#gold-grad-header)" stroke-width="2.5" />
-            <path d="M 106,45 L 106,142" stroke="url(#gold-grad-header)" stroke-width="2" />
-          </g>
-          <!-- Golden Rivet -->
-          <circle cx="100" cy="150" r="7" fill="url(#gold-grad-header)" stroke="#4A3515" stroke-width="1" />
-          <path d="M 96.5,146.5 L 103.5,153.5 M 103.5,146.5 L 96.5,153.5" stroke="#1E1303" stroke-width="1.5"
-            stroke-linecap="round" />
-        </svg>
-        <span class="brand-text">MOTECHART ROBOTIK</span>
+  <!-- TOP NAVIGATION BAR (Strict 3-Zone Contract) -->
+  <header class="sticky top-0 z-40 border-b border-white/8 bg-[#090D16]/90 backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+      <!-- Zone 1: Brand Identity -->
+      <a
+        href="#home"
+        data-nav-target="view-home"
+        class="inline-flex items-center gap-3 whitespace-nowrap shrink-0"
+        aria-label="Motechart Robotik Beranda"
+      >
+        <span id="header-brand-logo" class="inline-flex shrink-0" aria-hidden="true"></span>
+        <span class="font-display text-base font-bold tracking-tight text-white">Motechart Robotik</span>
       </a>
 
-      <nav aria-label="Main Navigation">
-        <ul class="nav-menu">
-          <li><a href="#home" class="nav-link active" data-target="view-home">Home</a></li>
-          <li><a href="#blog" class="nav-link" data-target="view-blog">Blog</a></li>
-          <li><a href="#portfolio" class="nav-link" data-target="view-portfolio">Portfolio</a></li>
-          <li><a href="#pendaftaran" class="nav-link" data-target="view-pendaftaran">Pendaftaran</a></li>
-          <li><a href="admin.html" class="nav-link nav-admin-btn" title="Dashboard Admin CMS"
-              aria-label="Dashboard Admin CMS"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                class="admin-icon">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg></a></li>
-        </ul>
+      <!-- Zone 2: Primary Navigation Links -->
+      <nav aria-label="Navigasi Utama" class="hidden md:flex items-center gap-7">
+        <a href="#home" data-nav-target="view-home" class="top-nav-link is-active whitespace-nowrap shrink-0">Beranda</a>
+        <a href="#blog" data-nav-target="view-blog" class="top-nav-link whitespace-nowrap shrink-0">Blog &amp; Materi</a>
+        <a href="#portfolio" data-nav-target="view-portfolio" class="top-nav-link whitespace-nowrap shrink-0">Portofolio</a>
+        <a href="#pendaftaran" data-nav-target="view-pendaftaran" class="top-nav-link whitespace-nowrap shrink-0">Pendaftaran</a>
+      </nav>
+
+      <!-- Zone 3: Single Primary Action + Mobile Menu Trigger -->
+      <div class="flex items-center gap-3 shrink-0">
+        <button
+          type="button"
+          id="header-cta-daftar"
+          class="hidden sm:inline-flex items-center justify-center rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-amber-300 whitespace-nowrap shrink-0 cursor-pointer"
+        >
+          Daftar Sekarang
+        </button>
+        <button
+          type="button"
+          id="mobile-menu-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-nav-drawer"
+          aria-label="Buka menu navigasi"
+          class="inline-flex md:hidden h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-100 hover:bg-white/10 transition-colors cursor-pointer"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="hidden md:hidden border-t border-white/8 bg-[#0B111E] px-4 py-4">
+      <nav aria-label="Navigasi Seluler" class="flex flex-col gap-1">
+        <a href="#home" data-nav-target="view-home" class="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/5">Beranda</a>
+        <a href="#blog" data-nav-target="view-blog" class="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/5">Blog &amp; Materi</a>
+        <a href="#portfolio" data-nav-target="view-portfolio" class="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/5">Portofolio</a>
+        <a href="#pendaftaran" data-nav-target="view-pendaftaran" class="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/5">Pendaftaran</a>
       </nav>
     </div>
   </header>
 
-  <!-- MAIN APP PAGES CONTAINER -->
-  <main>
-    <div class="container">
+  <main class="flex-1">
 
-      <!-- ==========================================
-           1. HOME VIEW (BERANDA)
-           ========================================== -->
-      <section id="view-home" class="page-view active" aria-labelledby="home-title">
+    <!-- ================================================================
+         VIEW 1: BERANDA (HOMEPAGE)
+         ================================================================ -->
+    <section id="view-home" data-view>
 
-        <!-- Hero Section -->
-        <div class="hero-grid">
-          <div class="hero-content">
-            <span class="hero-tag" id="home-hero-tag">Ekstrakurikuler Unggulan</span>
-            <h1 id="home-title" class="hero-title">Rancang Masa Depanmu Bersama <span>Robotik</span>!</h1>
-            <p class="hero-description" id="home-hero-desc">
-              Eksplorasi kreativitas tanpa batas. Kembangkan keahlian mekanika tangguh, sirkuit elektronika cerdas, dan
-              pemrograman algoritma tingkat tinggi untuk menciptakan robot-robot inovatif masa depan.
+      <!-- HERO SECTION (Interactive 12-Col Blueprint Split, Above the Fold) -->
+      <div id="hero-stage" class="hero-interactive-canvas relative overflow-hidden border-b border-white/8 canvas-grid">
+        <div
+          aria-hidden="true"
+          class="hero-glow-drift pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"
+        ></div>
+        <div
+          aria-hidden="true"
+          class="hero-glow-drift-alt pointer-events-none absolute -bottom-28 left-0 h-80 w-80 rounded-full bg-amber-400/10 blur-3xl"
+        ></div>
+
+        <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-12 lg:pt-16 lg:pb-16">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
+
+            <!-- Left Editorial Column -->
+            <div class="lg:col-span-6 space-y-5 sm:space-y-6 text-center lg:text-left">
+              <p id="home-hero-kicker" class="font-mono text-xs sm:text-sm font-medium text-amber-300 tracking-wide">
+                Motechart Robotik · MAN 1 Bogor
+              </p>
+
+              <h1
+                id="home-hero-title"
+                class="hero-headline font-display text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.08] text-white text-balance"
+              >
+                Rakit dan Program <span>Robotmu Sendiri</span>
+              </h1>
+
+              <p id="home-hero-desc" class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Kamu belajar desain CAD, menyolder PCB, dan menulis kode C++ langsung di lab. Tidak butuh pengalaman sebelumnya.
+              </p>
+
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 pt-1 max-w-sm sm:max-w-none mx-auto lg:mx-0">
+                <button
+                  type="button"
+                  id="hero-btn-daftar"
+                  class="hero-cta-primary inline-flex w-full sm:w-auto min-h-[46px] items-center justify-center rounded-lg bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition-all hover:bg-amber-300 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  Daftar Sekarang
+                </button>
+                <button
+                  type="button"
+                  id="hero-btn-galeri"
+                  class="inline-flex w-full sm:w-auto min-h-[46px] items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 hover:border-white/25 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  Lihat Karya Siswa
+                </button>
+              </div>
+
+              <div id="hero-reg-window" class="flex justify-center lg:justify-start text-xs sm:text-sm text-slate-400 pt-1">
+                Pendaftaran anggota baru tahun ajaran 2026/2027 sedang dibuka.
+              </div>
+            </div>
+
+            <!-- Right Interactive Rover Engineering Blueprint (Zero AI Photos) -->
+            <div class="lg:col-span-6">
+              <div class="blueprint-frame relative p-2">
+                <div id="hero-rover-workbench">
+                  <!-- Rendered by src/components/heroBlueprint.ts -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PROOF STRIP (4-Column Live Factual Lab Counts) -->
+      <div class="border-b border-white/8 bg-[#0D1320]">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-7">
+          <dl class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 text-center">
+            <div class="space-y-1">
+              <dt class="text-xs text-slate-400">Divisi Praktik</dt>
+              <dd class="font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">03</dd>
+              <p class="text-xs text-slate-400">Mekanik · Elektronik · Pemrograman</p>
+            </div>
+            <div class="space-y-1">
+              <dt class="text-xs text-slate-400">Karya Siswa</dt>
+              <dd id="stat-projects-count" class="font-display text-2xl sm:text-3xl font-bold text-white tabular-nums">03</dd>
+              <p class="text-xs text-slate-400">Lengkap dengan skematik &amp; kode</p>
+            </div>
+            <div class="space-y-1">
+              <dt class="text-xs text-slate-400">Prestasi Lomba</dt>
+              <dd id="stat-achievements-count" class="font-display text-2xl sm:text-3xl font-bold text-amber-300 tabular-nums">04</dd>
+              <p class="text-xs text-slate-400">Tercatat di rekam jejak lab</p>
+            </div>
+            <div class="space-y-1">
+              <dt class="text-xs text-slate-400">Panduan Teknis</dt>
+              <dd id="stat-articles-count" class="font-display text-2xl sm:text-3xl font-bold text-cyan-300 tabular-nums">04</dd>
+              <p class="text-xs text-slate-400">Materi latihan dari mentor lab</p>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE DIVISION WORKBENCH (Distinct Deep-Tech Arena Band) -->
+      <div id="section-divisions" class="scroll-mt-20 border-b border-white/8 divisions-arena-bg">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div class="text-center max-w-2xl mx-auto mb-12">
+            <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider mb-2">
+              Pilih Jalur Belajarmu
             </p>
-            <div class="hero-actions">
-              <button class="btn btn-yellow" id="hero-btn-daftar">Daftar Sekarang</button>
-              <button class="btn btn-secondary" id="hero-btn-galeri">Lihat Galeri
-                Karya</button>
-            </div>
-          </div>
-
-          <div class="hero-robot-wrapper">
-            <!-- Dynamic 3D-Like CSS Animated Robotic Mascot -->
-            <div class="robot-mascot" aria-hidden="true" title="Robot Motechart Mascot">
-              <div class="robot-head">
-                <div class="robot-eye"></div>
-                <div class="robot-eye"></div>
-              </div>
-              <div class="robot-chest">
-                <div class="robot-screen">&lt;HELLO&gt;</div>
-                <div class="robot-joints"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Visi Misi Section -->
-        <div class="visi-misi-section">
-          <div class="visi-misi-grid">
-            <div class="glass-card">
-              <h2 class="vm-title"><span>🎯</span> Visi Kami</h2>
-              <p id="home-visi-text"
-                style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
-                Menjadi pusat pengembangan teknologi robotika remaja yang unggul, adaptif, inovatif, dan berprestasi
-                global berlandaskan kerja sama tim dan integritas sains.
-              </p>
-            </div>
-            <div class="glass-card">
-              <h2 class="vm-title"><span>🚀</span> Misi Kami</h2>
-              <ul class="vm-list" id="home-misi-list">
-                <li>Menyelenggarakan pelatihan terstruktur bidang mekanik, elektronika dasar, dan coding.</li>
-                <li>Mendorong kreativitas dalam memecahkan masalah nyata berbasis Internet of Things (IoT).</li>
-                <li>Mempersiapkan tim tangguh untuk berkompetisi di tingkat nasional dan internasional.</li>
-                <li>Menghasilkan alumni berkarakter teknik yang siap bersaing di era otomatisasi global.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Seksi Divisi Keahlian (Interactive Split Instrument Panel) -->
-        <div class="divisi-section">
-          <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
-            <h2>Divisi Keahlian Kami</h2>
-          </div>
-
-          <div class="divisi-split-panel">
-            <!-- Left Side: Navigasi Instrumen Vertikal -->
-            <div class="divisi-nav-panel">
-              <button type="button" class="divisi-nav-btn active" data-div="mechanics">
-                <div class="nav-btn-indicator"></div>
-                <div class="nav-btn-icon">🦾</div>
-                <div class="nav-btn-text">
-                  <span class="btn-label">DIVISI 01</span>
-                  <span class="btn-title">Mekanik (Mechanics)</span>
-                </div>
-              </button>
-
-              <button type="button" class="divisi-nav-btn" data-div="electronics">
-                <div class="nav-btn-indicator"></div>
-                <div class="nav-btn-icon">⚡</div>
-                <div class="nav-btn-text">
-                  <span class="btn-label">DIVISI 02</span>
-                  <span class="btn-title">Elektronik (Electronics)</span>
-                </div>
-              </button>
-
-              <button type="button" class="divisi-nav-btn" data-div="programming">
-                <div class="nav-btn-indicator"></div>
-                <div class="nav-btn-icon">💻</div>
-                <div class="nav-btn-text">
-                  <span class="btn-label">DIVISI 03</span>
-                  <span class="btn-title">Pemrograman (Programming)</span>
-                </div>
-              </button>
-            </div>
-
-            <!-- Right Side: Card Detail & Preview Grafis -->
-            <div class="divisi-detail-panel" id="divisi-detail-container">
-              <!-- Rendered dynamically via JS -->
-            </div>
-          </div>
-        </div>
-
-
-        <!-- Seksi Galeri Penghargaan & Prestasi (Glassmorphic Grid) -->
-        <div class="prestasi-section">
-          <div class="section-subtitle-center" style="margin-bottom: 2.5rem;">
-            <h2>Galeri Penghargaan & Prestasi</h2>
-          </div>
-
-          <div class="achievements-grid" id="home-achievements-grid">
-            <!-- Rendered dynamically via JS as Glassmorphic Grid Cards -->
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ==========================================
-           2. BLOG VIEW (ARTIKEL)
-           ========================================== -->
-      <section id="view-blog" class="page-view" aria-labelledby="blog-title">
-        <div class="page-title-section">
-          <h2 id="blog-title">Artikel & Berita Robotik</h2>
-          <p>Pelajari teknologi terkini, tutorial pemrograman mikrokontroler, dan berita klub robotik kami</p>
-        </div>
-
-        <div class="blog-controls">
-          <!-- Search input box -->
-          <div class="search-wrapper">
-            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" id="blog-search" class="search-input" placeholder="Cari tutorial atau berita robotik..."
-              aria-label="Cari artikel">
-          </div>
-
-          <!-- Category filter buttons -->
-          <div class="blog-filters" role="tablist" aria-label="Kategori Artikel">
-            <button class="blog-filter-btn active" data-category="all" role="tab" aria-selected="true">Semua
-              Kategori</button>
-            <button class="blog-filter-btn" data-category="arduino" role="tab" aria-selected="false">Arduino</button>
-            <button class="blog-filter-btn" data-category="tutorial" role="tab" aria-selected="false">Tutorial
-              Perakitan</button>
-            <button class="blog-filter-btn" data-category="iot" role="tab" aria-selected="false">IoT (Internet of
-              Things)</button>
-            <button class="blog-filter-btn" data-category="kompetisi" role="tab" aria-selected="false">Tips
-              Kompetisi</button>
-          </div>
-        </div>
-
-        <!-- Articles Grid Container (Filled dynamically by JS) -->
-        <div class="blog-grid" id="blog-grid"></div>
-
-      </section>
-
-      <!-- ==========================================
-           3. PORTFOLIO VIEW (GALERI PROYEK SISWA)
-           ========================================== -->
-      <section id="view-portfolio" class="page-view" aria-labelledby="portfolio-title">
-        <div class="page-title-section">
-          <h2 id="portfolio-title">Galeri Karya & Proyek</h2>
-          <p>Karya cipta robot pintar yang dirancang, dirakit, dan diprogram sepenuhnya oleh siswa ekstrakurikuler</p>
-        </div>
-
-        <!-- Projects Grid Container (Filled dynamically by JS) -->
-        <div class="portfolio-grid" id="portfolio-grid"></div>
-      </section>
-
-      <!-- ==========================================
-           4. PENDAFTARAN VIEW (FORMULIR MULTI-STEP)
-           ========================================== -->
-      <section id="view-pendaftaran" class="page-view" aria-labelledby="pendaftaran-title">
-        <div class="page-title-section">
-          <h2 id="pendaftaran-title">Formulir Penerimaan Anggota</h2>
-          <p>Untuk mendaftar menjadi bagian dari Ekstrakurikuler Robotik, silahkan ikuti alur pendaftaran berikut:</p>
-        </div>
-
-        <div class="reg-layout">
-
-          <!-- CONTAINER UNTUK PENDAFTARAN DITUTUP (COUNTDOWN) -->
-          <div class="glass-card" id="reg-closed-container"
-            style="display: none; text-align: center; padding: 3rem; margin-bottom: 2rem;">
-            <div class="pulsing-radar-icon" aria-hidden="true"
-              style="margin: 0 auto 2rem auto; border-color: var(--accent-yellow); background: rgba(245, 158, 11, 0.1);">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)"
-                stroke-width="2.5">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-            </div>
-            <h2 id="reg-closed-title" style="font-size: 2rem; color: var(--accent-yellow); margin-bottom: 1rem;">Pendaftaran Saat Ini Ditutup
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-[2.65rem] font-bold tracking-tight text-white text-balance">
+              Divisi Keahlian Kami
             </h2>
-            <p style="max-width: 600px; margin: 0 auto 2rem auto; color: var(--text-muted);" id="reg-closed-message">
-              Penerimaan anggota baru sedang dinonaktifkan sementara oleh pengurus ekskul. Tunggu hingga pendaftaran
-              dibuka kembali dalam:</p>
-
-            <div class="countdown-grid" id="reg-countdown-timer">
-              <div class="countdown-item">
-                <span class="countdown-val" id="cd-days">00</span>
-                <span class="countdown-unit">Hari</span>
-              </div>
-              <div class="countdown-item">
-                <span class="countdown-val" id="cd-hours">00</span>
-                <span class="countdown-unit">Jam</span>
-              </div>
-              <div class="countdown-item">
-                <span class="countdown-val" id="cd-minutes">00</span>
-                <span class="countdown-unit">Menit</span>
-              </div>
-              <div class="countdown-item">
-                <span class="countdown-val" id="cd-seconds">00</span>
-                <span class="countdown-unit">Detik</span>
-              </div>
-            </div>
+            <p class="mt-3 text-sm sm:text-base text-slate-400 leading-relaxed">
+              Klik tiap divisi untuk lihat praktik langsung, alat yang kamu pakai, dan simulasi kerjanya.
+            </p>
           </div>
 
-          <!-- Navigation Steps Progress Bar -->
-          <div class="progress-bar-container">
-            <ol class="step-tracker-list" aria-label="Tahapan Pendaftaran">
-              <li class="step-track active" aria-current="step">
-                <div class="step-num">1</div>
-                <div class="step-label">Data Diri</div>
-              </li>
-              <li class="step-track">
-                <div class="step-num">2</div>
-                <div class="step-label">Minat & Divisi</div>
-              </li>
-              <li class="step-track">
-                <div class="step-num">3</div>
-                <div class="step-label">Konfirmasi</div>
-              </li>
-            </ol>
-          </div>
-
-          <!-- Pendaftaran Form Container -->
-          <div class="glass-card" id="reg-form-container">
-            <form id="robotics-reg-form" autocomplete="on" novalidate>
-
-              <!-- LANGKAH 1: DATA DIRI -->
-              <div class="form-step-content active" id="form-step-1">
-                <h3
-                  style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
-                  Langkah 1: Identitas Calon Anggota</h3>
-
-                <div class="form-group">
-                  <label class="form-label" for="nama_lengkap">Nama Lengkap Siswa <span>*</span></label>
-                  <input type="text" id="nama_lengkap" name="nama_lengkap" class="input-control" required
-                    placeholder="Contoh: Muhammad Farhan" autocomplete="name">
-                  <span class="hint-text">Gunakan nama lengkap sesuai akta kelahiran untuk pencetakan Kartu ID.</span>
-                </div>
-
-                <div class="form-group">
-                  <span class="form-label">Tingkat Kelas Saat Ini <span>*</span></span>
-                  <div class="radio-options-row">
-                    <div class="custom-radio-wrapper">
-                      <input type="radio" id="kelas_x" name="kelas" value="X" checked>
-                      <label for="kelas_x" class="custom-radio-label">Kelas X (Sepuluh)</label>
-                    </div>
-                    <div class="custom-radio-wrapper">
-                      <input type="radio" id="kelas_xi" name="kelas" value="XI">
-                      <label for="kelas_xi" class="custom-radio-label">Kelas XI (Sebelas)</label>
-                    </div>
-                    <div class="custom-radio-wrapper">
-                      <input type="radio" id="kelas_xii" name="kelas" value="XII">
-                      <label for="kelas_xii" class="custom-radio-label">Kelas XII (Dua Belas)</label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="email">Alamat Email Aktif <span>*</span></label>
-                  <input type="email" id="email" name="email" class="input-control" required
-                    placeholder="Contoh: nama@domain.com" autocomplete="email">
-                  <span class="hint-text">Alamat email aktif untuk pengiriman surat pemberitahuan.</span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="no_hp">Nomor WhatsApp / Ponsel Aktif <span>*</span></label>
-                  <input type="tel" id="no_hp" name="no_hp" class="input-control" required
-                    placeholder="Contoh: 081234567890" autocomplete="tel">
-                  <span class="hint-text">Digunakan untuk koordinasi jadwal kegiatan latihan ekskul (contoh:
-                    08...).</span>
-                </div>
-
-                <div class="form-actions-row">
-                  <button type="button" class="btn btn-cyan btn-step-next" id="btn-next-1" aria-label="Langkah Berikutnya" title="Langkah Berikutnya">
-                    <span class="btn-step-text">Langkah Berikutnya</span>
-                    <svg class="btn-step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- LANGKAH 2: MINAT & DIVISI -->
-              <div class="form-step-content" id="form-step-2">
-                <h3
-                  style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
-                  Langkah 2: Pemetaan Keahlian & Minat</h3>
-
-                <div class="form-group">
-                  <label class="form-label" for="motivasi">Tulis Motivasi Bergabung Ekskul Robotik <span>*</span> <span
-                      id="char-count" style="font-size: 0.8rem; font-weight: normal; margin-left: 5px;">(minimal 20
-                      karakter)</span></label>
-                  <textarea id="motivasi" name="motivasi" class="input-control" required
-                    placeholder="Mengapa Anda tertarik dengan robotik? Apa yang ingin Anda capai atau ciptakan..."></textarea>
-                  <span class="hint-text">Jelaskan motivasi atau alasan utama Anda ingin bergabung.</span>
-                </div>
-
-                <div class="form-group">
-                  <span class="form-label">Apakah Anda Memiliki Laptop Sendiri? <span>*</span></span>
-                  <div class="radio-options-row">
-                    <div class="custom-radio-wrapper">
-                      <input type="radio" id="laptop_ya" name="laptop" value="Ya, Siap Digunakan" checked>
-                      <label for="laptop_ya" class="custom-radio-label">Ya, Punya</label>
-                    </div>
-                    <div class="custom-radio-wrapper">
-                      <input type="radio" id="laptop_tidak" name="laptop" value="Tidak (Gunakan Lab Ekskul)">
-                      <label for="laptop_tidak" class="custom-radio-label">Tidak Punya</label>
-                    </div>
-                  </div>
-                  <span class="hint-text">Laptop pribadi sangat disarankan untuk latihan coding mandiri, namun lab
-                    sekolah menyediakan komputer lengkap.</span>
-                </div>
-
-                <!-- Wadah Pertanyaan Tambahan (Kustom) Dinamis -->
-                <div id="custom-questions-injected-container"
-                  style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; border-top: 1px dashed var(--border-glass); padding-top: 1.5rem;">
-                </div>
-
-                <div class="form-actions-row">
-                  <button type="button" class="btn btn-secondary btn-step-prev" id="btn-prev-2" aria-label="Langkah Sebelumnya" title="Langkah Sebelumnya">
-                    <svg class="btn-step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    <span class="btn-step-text">Langkah Sebelumnya</span>
-                  </button>
-                  <button type="button" class="btn btn-cyan btn-step-next" id="btn-next-2" aria-label="Langkah Berikutnya" title="Langkah Berikutnya">
-                    <span class="btn-step-text">Langkah Berikutnya</span>
-                    <svg class="btn-step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- LANGKAH 3: KONFIRMASI -->
-              <div class="form-step-content" id="form-step-3">
-                <h3
-                  style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--accent-cyan); border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
-                  Langkah 3: Konfirmasi Validasi Data</h3>
-                <p class="hint-text" style="margin-top: -1.5rem; margin-bottom: 2rem;">Periksa kembali keakuratan
-                  seluruh data pendaftaran Anda sebelum menekan tombol Kirim Formulir di bawah.</p>
-
-                <!-- Dynamic populated summary card -->
-                <div class="confirmation-card">
-                  <div id="confirmation-summary">
-                    <!-- Populated dynamically via JS -->
-                  </div>
-                </div>
-
-                <div class="form-actions-row">
-                  <button type="button" class="btn btn-secondary btn-step-prev" id="btn-prev-3" aria-label="Langkah Sebelumnya" title="Langkah Sebelumnya">
-                    <svg class="btn-step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    <span class="btn-step-text">Langkah Sebelumnya</span>
-                  </button>
-                  <button type="submit" class="btn btn-yellow btn-step-submit" id="btn-submit" aria-label="Kirim Formulir Pendaftaran" title="Kirim Formulir">
-                    <svg class="btn-step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    <span class="btn-step-text">Kirim Formulir</span>
-                  </button>
-                </div>
-              </div>
-
-            </form>
-          </div>
-
-          <!-- LAYAR SUKSES PENDAFTARAN -->
-          <div class="glass-card success-card" id="reg-success-card">
-
-            <!-- A. TAMPILAN STATUS PENINJAUAN (PENDING REVIEW) -->
-            <div id="review-pending-wrapper">
-              <div class="pulsing-radar-icon" aria-hidden="true">
-                <div class="radar-ping"></div>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-yellow)"
-                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
-
-              <h2>Pendaftaran Berhasil! Lanjut ke Proses Selanjutnya 🚀</h2>
-              <p class="status-panel">Status: <span class="status-badge status-pending">Menunggu Persetujuan</span></p>
-
-              <div class="unique-id-display"
-                style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; padding: 1.25rem 1.5rem; margin: 1.5rem auto; max-width: 400px; text-align: center; box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);">
-                <span
-                  style="color: var(--text-muted); font-size: 0.85rem; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">ID
-                  Pendaftaran Khusus Anda</span>
-                <div style="margin: 0.35rem 0;">
-                  <strong id="registered-student-id"
-                    style="font-family: monospace; font-size: 1.8rem; color: var(--accent-cyan); letter-spacing: 2px; text-shadow: 0 0 10px rgba(6, 182, 212, 0.4); display: block;">ROBO-XXXXXX</strong>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0 0 0; line-height: 1.4;">
-                  Simpan ID khusus ini untuk mengecek status pendaftaran Anda secara mandiri di kolom status di bawah.
-                </p>
-              </div>
-
-              <p style="margin-top: 1.5rem;">Halo <strong id="registered-student-name">Robotikawan</strong>, Anda
-                <strong>berhasil mendaftar</strong> ke ekstrakurikuler Motechart Robotik! Data Anda telah terenkripsi
-                dengan aman di database admin. Untuk <strong>lanjut ke proses selanjutnya</strong>, silakan segera
-                bergabung ke Grup WhatsApp resmi koordinasi calon anggota di bawah ini.
-              </p>
-
-              <!-- WhatsApp Group Invitation Card -->
-              <div class="wa-group-card">
-                <div class="wa-icon-box">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2">
-                    <path
-                      d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
-                    </path>
-                  </svg>
-                </div>
-                <div class="wa-details">
-                  <h4 id="success-wa-title">Grup WhatsApp Resmi Calon Anggota</h4>
-                  <p id="success-wa-desc">Harap bergabung ke grup koordinasi calon anggota baru di bawah ini untuk
-                    mendapatkan info jadwal wawancara, tes masuk, dan demonstrasi alat robotika:</p>
-                  <a id="success-wa-link" href="https://chat.whatsapp.com/mock-motechart-robotik" target="_blank"
-                    rel="noopener noreferrer" class="btn btn-wa-group">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12.031 2C6.51 2 2.03 6.48 2.03 12c0 2.159.57 4.259 1.66 6.13l-1.77 6.47 6.63-1.74c1.88 1.02 4 1.56 6.13 1.56 5.52 0 10-4.48 10-10S17.551 2 12.031 2zm6.39 14.19c-.27.76-1.55 1.48-2.15 1.56-.54.07-1.24.1-3.64-.89-3.07-1.26-5.05-4.38-5.2-4.58-.15-.2-1.2-1.6-1.2-3.06 0-1.46.76-2.17 1.03-2.46.27-.3.59-.37.79-.37.2 0 .4.01.57.02.18.01.41-.07.65.5.24.58.82 2.02.9 2.17.08.16.14.35.03.56-.11.22-.26.47-.38.61-.13.14-.26.3-.11.56.15.26.68 1.12 1.46 1.82.99.9 1.83 1.18 2.09 1.31.26.13.41.11.56-.06.15-.18.66-.76.84-.96.18-.2.37-.16.63-.07.26.09 1.66.78 1.95.92.29.14.48.22.56.35.07.13.07.76-.2 1.52z" />
-                    </svg>
-                    Gabung Grup WhatsApp Calon Anggota 🚀
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- B. TAMPILAN KARTU ANGGOTA YANG DISETUJUI (APPROVED) -->
-            <div id="card-approved-wrapper" style="display: none;">
-              <div class="success-icon-wrapper" aria-hidden="true"
-                style="border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.1);">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="3"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-
-              <h2 style="color: var(--accent-cyan);">Pendaftaran Disetujui! 🎉</h2>
-              <p>Selamat! Data pendaftaran Anda telah secara resmi disetujui oleh admin Motechart Robotik. Berikut
-                adalah Kartu Anggota Digital eksklusif Anda:</p>
-
-              <!-- Sleek Futuristic Robotics Student Card -->
-              <div class="robot-student-card">
-                <div class="card-header">
-                  <span class="card-title">MOTECHART ROBOTIK MEMBER</span>
-                  <!-- High-fidelity custom brand logo in SVG representing Motechart Robotik -->
-                  <svg class="card-logo" width="24" height="24" viewBox="0 0 200 200" fill="none"
-                    xmlns="http://www.w3.org/2000/svg" style="stroke: currentColor;">
-                    <defs>
-                      <linearGradient id="gold-grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FFEFA6" />
-                        <stop offset="30%" stop-color="#E5C158" />
-                        <stop offset="70%" stop-color="#B28C32" />
-                        <stop offset="100%" stop-color="#805C15" />
-                      </linearGradient>
-                      <linearGradient id="silver-grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FFFFFF" />
-                        <stop offset="25%" stop-color="#E5E5EA" />
-                        <stop offset="50%" stop-color="#AEAEB2" />
-                        <stop offset="75%" stop-color="#636366" />
-                        <stop offset="100%" stop-color="#3A3A3C" />
-                      </linearGradient>
-                      <radialGradient id="cyan-glow-card" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#00F0FF" />
-                        <stop offset="70%" stop-color="#06B6D4" />
-                        <stop offset="100%" stop-color="#083344" />
-                      </radialGradient>
-                    </defs>
-                    <!-- Left Eye Gear -->
-                    <g transform="translate(64, 108)">
-                      <circle cx="0" cy="0" r="14" fill="url(#silver-grad-card)" stroke="#1E293B" stroke-width="0.5" />
-                      <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-card)" />
-                      <circle cx="0" cy="0" r="4" fill="#000" />
-                    </g>
-                    <!-- Right Eye Gear -->
-                    <g transform="translate(136, 108)">
-                      <circle cx="0" cy="0" r="14" fill="url(#silver-grad-card)" stroke="#1E293B" stroke-width="0.5" />
-                      <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-card)" />
-                      <circle cx="0" cy="0" r="4" fill="#000" />
-                    </g>
-                    <!-- Bottom Mouth/Chin Gear -->
-                    <g transform="translate(100, 150)">
-                      <circle cx="0" cy="0" r="19" fill="url(#silver-grad-card)" stroke="#1E293B" stroke-width="0.5" />
-                    </g>
-                    <!-- Golden Mask / Shield Shape -->
-                    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path
-                        d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
-                        stroke="url(#gold-grad-card)" stroke-width="5" fill="none" />
-                      <path
-                        d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z"
-                        stroke="url(#gold-grad-card)" stroke-width="3" fill="none" />
-                    </g>
-                    <!-- Golden Rivet -->
-                    <circle cx="100" cy="150" r="6" fill="url(#gold-grad-card)" />
-                  </svg>
-                </div>
-                <div class="card-body">
-                  <div class="card-avatar" aria-label="Avatar robotik">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+            <!-- Left Selector Cards (Compact Logo Grid on Mobile, Editorial Cards on Desktop) -->
+            <div id="division-tabs" role="tablist" aria-label="Pilihan Divisi Robotik" class="lg:col-span-4 grid grid-cols-3 lg:flex lg:flex-col justify-center gap-2.5 lg:gap-3.5">
+              <button type="button" role="tab" aria-selected="true" data-div="mechanics" aria-label="Divisi Mekanik" class="division-tab-btn is-active reveal-on-scroll reveal-delay-1">
+                <div class="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-2 lg:gap-4 text-center lg:text-left">
+                  <div class="div-icon-box text-amber-300" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
                   </div>
-                  <div class="card-info">
-                    <div class="card-name" id="card-student-name">-</div>
-                    <div class="card-class" id="card-student-class">-</div>
-                    <div class="card-id-row">NIM/ID: <span id="card-student-id">-</span></div>
+                  <div class="min-w-0">
+                    <span class="div-tab-num hidden lg:block font-mono text-[11px] font-semibold tracking-wider text-cyan-300 uppercase">DIVISI 01</span>
+                    <span class="block font-display text-xs sm:text-sm lg:text-lg font-bold text-white leading-snug"><span class="lg:hidden">Mekanik</span><span class="hidden lg:inline">Mekanik (Mechanics)</span></span>
+                    <span class="hidden lg:block text-xs text-slate-400 mt-0.5">CAD 3D, sasis &amp; 3D print</span>
                   </div>
                 </div>
-                <div class="card-footer-barcode" aria-label="Barcode keamanan">
-                  <svg width="150" height="30" viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Simulated Barcode -->
-                    <rect x="0" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="4" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="7" y="2" width="3" height="16" fill="var(--accent-cyan)" />
-                    <rect x="12" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="15" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="19" y="2" width="4" height="16" fill="var(--accent-cyan)" />
-                    <rect x="25" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="28" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="32" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="35" y="2" width="3" height="16" fill="var(--accent-cyan)" />
-                    <rect x="40" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="44" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="47" y="2" width="4" height="16" fill="var(--accent-cyan)" />
-                    <rect x="53" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="56" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="60" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="63" y="2" width="3" height="16" fill="var(--accent-cyan)" />
-                    <rect x="68" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="72" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="75" y="2" width="4" height="16" fill="var(--accent-cyan)" />
-                    <rect x="81" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="84" y="2" width="2" height="16" fill="var(--accent-cyan)" />
-                    <rect x="88" y="2" width="3" height="16" fill="var(--accent-cyan)" />
-                    <rect x="93" y="2" width="1" height="16" fill="var(--accent-cyan)" />
-                    <rect x="96" y="2" width="4" height="16" fill="var(--accent-cyan)" />
-                  </svg>
+              </button>
+
+              <button type="button" role="tab" aria-selected="false" data-div="electronics" aria-label="Divisi Elektronik" class="division-tab-btn reveal-on-scroll reveal-delay-2">
+                <div class="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-2 lg:gap-4 text-center lg:text-left">
+                  <div class="div-icon-box text-cyan-300" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="div-tab-num hidden lg:block font-mono text-[11px] font-semibold tracking-wider text-cyan-300 uppercase">DIVISI 02</span>
+                    <span class="block font-display text-xs sm:text-sm lg:text-lg font-bold text-white leading-snug"><span class="lg:hidden">Elektronik</span><span class="hidden lg:inline">Elektronik (Electronics)</span></span>
+                    <span class="hidden lg:block text-xs text-slate-400 mt-0.5">PCB, solder &amp; daya baterai</span>
+                  </div>
                 </div>
-              </div>
-              <!-- Info text when approved -->
-              <p
-                style="color: var(--accent-yellow); font-size: 1.1rem; font-weight: 600; margin-top: 2.5rem; text-align: center; text-shadow: 0 0 10px rgba(245, 158, 11, 0.2);">
-                Selanjutnya, kamu akan masuk ke grup anggota resmi oleh admin.
-              </p>
+              </button>
+
+              <button type="button" role="tab" aria-selected="false" data-div="programming" aria-label="Divisi Pemrograman" class="division-tab-btn reveal-on-scroll reveal-delay-3">
+                <div class="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-2 lg:gap-4 text-center lg:text-left">
+                  <div class="div-icon-box text-amber-300" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="16 18 22 12 16 6"></polyline>
+                      <polyline points="8 6 2 12 8 18"></polyline>
+                      <line x1="14" y1="4" x2="10" y2="20"></line>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="div-tab-num hidden lg:block font-mono text-[11px] font-semibold tracking-wider text-cyan-300 uppercase">DIVISI 03</span>
+                    <span class="block font-display text-xs sm:text-sm lg:text-lg font-bold text-white leading-snug"><span class="lg:hidden">Pemrograman</span><span class="hidden lg:inline">Pemrograman (Programming)</span></span>
+                    <span class="hidden lg:block text-xs text-slate-400 mt-0.5">C++, ESP32, PID &amp; IoT</span>
+                  </div>
+                </div>
+              </button>
             </div>
 
-            <button class="btn btn-yellow" style="margin-top: 3.5rem;" id="success-btn-reload">
-              Kembali ke Beranda ekskul
+            <!-- Right Detail Workbench -->
+            <div
+              id="division-panel"
+              role="tabpanel"
+              class="lg:col-span-8 division-detail-shell p-6 sm:p-8 lg:p-9 flex flex-col justify-center reveal-on-scroll reveal-delay-2"
+            >
+              <!-- Rendered by src/components/divisions.ts -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED STUDENT PROJECTS BENTO -->
+      <div class="bg-[#0B111E]">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+            <div class="max-w-2xl">
+              <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider mb-2">Portofolio Lab</p>
+              <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white text-balance">
+                Karya Nyata Buatan Siswa
+              </h2>
+              <p class="mt-3 text-sm sm:text-base text-slate-400 leading-relaxed">
+                Klik proyek untuk buka daftar komponen, peta pinout, dan kode yang bisa langsung kamu pelajari.
+              </p>
+            </div>
+            <button
+              type="button"
+              id="home-btn-all-projects"
+              class="inline-flex items-center gap-2 text-sm font-semibold text-amber-300 hover:text-amber-200 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <span>Lihat semua proyek</span>
+              <span aria-hidden="true">&rarr;</span>
             </button>
           </div>
 
-          <!-- STATUS CHECKER SECTION -->
-          <div class="glass-card" id="status-checker-section"
-            style="margin-top: 3rem; padding: 2.5rem; text-align: center;">
-            <h3 style="font-size: 1.5rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">🔍 Cek Status Pendaftaran
-              Calon Anggota</h3>
-            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem auto; font-size: 0.95rem;">
-              Sudah mendaftar sebelumnya? Masukkan ID Unik Anda (contoh: <code>ROBO-123456</code>) untuk mengecek status
-              persetujuan keanggotaan Anda secara langsung.
+          <div id="home-featured-projects" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Rendered by src/main.ts -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-PHASE LEARNING TRACK (Connected Timeline Strip) -->
+      <div class="border-t border-white/8 bg-[#090D16]">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div class="max-w-2xl mb-12">
+            <p class="font-mono text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-2">Alur Praktikum</p>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white text-balance">
+              Belajar dari Nol sampai Siap Lomba
+            </h2>
+            <p class="mt-3 text-sm sm:text-base text-slate-400 leading-relaxed">
+              Belum pernah coding atau menyolder? Kamu mulai dari dasar, lalu naik ke proyek nyata tiap semester.
             </p>
-            <div
-              style="display: flex; gap: 1rem; max-width: 500px; margin: 0 auto; justify-content: center; align-items: center; flex-wrap: wrap;">
-              <input type="text" id="status-check-id-input" class="input-control"
-                placeholder="Masukkan ID Unik (ROBO-XXXXXX)"
-                style="max-width: 320px; text-align: center; font-weight: bold; letter-spacing: 1px;">
-              <button type="button" class="btn btn-cyan" id="btn-check-status" style="white-space: nowrap;">Periksa
-                Status ⚡</button>
-            </div>
           </div>
 
+          <div id="home-learning-track" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Rendered by src/main.ts -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VISI & MISI (Distinct Asymmetric Editorial Split) -->
+      <div class="border-t border-white/8 bg-[#0D1320]">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+            <div class="lg:col-span-5 reveal-on-scroll reveal-delay-1 interactive-card rounded-2xl border border-amber-400/20 bg-gradient-to-br from-[#131C2E] to-[#0B111E] p-7 sm:p-8 flex flex-col justify-between gap-6">
+              <div class="space-y-4">
+                <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider">Visi Lab</p>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white leading-snug text-balance">
+                  Arah Kerja Motechart Robotik
+                </h2>
+                <p id="home-visi-text" class="text-sm sm:text-base text-slate-200 leading-relaxed">
+                  <!-- Populated by src/main.ts -->
+                </p>
+              </div>
+              <div class="pt-5 border-t border-white/10 text-xs text-slate-400 font-mono">
+                MAN 1 Bogor · Latihan Rutin Lab Robotika
+              </div>
+            </div>
+
+            <div class="lg:col-span-7 reveal-on-scroll reveal-delay-2 interactive-card rounded-2xl border border-white/8 bg-[#111827] p-7 sm:p-8 flex flex-col justify-center">
+              <p class="font-mono text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-5">4 Langkah Kerja Kami</p>
+              <ol id="home-misi-list" class="space-y-4">
+                <!-- Populated by src/main.ts -->
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACHIEVEMENTS HONOR ROLL -->
+      <div class="border-t border-white/8 bg-[#090D16]">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+            <div class="max-w-2xl">
+              <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider mb-2">Rekam Jejak</p>
+              <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white text-balance">
+                Daftar Prestasi Lomba
+              </h2>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-400 max-w-xs">
+              Bukti hasil latihan rutin siswa di arena lomba regional hingga nasional.
+            </p>
+          </div>
+
+          <div id="home-achievements-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Populated by src/main.ts -->
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL FOCUSED CTA BAND -->
+      <div class="border-t border-white/8 bg-[#0D1320]">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-6 rounded-2xl border border-amber-400/20 bg-gradient-to-r from-[#111A2D] via-[#101829] to-[#0B1220] p-6 sm:p-10 text-center lg:text-left">
+            <div class="max-w-xl space-y-2 mx-auto lg:mx-0">
+              <h2 class="font-display text-2xl sm:text-3xl font-bold text-white text-balance">
+                Siap Rakit Robot Pertamamu?
+              </h2>
+              <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                Terbuka untuk kelas X, XI, dan XII MAN 1 Bogor. Isi formulir online kurang dari 3 menit.
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-end gap-3 w-full sm:w-auto max-w-sm sm:max-w-none shrink-0">
+              <button
+                type="button"
+                id="cta-bottom-daftar"
+                class="inline-flex w-full sm:w-auto min-h-[46px] items-center justify-center rounded-lg bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition-colors hover:bg-amber-300 whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                Daftar Sekarang
+              </button>
+              <button
+                type="button"
+                id="cta-bottom-status"
+                class="inline-flex w-full sm:w-auto min-h-[46px] items-center justify-center rounded-lg border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                Cek Status Pendaftaran
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================
+         VIEW 2: BLOG & MATERI TEKNIS
+         ================================================================ -->
+    <section id="view-blog" data-view class="hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="max-w-2xl mb-8">
+          <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider mb-2">Catatan Lab</p>
+          <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
+            Blog &amp; Panduan Teknis
+          </h1>
+          <p class="mt-2.5 text-sm sm:text-base text-slate-400 leading-relaxed">
+            Panduan praktik langsung untuk kamu pelajari: Arduino, sensor analog, ESP32, hingga trik lomba.
+          </p>
         </div>
 
-      </section>
+        <!-- Search & Category Filter Toolbar -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/8 pb-6 mb-8">
+          <div class="flex flex-wrap items-center gap-1.5 rounded-lg border border-white/8 bg-[#111827] p-1" role="tablist" aria-label="Kategori Artikel">
+            <button type="button" role="tab" aria-selected="true" data-blog-category="all" class="filter-tab-btn is-active">Semua</button>
+            <button type="button" role="tab" aria-selected="false" data-blog-category="arduino" class="filter-tab-btn">Arduino</button>
+            <button type="button" role="tab" aria-selected="false" data-blog-category="tutorial" class="filter-tab-btn">Tutorial</button>
+            <button type="button" role="tab" aria-selected="false" data-blog-category="iot" class="filter-tab-btn">IoT</button>
+            <button type="button" role="tab" aria-selected="false" data-blog-category="kompetisi" class="filter-tab-btn">Kompetisi</button>
+          </div>
 
-    </div>
+          <div class="w-full lg:w-80">
+            <label for="blog-search" class="sr-only">Cari artikel</label>
+            <input
+              type="search"
+              id="blog-search"
+              placeholder="Cari topik, mis. ESP32, sensor, Arduino..."
+              class="field-input"
+            />
+          </div>
+        </div>
+
+        <p id="blog-results-count" class="text-xs text-slate-400 mb-5"></p>
+
+        <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Populated by src/main.ts -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         VIEW 3: PORTOFOLIO PROYEK SISWA
+         ================================================================ -->
+    <section id="view-portfolio" data-view class="hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="max-w-2xl mb-8">
+          <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider mb-2">Arsip Proyek</p>
+          <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
+            Portofolio Proyek Siswa
+          </h1>
+          <p class="mt-2.5 text-sm sm:text-base text-slate-400 leading-relaxed">
+            Buka tiap kartu untuk lihat komponen, skematik kabel, dan kode program yang sudah diuji di lab.
+          </p>
+        </div>
+
+        <!-- Category Filter Toolbar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/8 pb-6 mb-8">
+          <div class="flex flex-wrap items-center gap-1.5 rounded-lg border border-white/8 bg-[#111827] p-1" role="tablist" aria-label="Kategori Proyek">
+            <button type="button" role="tab" aria-selected="true" data-portfolio-category="all" class="filter-tab-btn is-active">Semua Proyek</button>
+            <button type="button" role="tab" aria-selected="false" data-portfolio-category="mekanik & elektronik" class="filter-tab-btn">Mekanik &amp; Elektronik</button>
+            <button type="button" role="tab" aria-selected="false" data-portfolio-category="iot" class="filter-tab-btn">IoT</button>
+            <button type="button" role="tab" aria-selected="false" data-portfolio-category="pemrograman" class="filter-tab-btn">Pemrograman</button>
+          </div>
+          <p id="portfolio-results-count" class="text-xs text-slate-400"></p>
+        </div>
+
+        <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Populated by src/main.ts -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         VIEW 4: PENDAFTARAN & CEK STATUS
+         ================================================================ -->
+    <section id="view-pendaftaran" data-view class="hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="max-w-2xl mb-10">
+          <p class="font-mono text-xs font-semibold text-amber-300 uppercase tracking-wider mb-2">Penerimaan Anggota Baru</p>
+          <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
+            Daftar &amp; Cek Status Seleksi
+          </h1>
+          <p class="mt-2.5 text-sm sm:text-base text-slate-400 leading-relaxed">
+            Isi 3 langkah singkat untuk dapat ID Pendaftaran, atau masukkan ID-mu di sebelah kanan untuk cek status.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          <!-- LEFT 7 COLS: WIZARD / CLOSED / SUCCESS -->
+          <div class="lg:col-span-7 space-y-6">
+
+            <!-- Closed Registration Notice (shown only when status !== 'open') -->
+            <div id="reg-closed-card" class="hidden rounded-2xl border border-white/10 bg-[#111827] p-8 space-y-5">
+              <div class="space-y-2">
+                <p class="font-mono text-xs font-semibold text-amber-300 uppercase">Status Pendaftaran</p>
+                <h2 id="reg-closed-title" class="font-display text-2xl font-bold text-white">Pendaftaran Segera Dibuka</h2>
+                <p id="reg-closed-desc" class="text-sm text-slate-300 leading-relaxed"></p>
+              </div>
+              <div id="reg-closed-countdown" class="grid grid-cols-4 gap-3 pt-2">
+                <div class="rounded-xl border border-white/8 bg-[#090D16] p-4 text-center">
+                  <div id="cd-days" class="font-mono text-2xl font-bold text-amber-300 tabular-nums">00</div>
+                  <div class="mt-1 text-xs text-slate-400">Hari</div>
+                </div>
+                <div class="rounded-xl border border-white/8 bg-[#090D16] p-4 text-center">
+                  <div id="cd-hours" class="font-mono text-2xl font-bold text-amber-300 tabular-nums">00</div>
+                  <div class="mt-1 text-xs text-slate-400">Jam</div>
+                </div>
+                <div class="rounded-xl border border-white/8 bg-[#090D16] p-4 text-center">
+                  <div id="cd-minutes" class="font-mono text-2xl font-bold text-amber-300 tabular-nums">00</div>
+                  <div class="mt-1 text-xs text-slate-400">Menit</div>
+                </div>
+                <div class="rounded-xl border border-white/8 bg-[#090D16] p-4 text-center">
+                  <div id="cd-seconds" class="font-mono text-2xl font-bold text-amber-300 tabular-nums">00</div>
+                  <div class="mt-1 text-xs text-slate-400">Detik</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3-Step Indicator -->
+            <ol id="reg-step-progress" class="grid grid-cols-3 gap-2 sm:gap-3 rounded-xl border border-white/8 bg-[#111827] px-3 py-3 sm:p-4">
+              <li data-step-track="1" aria-current="step" class="step-item is-active">
+                <span class="step-badge">1</span>
+                <span class="text-[11px] sm:text-sm font-medium leading-tight whitespace-nowrap">Data Diri</span>
+              </li>
+              <li data-step-track="2" class="step-item">
+                <span class="step-badge">2</span>
+                <span class="text-[11px] sm:text-sm font-medium leading-tight whitespace-nowrap"><span class="sm:hidden">Divisi</span><span class="hidden sm:inline">Minat &amp; Divisi</span></span>
+              </li>
+              <li data-step-track="3" class="step-item">
+                <span class="step-badge">3</span>
+                <span class="text-[11px] sm:text-sm font-medium leading-tight whitespace-nowrap">Konfirmasi</span>
+              </li>
+            </ol>
+
+            <!-- Multi-Step Registration Form Card -->
+            <div id="reg-form-card" class="rounded-2xl border border-white/10 bg-[#111827] p-5 sm:p-8">
+              <form id="robotics-reg-form" novalidate>
+
+                <!-- STEP 1: DATA DIRI -->
+                <div id="form-step-1" class="space-y-5">
+                  <div>
+                    <h2 class="font-display text-xl font-semibold text-white">Langkah 1 · Data Dirimu</h2>
+                    <p class="text-xs text-slate-400 mt-1">Isi nama sesuai absensi dan nomor WhatsApp aktif untuk info seleksi.</p>
+                  </div>
+
+                  <div class="space-y-1.5">
+                    <label for="nama_lengkap" class="block text-sm font-medium text-slate-200">
+                      Nama Lengkap <span class="text-rose-400" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="nama_lengkap"
+                      name="nama_lengkap"
+                      autocomplete="name"
+                      placeholder="Contoh: M. Farhan Pratama"
+                      class="field-input"
+                      required
+                    />
+                    <p id="err-nama_lengkap" class="hidden text-xs text-rose-400" role="alert"></p>
+                  </div>
+
+                  <fieldset class="space-y-2">
+                    <legend class="text-sm font-medium text-slate-200">
+                      Tingkat Kelas <span class="text-rose-400" aria-hidden="true">*</span>
+                    </legend>
+                    <div class="grid grid-cols-3 gap-2.5">
+                      <label for="kelas-x" class="choice-pill-card">
+                        <input type="radio" id="kelas-x" name="kelas" value="X" class="sr-only" checked />
+                        <span>Kelas X</span>
+                      </label>
+                      <label for="kelas-xi" class="choice-pill-card">
+                        <input type="radio" id="kelas-xi" name="kelas" value="XI" class="sr-only" />
+                        <span>Kelas XI</span>
+                      </label>
+                      <label for="kelas-xii" class="choice-pill-card">
+                        <input type="radio" id="kelas-xii" name="kelas" value="XII" class="sr-only" />
+                        <span>Kelas XII</span>
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                      <label for="email" class="block text-sm font-medium text-slate-200">
+                        Email Aktif <span class="text-rose-400" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        autocomplete="email"
+                        placeholder="nama@email.com"
+                        class="field-input"
+                        required
+                      />
+                      <p id="err-email" class="hidden text-xs text-rose-400" role="alert"></p>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label for="no_hp" class="block text-sm font-medium text-slate-200">
+                        Nomor WhatsApp <span class="text-rose-400" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        id="no_hp"
+                        name="no_hp"
+                        autocomplete="tel"
+                        placeholder="0812-3456-7890"
+                        class="field-input"
+                        required
+                      />
+                      <p id="err-no_hp" class="hidden text-xs text-rose-400" role="alert"></p>
+                    </div>
+                  </div>
+
+                  <div class="pt-4 border-t border-white/8 flex justify-end">
+                    <button
+                      type="button"
+                      id="btn-step1-next"
+                      class="inline-flex w-full sm:w-auto min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-amber-400 px-5 sm:px-6 py-2.5 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition-colors cursor-pointer"
+                    >
+                      <span>Lanjut ke Divisi</span>
+                      <span aria-hidden="true">&rarr;</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- STEP 2: MINAT & DIVISI -->
+                <div id="form-step-2" class="hidden space-y-5">
+                  <div>
+                    <h2 class="font-display text-xl font-semibold text-white">Langkah 2 · Pilih Divisi</h2>
+                    <p class="text-xs text-slate-400 mt-1">Pilih satu bidang awal yang ingin kamu pelajari dulu.</p>
+                  </div>
+
+                  <fieldset class="space-y-2">
+                    <legend class="text-sm font-medium text-slate-200">
+                      Divisi Pilihan <span class="text-rose-400" aria-hidden="true">*</span>
+                    </legend>
+                    <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
+                      <label for="divisi-mekanik" class="division-choice-tile" title="Mekanik">
+                        <input type="radio" id="divisi-mekanik" name="divisi" value="Mekanik" class="sr-only" aria-label="Divisi Mekanik" />
+                        <span class="division-choice-icon" aria-hidden="true">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                          </svg>
+                        </span>
+                        <span class="division-choice-name">Mekanik</span>
+                      </label>
+                      <label for="divisi-elektronik" class="division-choice-tile" title="Elektronik">
+                        <input type="radio" id="divisi-elektronik" name="divisi" value="Elektronik" class="sr-only" aria-label="Divisi Elektronik" />
+                        <span class="division-choice-icon" aria-hidden="true">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                          </svg>
+                        </span>
+                        <span class="division-choice-name">Elektronik</span>
+                      </label>
+                      <label for="divisi-pemrograman" class="division-choice-tile" title="Pemrograman">
+                        <input type="radio" id="divisi-pemrograman" name="divisi" value="Pemrograman" class="sr-only" aria-label="Divisi Pemrograman" />
+                        <span class="division-choice-icon" aria-hidden="true">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                            <line x1="14" y1="4" x2="10" y2="20"></line>
+                          </svg>
+                        </span>
+                        <span class="division-choice-name">Pemrograman</span>
+                      </label>
+                    </div>
+                    <p id="err-divisi" class="hidden text-xs text-rose-400" role="alert"></p>
+                  </fieldset>
+
+                  <div class="space-y-1.5">
+                    <div class="flex items-baseline justify-between gap-2">
+                      <label for="motivasi" class="text-sm font-medium text-slate-200 whitespace-nowrap shrink-0">
+                        Alasan Bergabung <span class="text-rose-400" aria-hidden="true">*</span>
+                      </label>
+                      <span id="motivasi-counter" class="text-[11px] sm:text-xs font-mono tabular-nums text-slate-400 whitespace-nowrap shrink-0">0/20 min</span>
+                    </div>
+                    <textarea
+                      id="motivasi"
+                      name="motivasi"
+                      rows="4"
+                      placeholder="Tulis singkat robot apa yang ingin kamu buat atau skill apa yang ingin kamu kuasai..."
+                      class="field-input resize-y"
+                      required
+                    ></textarea>
+                    <p id="err-motivasi" class="hidden text-xs text-rose-400" role="alert"></p>
+                  </div>
+
+                  <fieldset class="space-y-2">
+                    <legend class="text-sm font-medium text-slate-200">Apakah Kamu Punya Laptop Pribadi? (Tidak Wajib)</legend>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <label for="laptop-ya" class="radio-card">
+                        <input type="radio" id="laptop-ya" name="laptop" value="Ya, Siap Digunakan" class="accent-amber-400" checked />
+                        <span>Ya, punya laptop pribadi</span>
+                      </label>
+                      <label for="laptop-belum" class="radio-card">
+                        <input type="radio" id="laptop-belum" name="laptop" value="Belum Memiliki (Gunakan PC Lab)" class="accent-amber-400" />
+                        <span>Belum punya (pakai PC Lab)</span>
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <!-- Dynamic Admin Custom Questions -->
+                  <div id="custom-questions-container" class="space-y-4"></div>
+
+                  <div class="pt-4 border-t border-white/8 flex items-center justify-between gap-2.5 sm:gap-3">
+                    <button
+                      type="button"
+                      id="btn-step2-prev"
+                      class="inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg border border-white/15 bg-white/5 px-3.5 sm:px-5 py-2.5 text-xs sm:text-sm font-medium text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    >
+                      <span aria-hidden="true">&larr;</span>
+                      <span>Kembali</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="btn-step2-next"
+                      class="inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg bg-amber-400 px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold text-slate-950 hover:bg-amber-300 transition-colors cursor-pointer"
+                    >
+                      <span>Cek Ulang Data</span>
+                      <span aria-hidden="true">&rarr;</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- STEP 3: KONFIRMASI & PERSETUJUAN PRIVASI -->
+                <div id="form-step-3" class="hidden space-y-5">
+                  <div>
+                    <h2 class="font-display text-xl font-semibold text-white">Langkah 3 · Cek &amp; Kirim</h2>
+                    <p class="text-xs text-slate-400 mt-1">Pastikan semua data benar. Setelah dikirim, ID Pendaftaranmu langsung muncul.</p>
+                  </div>
+
+                  <div id="confirmation-summary" class="rounded-xl border border-white/8 bg-[#0B101B] p-5"></div>
+
+                  <div class="space-y-1.5">
+                    <label for="privacy_consent" class="flex items-start gap-3 rounded-xl border border-white/8 bg-[#0B101B] p-4 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id="privacy_consent"
+                        name="privacy_consent"
+                        class="mt-1 h-4 w-4 rounded accent-amber-400 shrink-0"
+                        required
+                      />
+                      <span class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        Data di atas sudah benar dan saya menyetujui
+                        <a href="./privacy.html" target="_blank" rel="noopener noreferrer" class="text-cyan-300 underline hover:text-cyan-200">
+                          Kebijakan Privasi Motechart Robotik
+                        </a>
+                        untuk keperluan seleksi ekstrakurikuler.
+                      </span>
+                    </label>
+                    <p id="err-privacy_consent" class="hidden text-xs text-rose-400" role="alert"></p>
+                  </div>
+
+                  <div class="pt-4 border-t border-white/8 flex items-center justify-between gap-2.5 sm:gap-3">
+                    <button
+                      type="button"
+                      id="btn-step3-prev"
+                      class="inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg border border-white/15 bg-white/5 px-3.5 sm:px-5 py-2.5 text-xs sm:text-sm font-medium text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    >
+                      <span aria-hidden="true">&larr;</span>
+                      <span>Ubah Data</span>
+                    </button>
+                    <button
+                      type="submit"
+                      id="btn-submit-reg"
+                      class="inline-flex min-h-[44px] items-center justify-center gap-1.5 whitespace-nowrap shrink-0 rounded-lg bg-amber-400 px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold text-slate-950 hover:bg-amber-300 transition-colors cursor-pointer"
+                    >
+                      Kirim Pendaftaran
+                    </button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Registration Success Card -->
+            <div id="reg-success-card" class="hidden scroll-mt-24 rounded-2xl border border-emerald-500/30 bg-[#111827] p-6 sm:p-8 space-y-6">
+              <div class="space-y-2">
+                <p class="font-mono text-xs font-semibold text-emerald-300 uppercase">Pendaftaran Tercatat</p>
+                <h2 class="font-display text-2xl font-bold text-white">
+                  Berhasil, <span id="success-student-name">Calon Anggota</span>!
+                </h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                  Simpan ID di bawah ini untuk cek hasil seleksi dan ambil Kartu Anggota Digital setelah disetujui pengurus.
+                </p>
+              </div>
+
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#090D16] p-5">
+                <div>
+                  <span class="text-xs text-slate-400 block">ID Pendaftaranmu</span>
+                  <span id="success-student-id" class="font-mono text-2xl font-bold text-cyan-300 tabular-nums">ROBO-00000000</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    id="btn-copy-reg-id"
+                    class="inline-flex min-h-[40px] items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  >
+                    Salin ID
+                  </button>
+                  <button
+                    type="button"
+                    id="btn-check-my-status"
+                    class="inline-flex min-h-[40px] items-center justify-center rounded-lg bg-amber-400 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-amber-300 transition-colors cursor-pointer"
+                  >
+                    Cek Status Saya
+                  </button>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-white/8 bg-[#0B101B] p-5 space-y-3">
+                <h3 id="success-wa-title" class="font-display text-base font-semibold text-white">Grup Koordinasi Calon Anggota</h3>
+                <p id="success-wa-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed"></p>
+                <a
+                  id="success-wa-link"
+                  href="https://chat.whatsapp.com/mock-motechart-robotik"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-emerald-400/35 bg-emerald-500/15 px-5 py-2.5 text-sm font-medium text-emerald-200 hover:bg-emerald-500/25 transition-colors"
+                >
+                  Masuk Grup WhatsApp &rarr;
+                </a>
+              </div>
+
+              <button
+                type="button"
+                id="btn-reg-back-home"
+                class="text-sm font-medium text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                &larr; Kembali ke Beranda
+              </button>
+            </div>
+
+          </div>
+
+          <!-- RIGHT 5 COLS: STATUS CHECKER -->
+          <aside class="lg:col-span-5 lg:sticky lg:top-24 space-y-5">
+            <div id="status-checker-card" class="rounded-2xl border border-white/10 bg-[#111827] p-6 sm:p-7 space-y-5">
+              <div>
+                <p class="font-mono text-xs font-semibold text-cyan-300 uppercase mb-1.5">Cek Mandiri</p>
+                <h2 class="font-display text-xl font-semibold text-white">Cek Status Pendaftaran</h2>
+                <p class="mt-1.5 text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  Masukkan ID format <span class="font-mono text-slate-200">ROBO-XXXXXXXX</span> untuk lihat status seleksi atau Kartu Anggota Digital.
+                </p>
+              </div>
+
+              <form id="status-checker-form" class="space-y-3" novalidate>
+                <div class="space-y-1.5">
+                  <label for="status-check-input" class="block text-xs font-medium text-slate-300">ID Pendaftaran</label>
+                  <input
+                    type="text"
+                    id="status-check-input"
+                    placeholder="Contoh: ROBO-2026A001"
+                    class="field-input font-mono uppercase"
+                  />
+                  <p id="err-status-check-input" class="hidden text-xs text-rose-400" role="alert"></p>
+                </div>
+                <button
+                  type="submit"
+                  id="btn-check-status"
+                  class="inline-flex w-full min-h-[44px] items-center justify-center rounded-lg border border-cyan-400/35 bg-cyan-500/15 px-5 py-2.5 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/25 transition-colors cursor-pointer"
+                >
+                  Cek Status Sekarang
+                </button>
+              </form>
+
+              <div class="border-t border-white/8 pt-4 space-y-2.5">
+                <p class="text-xs text-slate-400">Lihat contoh tampilan status:</p>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    data-demo-status-id="ROBO-2026A001"
+                    class="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-xs text-emerald-300 hover:bg-white/10 transition-colors cursor-pointer"
+                  >
+                    ROBO-2026A001 · Diterima
+                  </button>
+                  <button
+                    type="button"
+                    data-demo-status-id="ROBO-2026P002"
+                    class="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-xs text-amber-300 hover:bg-white/10 transition-colors cursor-pointer"
+                  >
+                    ROBO-2026P002 · Pending
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <!-- FOOTER -->
-  <footer class="main-footer">
-    <div class="container">
-      <div class="footer-grid">
-
-        <!-- Column 1: Brand Info -->
-        <div class="footer-col brand-col">
-          <div class="footer-logo">
-            <svg class="footer-logo-svg" width="36" height="36" viewBox="0 0 200 200" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="gold-grad-footer" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#FFEFA6" />
-                  <stop offset="30%" stop-color="#E5C158" />
-                  <stop offset="70%" stop-color="#B28C32" />
-                  <stop offset="100%" stop-color="#805C15" />
-                </linearGradient>
-                <linearGradient id="silver-grad-footer" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#FFFFFF" />
-                  <stop offset="25%" stop-color="#E5E5EA" />
-                  <stop offset="50%" stop-color="#AEAEB2" />
-                  <stop offset="75%" stop-color="#636366" />
-                  <stop offset="100%" stop-color="#3A3A3C" />
-                </linearGradient>
-                <radialGradient id="cyan-glow-footer" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#00F0FF" />
-                  <stop offset="70%" stop-color="#06B6D4" />
-                  <stop offset="100%" stop-color="#083344" />
-                </radialGradient>
-              </defs>
-              <!-- Glowing Eyes -->
-              <g transform="translate(64, 108)">
-                <circle cx="0" cy="0" r="14" fill="url(#silver-grad-footer)" stroke="#1E293B" stroke-width="0.5" />
-                <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-footer)" />
-                <circle cx="0" cy="0" r="4" fill="#000" />
-              </g>
-              <g transform="translate(136, 108)">
-                <circle cx="0" cy="0" r="14" fill="url(#silver-grad-footer)" stroke="#1E293B" stroke-width="0.5" />
-                <circle cx="0" cy="0" r="8" fill="url(#cyan-glow-footer)" />
-                <circle cx="0" cy="0" r="4" fill="#000" />
-              </g>
-              <!-- Mouth Shield -->
-              <g transform="translate(100, 150)">
-                <circle cx="0" cy="0" r="19" fill="url(#silver-grad-footer)" stroke="#1E293B" stroke-width="0.5" />
-              </g>
-              <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M 100,45 L 35,45 L 35,125 L 48,155 L 76,108 L 82,90 L 100,90 L 118,90 L 124,108 L 152,155 L 165,125 L 165,45 Z"
-                  stroke="url(#gold-grad-footer)" stroke-width="4.5" />
-                <path
-                  d="M 100,53 L 43,53 L 43,121 L 53,144 L 75,107 L 80,98 L 100,98 L 120,98 L 125,107 L 147,144 L 157,121 L 157,53 Z"
-                  stroke="url(#gold-grad-footer)" stroke-width="3" />
-              </g>
-            </svg>
-            <span class="footer-logo-text">MOTECHART ROBOTIK</span>
+  <!-- QUIET EDITORIAL FOOTER -->
+  <footer class="mt-auto border-t border-white/8 bg-[#070B12]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 pb-10 border-b border-white/8">
+        <div class="lg:col-span-4 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <span id="footer-brand-logo" class="inline-flex shrink-0" aria-hidden="true"></span>
+            <span class="font-display text-base font-bold text-white">Motechart Robotik</span>
           </div>
-          <p class="footer-tagline" id="footer-tagline-text">Wadah pengembangan inovasi, otomatisasi, dan kreativitas
-            teknologi robotika masa depan bagi para remaja unggul.</p>
-          <div class="footer-socials">
-            <a href="https://www.instagram.com/motechart_mansabo/" id="footer-instagram-link" class="social-icon"
-              target="_blank" aria-label="Instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </a>
-            <a href="https://www.youtube.com/@Motechart-RobotikMAN1Bogor" id="footer-youtube-link" class="social-icon"
-              target="_blank" aria-label="YouTube">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
-                </path>
-                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
-              </svg>
-            </a>
-          </div>
+          <p id="footer-tagline" class="text-sm text-slate-400 leading-relaxed max-w-sm">
+            Belajar rakit, solder, dan program robot nyata dari nol di MAN 1 Bogor.
+          </p>
         </div>
 
-        <!-- Column 2: Quick Links -->
-        <div class="footer-col links-col">
-          <h4 class="footer-col-title">Navigasi Cepat</h4>
-          <ul class="footer-col-links">
-            <li><a href="#home" class="footer-nav-link" data-target="view-home">Beranda (Home)</a></li>
-            <li><a href="#blog" class="footer-nav-link" data-target="view-blog">Blog Informasi</a></li>
-            <li><a href="#portfolio" class="footer-nav-link" data-target="view-portfolio">Galeri Portfolio</a></li>
-            <li><a href="#pendaftaran" class="footer-nav-link" data-target="view-pendaftaran">Pendaftaran Siswa</a></li>
-            <li><a href="admin.html">Admin Dashboard</a></li>
-            <li><a href="privacy.html">Kebijakan Privasi</a></li>
+        <div class="lg:col-span-2 space-y-2.5">
+          <h3 class="text-xs font-semibold text-white">Navigasi</h3>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="#home" data-nav-target="view-home" class="hover:text-white transition-colors">Beranda</a></li>
+            <li><a href="#blog" data-nav-target="view-blog" class="hover:text-white transition-colors">Blog &amp; Materi</a></li>
+            <li><a href="#portfolio" data-nav-target="view-portfolio" class="hover:text-white transition-colors">Portofolio</a></li>
+            <li><a href="#pendaftaran" data-nav-target="view-pendaftaran" class="hover:text-white transition-colors">Pendaftaran</a></li>
           </ul>
         </div>
 
-        <!-- Column 3: Divisions -->
-        <div class="footer-col divisions-col">
-          <h4 class="footer-col-title">Divisi Keahlian</h4>
-          <ul class="footer-col-links">
-            <li><a href="#divisi" class="footer-div-link" data-div="mechanics">🦾 Mekanik (CAD Design)</a></li>
-            <li><a href="#divisi" class="footer-div-link" data-div="electronics">⚡ Elektronik (IoT Circuits)</a></li>
-            <li><a href="#divisi" class="footer-div-link" data-div="programming">💻 Pemrograman (C++ Code)</a></li>
+        <div class="lg:col-span-3 space-y-2.5">
+          <h3 class="text-xs font-semibold text-white">Divisi Keahlian</h3>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="#section-divisions" data-footer-div="mechanics" class="hover:text-white transition-colors">Mekanik (Mechanics)</a></li>
+            <li><a href="#section-divisions" data-footer-div="electronics" class="hover:text-white transition-colors">Elektronik (Electronics)</a></li>
+            <li><a href="#section-divisions" data-footer-div="programming" class="hover:text-white transition-colors">Pemrograman (Programming)</a></li>
           </ul>
         </div>
 
-        <!-- Column 4: Contact & Tech Status -->
-        <div class="footer-col contact-col">
-          <h4 class="footer-col-title">Info Hub</h4>
-          <div class="contact-info-list">
-            <div class="contact-item">
-              <span class="contact-icon">📍</span>
-              <span class="contact-text" id="footer-location-text">Lab Robotika, Gedung B Lantai 2</span>
-            </div>
-            <div class="contact-item">
-              <span class="contact-icon">✉️</span>
-              <span class="contact-text" id="footer-email-text">robotikmotechart@gmail.com</span>
-            </div>
-            <div class="contact-item status-indicator-wrapper" id="btn-system-status" style="cursor: pointer;"
-              title="Buka Telemetri Sistem">
-              <span class="status-pulse-dot"></span>
-              <span class="status-text" id="footer-status-text">Hub Sistem: ONLINE</span>
-            </div>
-          </div>
+        <div class="lg:col-span-3 space-y-2.5">
+          <h3 class="text-xs font-semibold text-white">Lab &amp; Kontak</h3>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li id="footer-location">Lab Robotika, Gedung B Lantai 2 — MAN 1 Bogor</li>
+            <li>
+              <a id="footer-email-link" href="mailto:robotikmotechart@gmail.com" class="hover:text-white transition-colors">
+                <span id="footer-email">robotikmotechart@gmail.com</span>
+              </a>
+            </li>
+            <li class="flex items-center gap-4 pt-1">
+              <a
+                id="footer-instagram"
+                href="https://www.instagram.com/motechart_mansabo/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs text-slate-300 hover:text-amber-300 transition-colors"
+              >
+                Instagram
+              </a>
+              <a
+                id="footer-youtube"
+                href="https://www.youtube.com/@Motechart-RobotikMAN1Bogor"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs text-slate-300 hover:text-amber-300 transition-colors"
+              >
+                YouTube
+              </a>
+            </li>
+          </ul>
         </div>
-
       </div>
 
-      <!-- Footer Bottom Divider and copyright -->
-      <div class="footer-bottom">
-        <div class="footer-copyright">
-          <p>&copy; 2026 Motechart Robotik Club. Didesain dengan 💛, 💙, dan 🤍 untuk Masa Depan.</p>
-          <p style="font-size: 0.75rem; color: rgba(255,255,255,0.55); margin-top: 0.35rem;">Seluruh hak cipta
-            dilindungi. Program Kerja Ekstrakurikuler Bidang Sains & Teknologi.</p>
+      <div class="pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
+        <p>&copy; 2026 Motechart Robotik MAN 1 Bogor.</p>
+        <div class="flex items-center gap-5">
+          <a href="./privacy.html" class="hover:text-slate-300 transition-colors">Kebijakan Privasi</a>
+          <a href="./admin.html" class="hover:text-slate-300 transition-colors">Portal Pengurus</a>
         </div>
-        <button type="button" id="btn-back-to-top" class="back-to-top-btn" aria-label="Kembali ke Atas">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="18 15 12 9 6 15"></polyline>
-          </svg>
-        </button>
       </div>
-
     </div>
   </footer>
 
-  <!-- admin-card-preview-dialog removed (moved to admin.html) -->
+  <!-- NATIVE DIALOG MODALS -->
+  <dialog id="article-detail-dialog" class="motechart-dialog" aria-label="Detail Artikel"></dialog>
+  <dialog id="project-detail-dialog" class="motechart-dialog" aria-label="Detail Proyek Portofolio"></dialog>
+  <dialog id="status-result-dialog" class="motechart-dialog dialog-narrow" aria-label="Status Pendaftaran"></dialog>
 
-  <!-- DIALOG PRATINJAU STATUS SISWA -->
-  <dialog id="student-status-dialog" aria-labelledby="status-dialog-title">
-    <div class="dialog-close-bar floating">
-      <button type="button" id="close-student-status-btn" class="btn-close" aria-label="Tutup Detail Status">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <div class="dialog-body-container" style="margin-top: 4.5rem;">
-      <div class="dialog-title-card" style="text-align: center; padding: 2.5rem 2rem;">
-        <h2 id="status-dialog-title" class="dialog-title"
-          style="margin: 0; color: var(--accent-cyan); font-size: 2.25rem;">Hasil Cek Status Pendaftaran</h2>
-      </div>
-      <div class="dialog-rich-text" id="student-status-content-container" style="padding: 0;">
-        <!-- Populated dynamically via JS based on user status -->
-      </div>
-    </div>
-  </dialog>
-
-  <!-- custom-question-dialog and custom-achievement-dialog removed (moved to admin.html) -->
-
-  <!-- ==========================================
-       NATIVE TOP-LAYER BLOG DETAIL DIALOG
-       ========================================== -->
-  <dialog id="blog-detail-dialog" aria-labelledby="dialog-body-content">
-    <div class="dialog-close-bar">
-      <button id="close-dialog-btn" class="btn-close" aria-label="Tutup Detail Artikel">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <div id="dialog-body-content">
-      <!-- Populated dynamically via JS -->
-    </div>
-  </dialog>
-
-  <!-- ==========================================
-       NATIVE TOP-LAYER PORTFOLIO DETAIL DIALOG
-       ========================================== -->
-  <dialog id="portfolio-detail-dialog" aria-labelledby="portfolio-dialog-body-content">
-    <div class="dialog-close-bar">
-      <button id="close-portfolio-dialog-btn" class="btn-close" aria-label="Tutup Detail Proyek">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <div id="portfolio-dialog-body-content">
-      <!-- Populated dynamically via JS -->
-    </div>
-  </dialog>
-
-  <!-- ==========================================
-       NATIVE TOP-LAYER SYSTEM TELEMETRY DIALOG
-       ========================================== -->
-  <dialog id="system-status-dialog" closedby="any" aria-labelledby="telemetry-title"
-    style="max-width: 600px; width: 95%;">
-    <div class="dialog-close-bar">
-      <button id="close-telemetry-btn" class="btn-close" aria-label="Tutup Telemetri Sistem">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-
-    <div class="telemetry-content">
-      <h2 id="telemetry-title" class="dialog-title"
-        style="margin-bottom: 1.5rem; text-align: center; color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
-        Telemetri & Status Sistem
-      </h2>
-
-      <!-- Network / Service Status Grid -->
-      <div class="telemetry-grid"
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-
-        <!-- Web Server Uptime Card -->
-        <div class="telemetry-card"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
-          <div
-            style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-            Server Uptime</div>
-          <div id="telemetry-server-status"
-            style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE
-          </div>
-          <div id="telemetry-session-time" style="font-family: monospace; font-size: 1.1rem; color: #fff;">00:00:00
-          </div>
-        </div>
-
-        <!-- Firebase / DB Status Card -->
-        <div class="telemetry-card"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
-          <div
-            style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-            Koneksi Database</div>
-          <div id="telemetry-db-status"
-            style="font-weight: bold; color: var(--accent-green); margin-bottom: 0.25rem; font-size: 0.9rem;">TERHUBUNG
-          </div>
-          <div id="telemetry-db-ping" style="font-family: monospace; font-size: 1.1rem; color: #fff;">-- ms</div>
-        </div>
-
-        <!-- Network Latency Card -->
-        <div class="telemetry-card"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; text-align: center;">
-          <div
-            style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-            Bandwidth State</div>
-          <div id="telemetry-network-state"
-            style="font-weight: bold; color: var(--accent-cyan); margin-bottom: 0.25rem; font-size: 0.9rem;">ONLINE
-          </div>
-          <div id="telemetry-network-speed" style="font-family: monospace; font-size: 1.1rem; color: #fff;">Active</div>
-        </div>
-
-      </div>
-
-      <!-- General Statistics Card -->
-      <div class="telemetry-card"
-        style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem;">
-        <h4
-          style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-          Statistik & Telemetri Portal
-        </h4>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem 1.5rem;">
-
-          <div
-            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Total Pengunjung</span>
-            <strong id="telemetry-total-visitors"
-              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
-          </div>
-
-          <div
-            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Total Portofolio</span>
-            <strong id="telemetry-total-portfolios"
-              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
-          </div>
-
-          <div
-            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Total Artikel Blog</span>
-            <strong id="telemetry-total-blogs"
-              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
-          </div>
-
-          <div
-            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-            <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Calon Pendaftar</span>
-            <strong id="telemetry-total-applicants"
-              style="font-family: monospace; color: #fff; font-size: 1.05rem;">--</strong>
-          </div>
-
-        </div>
-      </div>
-
-      <div style="font-size: 0.75rem; text-align: center; color: rgba(255,255,255,0.4); line-height: 1.4;">
-        Pemantauan waktu nyata Hub Sistem Motechart Robotik. Status disinkronkan secara asinkron dengan infrastruktur
-        web dan Cloud Firestore Database.
-      </div>
-    </div>
-  </dialog>
-
-  <!-- App scripts logic -->
-  <script src="./app.js" type="module"></script>
+  <script type="module" src="./src/main.ts"></script>
 </body>
 
 </html>

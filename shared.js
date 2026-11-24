@@ -11,243 +11,20 @@ if (import.meta.env.PROD) {
 }
 
 
-// --- INITIAL DEFAULT DATA (FALLBACK) ---
-export const INITIAL_BLOG_ARTICLES = [
-  {
-    id: 1,
-    title: "Mengenal Arduino Uno dan Menulis Program Pertama",
-    category: "arduino",
-    date: "15 Mei 2026",
-    author: "Tim Mentor Robotik",
-    excerpt: "Langkah pertama Anda memasuki dunia mikroprosesor. Pelajari arsitektur Arduino Uno, instalasi IDE, dan cara membuat LED berkedip (Blink).",
-    headerImage: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop",
-    content: `### Pengenalan Arduino
+import {
+  INITIAL_APPLICANTS,
+  INITIAL_BLOG_ARTICLES,
+  INITIAL_LANDING_DATA,
+  INITIAL_PORTFOLIO_PROJECTS,
+  INITIAL_REG_SETTINGS,
+} from './src/lib/content.ts';
 
-Arduino Uno adalah papan mikrokontroler berbasis ATmega328P. Ini adalah papan sirkuit ramah pemula terpopuler di dunia yang digunakan untuk mengendalikan sensor, motor, dan lampu led. Menghubungkan dunia digital dengan dunia fisik sangat mudah dengan Arduino.
-
-### Struktur Kode Arduino
-
-Setiap program Arduino (disebut sketch) terdiri dari dua fungsi utama:
-
-\`\`\`javascript
-void setup() {
-  // Dijalankan sekali saat Arduino menyala
-  pinMode(13, OUTPUT);
-}
-
-void loop() {
-  // Dijalankan berulang terus menerus
-  digitalWrite(13, HIGH);
-  delay(1000);
-  digitalWrite(13, LOW);
-  delay(1000);
-}
-\`\`\`
-
-### Langkah Awal Memulai
-
-1. Koneksikan Arduino Uno ke komputer via kabel USB tipe B.
-2. Unduh dan instal Arduino IDE dari situs resmi.
-3. Pilih port dan jenis papan di menu Alat -> Port.
-4. Tulis kode program Blink sederhana di atas, lalu klik tombol Upload (panah kanan).
-5. Selamat! Lampu indikator bawaan (LED 13) di papan Arduino Anda sekarang berkedip setiap 1 detik.`
-  },
-  {
-    id: 2,
-    title: "Panduan Lengkap Merakit Robot Line Follower Analog",
-    category: "tutorial",
-    date: "10 Mei 2026",
-    author: "Faris Ramadhan (Ketua Divisi Robotika)",
-    excerpt: "Panduan praktis merakit robot pengikut garis tanpa pemrograman. Memanfaatkan sensor LDR, komparator LM358, dan driver motor transistor.",
-    headerImage: "https://images.unsplash.com/photo-1546776310-eef45dd6d63c?q=80&w=1200&auto=format&fit=crop",
-    content: `### Konsep Dasar Robot Pengikut Garis
-
-Robot Line Follower analog mendeteksi perbedaan kontras warna permukaan jalan (biasanya garis hitam di atas permukaan putih) menggunakan sensor cahaya dan mengendalikan motor secara langsung tanpa otak mikrokontroler. Ini adalah proyek fondasi mekanika dan elektronika dasar terbaik.
-
-### Komponen yang Diperlukan
-
-- Sensor Photodiode atau LDR (Light Dependent Resistor) 2 buah.
-- IC Op-Amp Comparator LM358 sebagai pengolah logika pembanding tegangan.
-- Transistor TIP41C atau MOSFET sebagai saklar driver motor DC.
-- Sepasang Motor DC dengan Gearbox dan Roda.
-- Casing/Chassis Akrilik dan Baterai Lithium 18650 2 Cell (7.4v).
-
-### Bagaimana Cara Kerjanya?
-
-Ketika sensor sebelah kiri mendeteksi permukaan hitam (garis lintasan), LDR menerima sedikit pantulan cahaya sehingga nilai resistansinya melonjak tinggi. IC pembanding mendeteksi perubahan ini dan memicu driver motor untuk memutar motor kanan lebih cepat, sehingga robot berbelok kembali to tengah garis lintasan. Sederhana, cepat, dan responsif!`
-  },
-  {
-    id: 3,
-    title: "Masa Depan IoT: Menghubungkan Robot dengan Internet via ESP32",
-    category: "iot",
-    date: "02 Mei 2026",
-    author: "Zaskia Amalia (Alumni & Mahasiswa Teknik Elektro)",
-    excerpt: "Bagaimana mengontrol pergerakan robot dari mana saja di seluruh dunia menggunakan protokol MQTT, ESP32, dan dashboard real-time.",
-    headerImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
-    content: `### Apa itu ESP32?
-
-ESP32 adalah mikrokontroler berbiaya rendah dengan konsumsi daya rendah yang dilengkapi Wi-Fi terintegrasi dan modul Bluetooth dual-mode. Ini menjadikannya otak ideal untuk proyek Internet of Things (IoT) dan sistem robot nirkabel.
-
-### Mengapa Menggunakan MQTT?
-
-MQTT (Message Queuing Telemetry Transport) adalah protokol perpesanan standar ringan untuk IoT. Protokol ini menggunakan arsitektur publish/subscribe yang sangat hemat bandwidth, berlatensi rendah, dan sangat cocok untuk komunikasi waktu nyata robot dengan internet.
-
-### Contoh Implementasi
-
-Di ekstrakurikuler kami, kami membuat lengan robot industri mini yang dikendalikan dari jarak jauh melalui antarmuka web. Sensor giroskop di ponsel mengirim koordinat sudut via MQTT ke ESP32 di lengan robot, yang kemudian menerjemahkannya ke servo secara real-time dari jarak ratusan kilometer.`
-  },
-  {
-    id: 4,
-    title: "Strategi Menang Kompetisi Robotika Nasional",
-    category: "kompetisi",
-    date: "28 April 2026",
-    author: "Drs. Eko Prasetyo (Pembina Ekstrakurikuler)",
-    excerpt: "Tips dan rahasia sukses dari pembina ekskul robotik yang berhasil menyabet juara 1 tingkat nasional selama 3 tahun berturut-turut.",
-    headerImage: "https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?q=80&w=1200&auto=format&fit=crop",
-    content: `### 1. Desain Modular dan Kuat
-
-Saat kompetisi, kerusakan fisik robot sering terjadi akibat tabrakan atau kesalahan navigasi. Desainlah robot secara modular sehingga jika salah satu sensor atau motor rusak, komponen tersebut bisa diganti dalam hitungan detik tanpa harus membongkar seluruh badan robot.
-
-### 2. Manajemen Daya dan Baterai
-
-Selalu gunakan baterai dengan arus keluaran tinggi (C-Rating tinggi) untuk motor servo berkinerja tinggi, dan pisahkan jalur catu daya untuk sensor/kontroler (menggunakan regulator terpisah) untuk menghindari 'reset' mikrokontroler saat motor menarik arus puncak.
-
-### 3. Mentalitas dan Kerja Tim di Lapangan
-
-Kompetisi robotik bukan hanya tentang teknologi terbaik, melainkan tentang adaptabilitas. Setiap arena kompetisi memiliki intensitas cahaya dan tekstur permukaan berbeda. Kunci kemenangan kami terletak pada kesiapan pemrogram melakukan kalibrasi ulang cepat dalam waktu 5 menit sebelum pertandingan dimulai!`
-  }
-];
-
-export const INITIAL_PORTFOLIO_PROJECTS = [
-  {
-    id: 1,
-    title: "Soccer Bot v2.0 - Striker Robot",
-    category: "mekanik & elektronik",
-    status: "Selesai",
-    creators: "Tim R&D Kelas XI (Rian, Maya, Dika)",
-    components: "Arduino Mega, Driver L298N, Modul Bluetooth HC-05, Motor DC High-Torque 12v, Solenoid Kicker",
-    specs: "Kecepatan 1.2 m/s, Daya Tendang Solenoid 24v, Kontrol Nirkabel via Android App",
-    description: "Robot striker berkekuatan tinggi yang dikendalikan secara nirkabel melalui aplikasi Android untuk kompetisi robot sepak bola.",
-    headerImage: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?q=80&w=1200&auto=format&fit=crop",
-    content: `### Robot Striker Lapangan Hijau
-
-Soccer Bot v2.0 adalah robot striker bertenaga tinggi yang dikendalikan secara nirkabel untuk berkompetisi dalam ajang sepak bola robot tingkat provinsi.
-
-### Proses Rancang Bangun
-
-- **Desain Mekanik**: Menggunakan plat akrilik tebal 5mm dengan sasis melingkar tiga roda (omnidirectional wheels) untuk manuver gerakan 360 derajat instan.
-- **Sistem Penendang (Kicker)**: Dilengkapi dengan solenoid 24v berpegas mekanik kuat yang mampu melontarkan bola tenis dengan kecepatan tinggi.
-- **Elektronik**: Menggunakan motor driver L298N beraliran arus tinggi dan ditenagai oleh baterai Li-Po 3-cell 11.1V.
-
-![Mekanika Soccer Bot](https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop)
-
-### Hasil Uji Coba
-
-Robot ini berhasil memenangkan juara 2 kategori robot olahraga tingkat regional berkat respon kontrol bluetooth yang sangat instan dan kekuatan tendangan solenoid yang memukau.`,
-    code: `// Cuplikan Kontrol Solenoid & Motor DC Soccer Bot v2.0\n#define MOTOR_LEFT_F 5\n#define MOTOR_LEFT_B 6\n#define MOTOR_RIGHT_F 9\n#define MOTOR_RIGHT_B 10\n#define SOLENOID_PIN 12\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(MOTOR_LEFT_F, OUTPUT);\n  pinMode(MOTOR_LEFT_B, OUTPUT);\n  pinMode(MOTOR_RIGHT_F, OUTPUT);\n  pinMode(MOTOR_RIGHT_B, OUTPUT);\n  pinMode(SOLENOID_PIN, OUTPUT);\n}\n\nvoid loop() {\n  if (Serial.available() > 0) {\n    char val = Serial.read();\n    if (val == 'F') { // Maju\n      analogWrite(MOTOR_LEFT_F, 255);\n      analogWrite(MOTOR_RIGHT_F, 255);\n    } else if (val == 'K') { // TENDANG! (Solenoid)\n      digitalWrite(SOLENOID_PIN, HIGH);\n      delay(150);\n      digitalWrite(SOLENOID_PIN, LOW);\n    } else if (val == 'S') { // Berhenti\n      analogWrite(MOTOR_LEFT_F, 0);\n      analogWrite(MOTOR_RIGHT_F, 0);\n    }\n  }\n}`,
-    schematic: `Gunakan pinout koneksi berikut untuk perakitan Soccer Bot:
-
-- **VCC** -> Baterai Li-Po 11.1V (via Regulator 5V untuk Arduino)
-- **GND** -> Ground Bersama
-- **Motor Left F/B** -> PWM Pins D5, D6 (Koneksi ke L298N)
-- **Motor Right F/B** -> PWM Pins D9, D10
-- **Solenoid Pin** -> Digital Pin D12 (Memicu Relay Solenoid 24V)`,
-    showCode: true,
-    isWinner: true,
-    awardName: "Juara 2 Robot Sepak Bola Regional"
-  },
-  {
-    id: 2,
-    title: "Smart Agriculture Monitoring (IoT)",
-    category: "iot",
-    status: "Selesai",
-    creators: "Tim IoT Kelas XII (Sarah, Kevin)",
-    components: "ESP32, Sensor Kelembaban Tanah Soil Moisture v1.2, Sensor Suhu/Kelembaban DHT22, Pompa Air 5v Mini, LCD I2C",
-    specs: "Konektivitas WiFi, Pengiriman Data Telemetri via MQTT, Kontrol Pompa Air Otomatis & Manual",
-    description: "Sistem monitoring pertanian cerdas berbasis IoT untuk memantau kelembaban tanah dan menyiram tanaman secara otomatis.",
-    headerImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop",
-    content: `### Solusi IoT Pertanian Cerdas
-
-Proyek Smart Agriculture Monitoring dirancang untuk membantu pemantauan dan penyiraman tanaman secara otomatis berbasis internet untuk efisiensi penggunaan air.
-
-### Alur Sistem Kerja
-
-1. **Pembacaan Sensor**: ESP32 membaca kelembaban tanah dan suhu/kelembaban udara setiap 1 detik.
-2. **Koneksi Blynk Cloud**: Data telemetri dikirim secara real-time ke cloud server Blynk menggunakan WiFi terintegrasi.
-3. **Kontrol Pompa Otomatis**: Jika kelembaban tanah berada di bawah nilai batas (tanah kering), relay memicu pompa air mini untuk menyiram secara otomatis.
-
-![Modul Pertanian Cerdas](https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop)
-
-### Manfaat Proyek
-
-Sangat ideal untuk diaplikasikan pada perkebunan hidroponik sekolah, menghemat konsumsi energi, dan memastikan kesehatan tumbuh kembang tanaman terjaga 24 jam penuh.`,
-    code: `// Cuplikan Koneksi IoT Blynk ESP32\n#include <WiFi.h>\n#include <WiFiClient.h>\n#include <BlynkSimpleEsp32.h>\n\nchar auth[] = "Your_Blynk_Auth_Token";\nchar ssid[] = "Wifi_Motechart_Robotik";\nchar pass[] = "motechart_wifi_pass";\n\n#define SOIL_PIN 34\n#define RELAY_PIN 23\n\nvoid setup() {\n  Blynk.begin(auth, ssid, pass);\n  pinMode(RELAY_PIN, OUTPUT);\n}\n\nvoid loop() {\n  Blynk.run();\n  int soilMoisture = analogRead(SOIL_PIN);\n  Blynk.virtualWrite(V1, soilMoisture);\n  \n  if (soilMoisture > 3000) { // Tanah kering\n    digitalWrite(RELAY_PIN, HIGH); // Pompa menyala\n  } else {\n    digitalWrite(RELAY_PIN, LOW);\n  }\n  delay(1000);\n}`,
-    schematic: `Gunakan pinout ESP32 berikut untuk perakitan:
-
-- **VCC** -> Adaptor Daya 5V / USB
-- **GND** -> Ground Bersama
-- **Sensor Soil** -> Pin Analog GPIO34
-- **Relay Pompa** -> Pin Digital GPIO23 (Mengendalikan Pompa Air 5V)`,
-    showCode: true,
-    isWinner: false,
-    awardName: ""
-  },
-  {
-    id: 3,
-    title: "Maze Solver Robot (Autonomous)",
-    category: "pemrograman",
-    status: "Pengembangan",
-    creators: "Tim Kompetisi Kelas X & XI (Adit, Budi, Riri)",
-    components: "Arduino Nano, Sensor Ultrasonik HC-SR04 3 unit, Sensor Gyroscope MPU6050, Motor Driver TB6612FNG, Micro Metal Gearmotor",
-    specs: "Algoritma Pemecah Labirin Flood-Fill, Sensor Akurasi Jarak 1mm, Kecepatan Putar 90 Derajat Instan",
-    description: "Robot otonom yang dirancang untuk bernavigasi mandiri memecahkan labirin berliku menggunakan algoritma Flood-Fill.",
-    headerImage: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?q=80&w=1200&auto=format&fit=crop",
-    content: `### Robot Otonom Pemecah Labirin
-
-Maze Solver Robot dirancang untuk bernavigasi secara mandiri memecahkan labirin berliku dalam waktu sesingkat mungkin menggunakan logika penelusuran otonom.
-
-### Integrasi Algoritma Cerdas
-
-- **Sistem Penginderaan Jarak**: Memanfaatkan 3 sensor ultrasonik (kiri, depan, kanan) untuk memantau keberadaan dinding secara simultan.
-- **Koreksi Sudut Gyroscope**: MPU6050 digunakan untuk menstabilkan robot agar tetap berjalan lurus dan berputar tepat 90 derajat.
-- **Algoritma Flood-Fill**: Robot membuat pemetaan koordinat internal di dalam RAM mikrokontroler untuk mengingat jalur mati dan menemukan rute tercepat ke titik tengah.
-
-![Desain Bodi Sasis Maze Solver](https://images.unsplash.com/photo-1546776310-eef45dd6d63c?q=80&w=600&auto=format&fit=crop)
-
-### Status Saat Ini
-
-Saat ini robot berada dalam fase optimasi PID motor agar pergerakan belokan bisa dilakukan dengan kecepatan sudut yang lebih agresif saat kompetisi tingkat nasional mendatang.`,
-    code: `// Cuplikan Algoritma Pendeteksi Dinding & Koreksi MPU6050\n#define TRIG_LEFT 2\n#define ECHO_LEFT 3\n#define TRIG_FRONT 4\n#define ECHO_FRONT 5\n\nfloat getDistance(int trig, int echo) {\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n  long duration = pulseIn(echo, HIGH);\n  return duration * 0.034 / 2;\n}\n\nvoid setup() {\n  pinMode(TRIG_LEFT, OUTPUT);\n  pinMode(ECHO_LEFT, INPUT);\n  pinMode(TRIG_FRONT, OUTPUT);\n  pinMode(ECHO_FRONT, INPUT);\n}\n\nvoid loop() {\n  float distFront = getDistance(TRIG_FRONT, ECHO_FRONT);\n  float distLeft = getDistance(TRIG_LEFT, ECHO_LEFT);\n  \n  if (distFront < 10.0) {\n    if (distLeft > 15.0) {\n      belokKiri();\n    } else {\n      belokKanan();\n    }\n  } else {\n    majuLurusPID();\n  }\n}`,
-    schematic: `Gunakan pinout Arduino Nano berikut:
-
-- **Sensor Ultrasonik** -> Pin D2 & D3 (Kiri), D4 & D5 (Depan)
-- **MPU6050 Gyro** -> Pin I2C A4 (SDA), A5 (SCL)
-- **Motor Driver** -> Pin TB6612FNG Control`,
-    showCode: true,
-    isWinner: false,
-    awardName: ""
-  }
-];
-
-export const INITIAL_APPLICANTS = [];
-
-export const INITIAL_REG_SETTINGS = {
-  isOpen: true,
-  status: 'open',
-  showHeaderCountdown: true,
-  countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-  customQuestions: [
-    {
-      id: 'q-1779445719',
-      label: 'Apakah Anda memiliki pengalaman pemrograman sebelumnya?',
-      type: 'select',
-      options: ['Belum pernah', 'Dasar (HTML/CSS)', 'Menengah (C++/Arduino)', 'Mahir'],
-      required: true
-    }
-  ],
-  waTitle: 'Grup WhatsApp Resmi Calon Anggota',
-  waDesc: 'Harap bergabung ke grup koordinasi calon anggota baru di bawah ini untuk mendapatkan info jadwal wawancara, tes masuk, dan demonstrasi alat robotika:',
-  waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
+export {
+  INITIAL_APPLICANTS,
+  INITIAL_BLOG_ARTICLES,
+  INITIAL_LANDING_DATA,
+  INITIAL_PORTFOLIO_PROJECTS,
+  INITIAL_REG_SETTINGS,
 };
 
 export function normalizeRegSettings(settings) {
@@ -263,33 +40,6 @@ export function normalizeRegSettings(settings) {
   }
   return settings;
 }
-
-export const INITIAL_LANDING_DATA = {
-  heroTag: 'Ekstrakurikuler Unggulan',
-  heroTitle: 'Rancang Masa Depanmu Bersama <span>Robotik</span>!',
-  heroDesc: 'Eksplorasi kreativitas tanpa batas. Kembangkan keahlian mekanika tangguh, sirkuit elektronika cerdas, dan pemrograman algoritma tingkat tinggi untuk menciptakan robot-robot inovatif masa depan.',
-  visiText: 'Menjadi pusat pengembangan teknologi robotika remaja yang unggul, adaptif, inovatif, dan berprestasi global berlandaskan kerja sama tim dan integritas sains.',
-  misiList: [
-    'Menyelenggarakan pelatihan terstruktur bidang mekanik, elektronika dasar, dan coding.',
-    'Mendorong kreativitas dalam memecahkan masalah nyata berbasis Internet of Things (IoT).',
-    'Mempersiapkan tim tangguh untuk berkompetisi di tingkat nasional dan internasional.',
-    'Menghasilkan alumni berkarakter teknik yang siap bersaing di era otomatisasi global.'
-  ],
-  divMechDesc: 'Merancang struktur fisik robot, chassis akrilik, pemodelan 3D (CAD), 3D printing modeling, dan kestabilan pergerakan mekanis aerodinamis.',
-  divElecDesc: 'Menyusun sirkuit sirkulasi daya, penyolderan sensor pintar, perakitan mikrokontroler (Arduino/ESP32), baterai sel, dan sistem aktuator driver.',
-  divProgDesc: 'Menulis kode algoritma C++ dan Python, integrasi navigasi sensor otomatis, penyelarasan PID motor, hingga kendali jarak jauh IoT nirkabel.',
-  achievements: [
-    { juara: 'Juara 1 Nasional Kontes Robot Soccer', organizer: 'Kementerian Pendidikan & Kebudayaan', year: '2025' },
-    { juara: 'Juara 2 Internasional ASEAN Line Follower', organizer: 'ASEAN Robotics Association', year: '2025' },
-    { juara: 'Juara 1 Provinsi Lomba Karya Cipta IoT', organizer: 'Pemerintah Provinsi & Puspresnas', year: '2026' },
-    { juara: 'Juara Umum Kompetisi Robotik Kreatif', organizer: 'Lembaga Ilmu Pengetahuan Indonesia', year: '2025' }
-  ],
-  footerTagline: 'Wadah pengembangan inovasi, otomatisasi, dan kreativitas teknologi robotika masa depan bagi para remaja unggul.',
-  footerLocation: 'Lab Robotika, Gedung B Lantai 2',
-  footerEmail: 'robotikmotechart@gmail.com',
-  footerInstagram: 'https://www.instagram.com/motechart_mansabo/',
-  footerYoutube: 'https://www.youtube.com/@Motechart-RobotikMAN1Bogor'
-};
 
 
 // --- LOCAL STORAGE DATA HELPERS (CMS PERSISTENCE WITH OBFUSCATION) ---
@@ -361,29 +111,32 @@ export function saveData(key, data, syncToCloud = true) {
 
     const currentUser = auth ? auth.currentUser : null;
     if (useFirebase && syncToCloud && currentUser) {
+      let writePromise = null;
       if (key === 'robotik_reg_settings') {
-        db.collection('settings').doc('registration').set(data)
-          .then(() => console.log("Cloud Sync: Registration settings successfully updated!"))
-          .catch(err => console.error("Cloud Sync Error: Settings sync failed:", err));
+        writePromise = db.collection('settings').doc('registration').set(data);
       } else if (key === 'robotik_landing') {
-        db.collection('landing').doc('content').set(data)
-          .then(() => console.log("Cloud Sync: Landing page content successfully updated!"))
-          .catch(err => console.error("Cloud Sync Error: Landing content sync failed:", err));
+        writePromise = db.collection('landing').doc('content').set(data);
       } else if (key === 'robotik_blog') {
-        db.collection('blog').doc('articles').set({ articles: data })
-          .then(() => console.log("Cloud Sync: Blog articles successfully updated!"))
-          .catch(err => console.error("Cloud Sync Error: Blog articles sync failed:", err));
+        writePromise = db.collection('blog').doc('articles').set({ articles: data });
       } else if (key === 'robotik_portfolio') {
-        db.collection('portfolio').doc('projects').set({ projects: data })
-          .then(() => console.log("Cloud Sync: Portfolio projects successfully updated!"))
-          .catch(err => console.error("Cloud Sync Error: Portfolio projects sync failed:", err));
+        writePromise = db.collection('portfolio').doc('projects').set({ projects: data });
+      }
+      if (writePromise) {
+        return writePromise
+          .then(() => true)
+          .catch((err) => {
+            console.error(`Cloud Sync Error (${key}):`, err);
+            throw err;
+          });
       }
     }
+    return Promise.resolve(true);
   } catch (e) {
     console.error('LocalStorage save failed:', e);
     if (e.name === 'QuotaExceededError' || e.code === 22) {
       customAlert('⚠️ Penyimpanan browser Anda penuh! Perubahan data tidak dapat disimpan secara permanen.');
     }
+    return Promise.reject(e);
   }
 }
 
@@ -531,10 +284,6 @@ export async function syncRegSettingsFromFirestore() {
       state.regSettings = normalizeRegSettings(doc.data());
       saveData('robotik_reg_settings', state.regSettings, false);
       console.log("Cloud sync completed: Registration settings loaded.");
-    } else {
-      state.regSettings = normalizeRegSettings(state.regSettings);
-      await state.db.collection('settings').doc('registration').set(state.regSettings);
-      console.log("Firestore seeded with initial registration settings.");
     }
   } catch (e) {
     console.error("Firestore sync settings failed:", e);
@@ -547,13 +296,10 @@ export async function syncLandingDataFromFirestore() {
     const doc = await state.db.collection('landing').doc('content').get();
     if (doc.exists) {
       const data = doc.data();
-      const changed = migrateLandingData(data);
+      migrateLandingData(data);
       state.landingData = data;
-      saveData('robotik_landing', state.landingData, changed);
+      saveData('robotik_landing', state.landingData, false);
       console.log("Cloud sync completed: Landing page data loaded.");
-    } else {
-      await state.db.collection('landing').doc('content').set(state.landingData);
-      console.log("Firestore seeded with initial landing page content.");
     }
   } catch (e) {
     console.error("Firestore sync landing data failed:", e);
@@ -569,9 +315,6 @@ export async function syncBlogFromFirestore() {
       state.blogArticles = cloudData.articles || [];
       saveData('robotik_blog', state.blogArticles, false);
       console.log("Cloud sync completed: Blog articles loaded.");
-    } else {
-      await state.db.collection('blog').doc('articles').set({ articles: state.blogArticles });
-      console.log("Firestore seeded with initial blog articles.");
     }
   } catch (e) {
     console.error("Firestore sync blog failed:", e);
@@ -587,9 +330,6 @@ export async function syncPortfolioFromFirestore() {
       state.portfolioProjects = cloudData.projects || [];
       saveData('robotik_portfolio', state.portfolioProjects, false);
       console.log("Cloud sync completed: Portfolio projects loaded.");
-    } else {
-      await state.db.collection('portfolio').doc('projects').set({ projects: state.portfolioProjects });
-      console.log("Firestore seeded with initial portfolio projects.");
     }
   } catch (e) {
     console.error("Firestore sync portfolio failed:", e);
@@ -621,11 +361,6 @@ export function setupRealTimeApplicantsSync(onUpdateCallback) {
       });
       saveData('robotik_applicants', state.applicants, false);
       console.log("Real-time applicants updated from Cloud Firestore!");
-      
-      // Update public telemetry count of applicants to match true total
-      state.db.collection('telemetry').doc('visitors').update({
-        applicantsCount: fetched.length
-      }).catch(err => console.warn("Failed to sync applicantsCount telemetry:", err));
 
       if (typeof onUpdateCallback === 'function') {
         onUpdateCallback(state.applicants);
@@ -815,12 +550,18 @@ export function parseMarkdownToHtml(markdown) {
   escaped = processed.join('\n\n');
 
   escaped = escaped.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
-  escaped = escaped.replace(/__([^__]+)__/g, '<strong>$1</strong>');
+  escaped = escaped.replace(/__([^_]+)__/g, '<strong>$1</strong>');
   escaped = escaped.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
   escaped = escaped.replace(/_([^_]+)_/g, '<em>$1</em>');
   escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
-  escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-  escaped = escaped.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="blog-img" loading="lazy">');
+  escaped = escaped.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, (_m, alt, rawUrl) => {
+    const safe = sanitizeUrl(rawUrl);
+    return safe ? `<img src="${safe}" alt="${alt}" class="blog-img" loading="lazy">` : '';
+  });
+  escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, rawUrl) => {
+    const safe = sanitizeUrl(rawUrl);
+    return safe ? `<a href="${safe}" target="_blank" rel="noopener noreferrer">${label}</a>` : label;
+  });
 
   codeBlocks.forEach((block, idx) => {
     escaped = escaped.replace(`__CODE_BLOCK_${idx}__`, block);
@@ -1084,9 +825,9 @@ export function setupRealTimeLandingDataSync(onUpdateCallback) {
     landingDataUnsubscribe = state.db.collection('landing').doc('content').onSnapshot(doc => {
       if (doc.exists) {
         const data = doc.data();
-        const changed = migrateLandingData(data);
+        migrateLandingData(data);
         state.landingData = data;
-        saveData('robotik_landing', state.landingData, changed);
+        saveData('robotik_landing', state.landingData, false);
         console.log("Real-time landing data updated from Cloud Firestore!");
         if (typeof onUpdateCallback === 'function') {
           onUpdateCallback(state.landingData);
@@ -1142,6 +883,26 @@ export function setupRealTimePortfolioSync(onUpdateCallback) {
   } catch (e) {
     console.error("Failed to setup Firestore real-time listener for portfolio:", e);
   }
+}
+
+export function unsubscribeAllRealtimeSync() {
+  unsubscribeRealTimeApplicants();
+  const listeners = [
+    [regSettingsUnsubscribe, () => { regSettingsUnsubscribe = null; }],
+    [landingDataUnsubscribe, () => { landingDataUnsubscribe = null; }],
+    [blogUnsubscribe, () => { blogUnsubscribe = null; }],
+    [portfolioUnsubscribe, () => { portfolioUnsubscribe = null; }],
+  ];
+  listeners.forEach(([unsub, clear]) => {
+    if (typeof unsub === 'function') {
+      try {
+        unsub();
+      } catch (e) {
+        console.warn("Realtime unsubscribe failed:", e);
+      }
+      clear();
+    }
+  });
 }
 
 // --- CUSTOM DIALOG OVERLAYS (ALERT & CONFIRM) ---
@@ -1212,7 +973,7 @@ function ensurePopupStyles() {
         color: #FACC15;
       }
       .popup-message {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         font-size: 0.95rem;
         line-height: 1.6;
         color: #E2E8F0;
@@ -1227,7 +988,7 @@ function ensurePopupStyles() {
       .popup-actions .popup-btn {
         min-height: 42px;
         padding: 0.5rem 1.5rem;
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         font-weight: 600;
         font-size: 0.9rem;
         cursor: pointer;
@@ -1339,7 +1100,11 @@ export function showToast(message, type = 'success') {
   toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
 
   const icon = type === 'error' ? '❌' : '✅';
-  toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+  const iconSpan = document.createElement('span');
+  iconSpan.textContent = icon;
+  const msgSpan = document.createElement('span');
+  msgSpan.textContent = String(message ?? '');
+  toast.append(iconSpan, msgSpan);
   container.appendChild(toast);
 
   requestAnimationFrame(() => {

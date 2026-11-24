@@ -1,10 +1,16 @@
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  plugins: [tailwindcss()],
+  server: {
+    port: 3000,
+    host: '0.0.0.0'
+  },
   build: {
     minify: 'esbuild',
     cssMinify: true,

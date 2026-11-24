@@ -1,0 +1,1054 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Outfit", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  color-scheme: dark;
+  --canvas: #090d16;
+  --surface: #111827;
+  --surface-raised: #151e30;
+  --accent-gold: #facc15;
+  --accent-cyan: #22d3ee;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--canvas);
+    color: #e2e8f0;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--canvas);
+    color: #e2e8f0;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: 0.008em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: #f8fafc;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+  }
+}
+
+/* Subtle architectural blueprint grid background */
+.canvas-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Distinct surface variation for Divisions Blueprint Arena */
+.divisions-arena-bg {
+  background:
+    radial-gradient(ellipse 65% 55% at 80% 45%, rgba(6, 182, 212, 0.11), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 15% 85%, rgba(250, 204, 21, 0.07), transparent 70%),
+    linear-gradient(180deg, #070b14 0%, #0b1322 50%, #080d18 100%);
+}
+
+/* Blueprint architectural corner brackets for hero lab frame */
+.blueprint-frame::before,
+.blueprint-frame::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.blueprint-frame::before {
+  top: 10px;
+  left: 10px;
+  border-top: 2px solid rgba(250, 204, 21, 0.65);
+  border-left: 2px solid rgba(250, 204, 21, 0.65);
+}
+
+.blueprint-frame::after {
+  bottom: 10px;
+  right: 10px;
+  border-bottom: 2px solid rgba(34, 211, 238, 0.65);
+  border-right: 2px solid rgba(34, 211, 238, 0.65);
+}
+
+/* Interactive Hero Ambient Spotlight & Gentle Drift */
+.hero-interactive-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 40%),
+    rgba(34, 211, 238, 0.11),
+    rgba(250, 204, 21, 0.04) 42%,
+    transparent 72%
+  );
+  transition: opacity 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-interactive-canvas.has-pointer::before {
+  opacity: 1;
+}
+
+.hero-glow-drift {
+  animation: heroGlowDrift 14s ease-in-out infinite alternate;
+}
+
+.hero-glow-drift-alt {
+  animation: heroGlowDrift 18s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes heroGlowDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(26px, 18px, 0) scale(1.08);
+  }
+}
+
+.hero-cta-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(250, 204, 21, 0.24);
+}
+
+/* Interactive Hero Rover Blueprint Workbench */
+.hero-bp-tab {
+  color: #94a3b8;
+  background: transparent;
+}
+
+.hero-bp-tab:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hero-bp-tab.is-active {
+  color: #090d16;
+  background: #facc15;
+  font-weight: 600;
+}
+
+.hero-bp-node {
+  cursor: pointer;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1), filter 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.72;
+}
+
+.hero-bp-node:hover {
+  opacity: 0.96;
+}
+
+.hero-bp-node.is-selected {
+  opacity: 1;
+  filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.35));
+}
+
+.hero-bp-node.hero-node-chassis.is-selected .node-stroke-target,
+.hero-bp-node.hero-node-power.is-selected .node-stroke-target {
+  stroke: #facc15;
+}
+
+.hero-bp-node.hero-node-mcu.is-selected .node-stroke-target {
+  stroke: #22d3ee;
+}
+
+.hero-bp-node.hero-node-sensor.is-selected .node-stroke-target {
+  stroke: #34d399;
+}
+
+.hero-sonar-ring {
+  opacity: 0.25;
+  animation: sonarPing 2.8s ease-out infinite;
+}
+
+.hero-sonar-ring-2 {
+  animation-delay: 0.9s;
+}
+
+@keyframes sonarPing {
+  0% {
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.85;
+  }
+}
+
+.hero-wheel-roller {
+  stroke-dasharray: 6 3;
+  animation: rollerGlide 1.8s linear infinite;
+}
+
+@keyframes rollerGlide {
+  from {
+    stroke-dashoffset: 9;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Navigation links: clean typography with hairline bottom indicator */
+.top-nav-link {
+  position: relative;
+  padding: 0.5rem 0.125rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94a3b8;
+  transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.top-nav-link:hover {
+  color: #f8fafc;
+}
+
+.top-nav-link.is-active {
+  color: #f8fafc;
+}
+
+.top-nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background-color: var(--accent-gold);
+  border-radius: 999px;
+}
+
+/* Division selector cards (compact logo tiles on mobile, editorial cards on desktop) */
+.division-tab-btn {
+  width: 100%;
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.68);
+  transition:
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .division-tab-btn {
+    text-align: left;
+    padding: 1.15rem 1.25rem;
+    border-radius: 0.9rem;
+  }
+
+  .division-tab-btn:hover {
+    transform: translateX(3px);
+  }
+}
+
+.division-tab-btn:hover {
+  background: rgba(20, 31, 54, 0.88);
+  border-color: rgba(34, 211, 238, 0.32);
+}
+
+.division-tab-btn.is-active {
+  background: linear-gradient(135deg, rgba(12, 34, 51, 0.92) 0%, rgba(13, 24, 42, 0.95) 100%);
+  border-color: rgba(34, 211, 238, 0.72);
+  box-shadow: 0 0 28px rgba(34, 211, 238, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.division-tab-btn .div-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 13, 22, 0.75);
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: border-color 200ms ease, color 200ms ease, background-color 200ms ease;
+}
+
+@media (min-width: 1024px) {
+  .division-tab-btn .div-icon-box {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+.division-tab-btn.is-active .div-icon-box {
+  border-color: rgba(34, 211, 238, 0.45);
+  background: rgba(34, 211, 238, 0.12);
+  color: #facc15;
+}
+
+.division-tab-btn.is-active .div-tab-num {
+  color: var(--accent-gold);
+}
+
+/* Division detail blueprint card */
+.division-detail-shell {
+  background: linear-gradient(145deg, rgba(13, 22, 39, 0.95) 0%, rgba(9, 15, 28, 0.98) 100%);
+  border: 1px solid rgba(250, 204, 21, 0.24);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.division-blueprint-stage {
+  width: 100%;
+  max-width: 380px;
+  aspect-ratio: 320 / 280;
+}
+
+.division-stage-enter {
+  animation: stageFadeSlide 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes stageFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Live Technical SVG Animations (Compositor-Friendly) */
+.svg-spin-slow {
+  animation: spinCW 28s linear infinite;
+}
+
+.svg-gear-cw {
+  animation: spinCW 11s linear infinite;
+}
+
+.svg-gear-ccw {
+  animation: spinCCW 7.33s linear infinite;
+}
+
+.svg-arm-rock {
+  animation: armRock 4.5s ease-in-out infinite alternate;
+}
+
+.svg-trace-flow {
+  stroke-dasharray: 18 76;
+  animation: traceFlow 2.6s linear infinite;
+}
+
+.svg-trace-flow-alt {
+  stroke-dasharray: 14 84;
+  animation: traceFlow 3.2s linear infinite reverse;
+}
+
+.svg-wave-scroll {
+  animation: waveScroll 2.2s linear infinite;
+}
+
+.svg-wave-scroll-slow {
+  animation: waveScroll 3.8s linear infinite;
+}
+
+.svg-maze-path {
+  stroke-dasharray: 340;
+  stroke-dashoffset: 340;
+  animation: mazeTrace 4.8s ease-in-out infinite;
+}
+
+.svg-pid-curve {
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: pidDraw 4.2s ease-out infinite;
+}
+
+.svg-bot-glide {
+  transform: translate(184px, 126px);
+  animation: botWaypoints 4.8s ease-in-out infinite;
+}
+
+@keyframes spinCW {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinCCW {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes armRock {
+  0% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes traceFlow {
+  from {
+    stroke-dashoffset: 94;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes waveScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-104px);
+  }
+}
+
+@keyframes mazeTrace {
+  0% {
+    stroke-dashoffset: 340;
+    opacity: 0.4;
+  }
+  70% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  92% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.25;
+  }
+}
+
+@keyframes pidDraw {
+  0% {
+    stroke-dashoffset: 320;
+  }
+  75% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes botWaypoints {
+  0% {
+    transform: translate(88px, 158px) rotate(0deg);
+  }
+  28% {
+    transform: translate(88px, 62px) rotate(90deg);
+  }
+  62% {
+    transform: translate(232px, 62px) rotate(180deg);
+  }
+  74% {
+    transform: translate(232px, 94px) rotate(270deg);
+  }
+  88% {
+    transform: translate(184px, 94px) rotate(180deg);
+  }
+  100% {
+    transform: translate(184px, 126px) rotate(180deg);
+  }
+}
+
+/* Per-step Learning Track connector (cleanly sits AFTER phase text, never crosses text) */
+.roadmap-connector {
+  position: relative;
+  height: 1px;
+  margin-left: 0.25rem;
+  background: linear-gradient(90deg, rgba(250, 204, 21, 0.38), rgba(34, 211, 238, 0.28));
+  overflow: hidden;
+}
+
+.roadmap-connector::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -35%;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #22d3ee, #facc15, transparent);
+  animation: connectorPulse 3.2s ease-in-out infinite;
+}
+
+@keyframes connectorPulse {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(380%);
+    opacity: 0;
+  }
+}
+
+.roadmap-node-badge {
+  transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Lively hover micro-interaction for content cards */
+.interactive-card {
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.interactive-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(250, 204, 21, 0.32);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.38);
+}
+
+/* Interactive filter segmented controls */
+.filter-tab-btn {
+  padding: 0.5rem 0.95rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #94a3b8;
+  transition: background-color 150ms ease, color 150ms ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.filter-tab-btn:hover {
+  color: #f8fafc;
+}
+
+.filter-tab-btn.is-active {
+  background-color: #facc15;
+  color: #090d16;
+  font-weight: 600;
+}
+
+/* Project modal tabs */
+.proj-tab-btn {
+  color: #94a3b8;
+}
+
+.proj-tab-btn:hover {
+  color: #f8fafc;
+}
+
+.proj-tab-btn.is-active {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+/* Form controls */
+.field-input {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #0b101b;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9375rem;
+  color: #f8fafc;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.field-input::placeholder {
+  color: #64748b;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background-color: #0e1524;
+}
+
+.radio-card {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #0b101b;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.radio-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.radio-card:has(input:checked) {
+  border-color: rgba(250, 204, 21, 0.65);
+  background-color: rgba(250, 204, 21, 0.08);
+  color: #ffffff;
+}
+
+/* Compact single-line radio selector (Tingkat Kelas) */
+.choice-pill-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #0b101b;
+  padding: 0.6rem 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.choice-pill-card:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #f8fafc;
+}
+
+.choice-pill-card:has(input:checked) {
+  border-color: rgba(250, 204, 21, 0.78);
+  background-color: rgba(250, 204, 21, 0.12);
+  color: #fde047;
+  font-weight: 600;
+}
+
+.choice-pill-card:has(input:focus-visible) {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* Compact logo-first division selector tile in registration Step 2 */
+.division-choice-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.4rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #0b101b;
+  color: #94a3b8;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.division-choice-tile:hover {
+  border-color: rgba(34, 211, 238, 0.35);
+  background-color: #0e1627;
+  color: #e2e8f0;
+}
+
+.division-choice-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.85);
+  color: #94a3b8;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.division-choice-name {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .division-choice-tile {
+    padding: 1rem 0.75rem;
+  }
+
+  .division-choice-name {
+    font-size: 0.8125rem;
+  }
+}
+
+.division-choice-tile:has(input:checked) {
+  border-color: rgba(250, 204, 21, 0.8);
+  background-color: rgba(250, 204, 21, 0.1);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.12);
+}
+
+.division-choice-tile:has(input:checked) .division-choice-icon {
+  border-color: rgba(250, 204, 21, 0.45);
+  background-color: rgba(250, 204, 21, 0.16);
+  color: #facc15;
+}
+
+.division-choice-tile:has(input:focus-visible) {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* Registration step tracker (centered stack on mobile, inline row on sm+) */
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.375rem;
+  min-width: 0;
+  color: #64748b;
+}
+
+@media (min-width: 640px) {
+  .step-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 0.65rem;
+  }
+}
+
+.step-badge {
+  display: flex;
+  height: 1.85rem;
+  width: 1.85rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .step-badge {
+    height: 2rem;
+    width: 2rem;
+    font-size: 0.8125rem;
+  }
+}
+
+.step-item.is-active {
+  color: #f8fafc;
+}
+
+.step-item.is-active .step-badge {
+  border-color: var(--accent-gold);
+  background-color: var(--accent-gold);
+  color: #090d16;
+}
+
+.step-item.is-completed {
+  color: #cbd5e1;
+}
+
+.step-item.is-completed .step-badge {
+  border-color: rgba(34, 211, 238, 0.6);
+  background-color: rgba(34, 211, 238, 0.12);
+  color: var(--accent-cyan);
+}
+
+/* Native top-layer dialogs */
+dialog.motechart-dialog {
+  margin: auto;
+  width: min(960px, calc(100vw - 2rem));
+  max-width: 960px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background-color: #0d1320;
+  color: #f8fafc;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+dialog.motechart-dialog:focus {
+  outline: none;
+}
+
+dialog.motechart-dialog.dialog-narrow {
+  width: min(560px, calc(100vw - 2rem));
+  max-width: 560px;
+}
+
+dialog.motechart-dialog::backdrop {
+  background: rgba(5, 8, 15, 0.78);
+  backdrop-filter: blur(6px);
+}
+
+/* Markdown prose inside article & project dialogs */
+.article-prose h2,
+.article-prose h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.article-prose h2:first-child,
+.article-prose h3:first-child {
+  margin-top: 0;
+}
+
+.article-prose p {
+  margin-bottom: 0.85rem;
+}
+
+.article-prose strong {
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+.article-prose ul,
+.article-prose ol {
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.article-prose ul {
+  list-style-type: disc;
+}
+
+.article-prose ol {
+  list-style-type: decimal;
+}
+
+.article-prose blockquote {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  background-color: rgba(250, 204, 21, 0.06);
+  padding: 0.85rem 1rem;
+  color: #fef08a;
+  font-size: 0.875rem;
+}
+
+.article-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 0.125rem 0.35rem;
+  border-radius: 0.25rem;
+  color: #67e8f9;
+}
+
+.article-prose .md-code-block {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #070b12;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.article-prose .md-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.55rem 0.9rem;
+}
+
+.article-prose .md-code-lang {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.article-prose .md-copy-btn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.article-prose .md-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.article-prose pre {
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.article-prose pre code {
+  background: transparent;
+  padding: 0;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.article-prose .md-inline-img {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 1rem 0;
+}
+
+.hero-headline span {
+  color: var(--accent-gold);
+}
+
+/* Quick-view primary skill tag on Featured Projects Bento Grid */
+.skill-quick-tag {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background-color: rgba(9, 13, 22, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.skill-quick-tag--iot {
+  color: #67e8f9;
+  border-color: rgba(34, 211, 238, 0.35);
+}
+
+.skill-quick-tag--mechanics {
+  color: #fde047;
+  border-color: rgba(250, 204, 21, 0.38);
+}
+
+.skill-quick-tag--cpp {
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.35);
+}
+
+.skill-quick-tag--electronics {
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.skill-quick-tag--default {
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Subtle compositor-only reveal-on-scroll for Division Cards & Project Bento Grid */
+.js-scroll-reveal .reveal-on-scroll {
+  opacity: 0;
+  translate: 0 18px;
+  transition:
+    opacity 540ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+    translate 540ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1) 0ms,
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1) 0ms,
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1) 0ms,
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1) 0ms;
+  will-change: opacity, translate;
+}
+
+.js-scroll-reveal .reveal-on-scroll.is-revealed {
+  opacity: 1;
+  translate: 0 0;
+  will-change: auto;
+}
+
+.reveal-delay-1 {
+  --reveal-delay: 0ms;
+}
+
+.reveal-delay-2 {
+  --reveal-delay: 90ms;
+}
+
+.reveal-delay-3 {
+  --reveal-delay: 180ms;
+}
+
+.reveal-delay-4 {
+  --reveal-delay: 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js-scroll-reveal .reveal-on-scroll {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -4,16 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Security Headers & Meta -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; font-src 'self' https:; frame-src 'self' https://website-motechart.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow">
-  <title>CMS Admin Dashboard - Motechart Robotik</title>
+  <title>Portal Pengurus — Motechart Robotik</title>
 
-  <!-- Menggunakan styling mandiri khusus admin -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="./admin.css">
 </head>
 <body>
@@ -26,24 +23,23 @@
     <div class="login-card">
       <div class="login-header">
         <div class="login-badge">
-          <span class="status-dot"></span>
-          Secure Admin Node
+          Portal Pengurus Resmi
         </div>
         <svg class="login-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="var(--accent-cyan)" />
           <rect x="9" y="11" width="6" height="5" rx="1" fill="rgba(6, 182, 212, 0.1)" stroke="var(--accent-cyan)" stroke-width="1.5"/>
           <path d="M10.5 11V9a1.5 1.5 0 0 1 3 0v2" stroke="var(--accent-cyan)" stroke-width="1.5"/>
         </svg>
-        <h2>Admin Portal</h2>
-        <p>System Administration Console</p>
+        <h2>Portal Pengurus</h2>
+        <p>Panel Kelola Lab Motechart Robotik</p>
       </div>
 
       <form id="cms-login-form" autocomplete="on">
         <div id="login-error-msg" class="error-panel" style="display: none;" role="alert"></div>
 
         <div class="form-group">
-          <label class="form-label" for="admin_username">Admin Email <span>*</span></label>
-          <input type="email" id="admin_username" name="admin_username" class="input-control" required placeholder="admin@motechart.com" autocomplete="username">
+          <label class="form-label" for="admin_username">Email Pengurus <span>*</span></label>
+          <input type="email" id="admin_username" name="admin_username" class="input-control" required placeholder="pengurus@sekolah.sch.id" autocomplete="username">
         </div>
 
         <div class="form-group password-group">
@@ -155,10 +151,10 @@
             </span>
           </button>
           <div class="admin-user-profile">
-            <div class="avatar">A</div>
+            <div class="avatar" id="admin-profile-avatar">A</div>
             <div style="display:flex; flex-direction:column;">
-              <span style="font-size: 0.85rem; font-weight: 600;">Administrator</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">Motechart Robotik</span>
+              <span style="font-size: 0.85rem; font-weight: 600;">Pengurus Lab</span>
+              <span id="admin-profile-email" style="font-size: 0.75rem; color: var(--text-muted);">Motechart Robotik</span>
             </div>
           </div>
         </div>
@@ -247,6 +243,7 @@
                     <th>No</th>
                     <th class="sortable" data-sort="nama" style="cursor: pointer; user-select: none;">Nama Pendaftar <span class="sort-icon" id="sort-icon-nama"></span></th>
                     <th class="sortable" data-sort="kelas" style="cursor: pointer; user-select: none;">Kelas <span class="sort-icon" id="sort-icon-kelas"></span></th>
+                    <th>Divisi</th>
                     <th>No. WhatsApp</th>
                     <th class="sortable" data-sort="timestamp" style="cursor: pointer; user-select: none;">Tanggal Daftar <span class="sort-icon" id="sort-icon-timestamp"></span></th>
                     <th class="sortable" data-sort="status" style="cursor: pointer; user-select: none;">Status <span class="sort-icon" id="sort-icon-status"></span></th>
@@ -323,7 +320,7 @@
             <button type="button" class="sub-tab-btn" data-sub-target="sub-settings-questions">Pertanyaan Tambahan</button>
           </div>
 
-          <form id="cms-reg-settings-form">
+          <form id="cms-reg-settings-form" novalidate>
             <div class="sub-tab-content active" id="sub-settings-main">
               <!-- Sistem Pendaftaran -->
               <div class="setting-card">
@@ -418,7 +415,7 @@
             <button type="button" class="sub-tab-btn" data-sub-target="sub-landing-achievements">Prestasi & Penghargaan</button>
           </div>
 
-          <form id="cms-landing-form">
+          <form id="cms-landing-form" novalidate>
             <div class="sub-tab-content active" id="sub-landing-hero">
               <!-- Hero Content -->
               <div class="setting-card">
@@ -630,6 +627,10 @@
           <label class="form-label" for="achievement-year">Tahun <span>*</span></label>
           <input type="text" id="achievement-year" class="input-control" required pattern="[0-9]{4}">
         </div>
+        <div class="form-group">
+          <label class="form-label" for="achievement-level">Tingkat (Opsional)</label>
+          <input type="text" id="achievement-level" class="input-control" placeholder="Contoh: Nasional / Provinsi / Kabupaten">
+        </div>
         <div class="dialog-footer">
           <button type="button" class="btn btn-outline" id="btn-cancel-achievement-dialog">Batal</button>
           <button type="submit" class="btn btn-cyan" id="btn-save-achievement">Simpan</button>
@@ -666,6 +667,31 @@
       <div id="admin-detail-dialog-footer" class="dialog-footer">
         <!-- Populated dynamically via JS -->
       </div>
+    </div>
+  </dialog>
+
+  <!-- Reset Database Typed Confirmation Dialog -->
+  <dialog id="reset-db-confirm-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" style="color: var(--accent-red);">Konfirmasi Reset Database</h3>
+      <button type="button" id="close-reset-db-dialog-btn" class="btn-close" aria-label="Tutup dialog reset">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <div class="reset-confirm-warning">
+        Tindakan ini menghapus permanen seluruh data pendaftar, artikel blog, proyek portofolio, pertanyaan kustom, dan prestasi dari browser serta Firestore.
+      </div>
+      <form id="reset-db-confirm-form">
+        <div class="form-group">
+          <label class="form-label" for="reset-db-phrase-input">Ketik <strong>HAPUS SEMUA</strong> untuk melanjutkan <span>*</span></label>
+          <input type="text" id="reset-db-phrase-input" class="input-control" autocomplete="off" placeholder="HAPUS SEMUA">
+        </div>
+        <div class="dialog-footer">
+          <button type="button" class="btn btn-outline" id="btn-cancel-reset-db">Batal</button>
+          <button type="submit" class="btn btn-outline-red" id="btn-confirm-reset-db" disabled>Kosongkan Database</button>
+        </div>
+      </form>
     </div>
   </dialog>
 

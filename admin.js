@@ -4,10 +4,11 @@ import {
   playRoboticSound, 
   sanitizeInput, 
   escapeHtml, 
+  sanitizeUrl,
   parseMarkdownToHtml,
   sanitizeRichHtml,
   setupRealTimeApplicantsSync,
-  unsubscribeRealTimeApplicants,
+  unsubscribeAllRealtimeSync,
   customAlert,
   customConfirm,
   showToast,
@@ -17,16 +18,25 @@ import {
   setupRealTimeBlogSync,
   setupRealTimePortfolioSync,
   ensureFirebaseInitialized,
-
   getLoginRateLimit,
   recordFailedLogin,
-  resetLoginRateLimit,
-  INITIAL_BLOG_ARTICLES,
-  INITIAL_PORTFOLIO_PROJECTS,
-  INITIAL_APPLICANTS,
-  INITIAL_REG_SETTINGS,
-  INITIAL_LANDING_DATA
+  resetLoginRateLimit
 } from './shared.js';
+import { sanitizeCsvCell, mapFirebaseAuthError } from './src/lib/logic.ts';
+
+function activateSubTabForElement(el) {
+  if (!el) return;
+  const subPanel = el.closest('.sub-tab-content');
+  if (!subPanel) return;
+  const cmsView = subPanel.closest('.cms-view');
+  if (!cmsView) return;
+  cmsView.querySelectorAll('.sub-tab-content').forEach((c) => c.classList.remove('active'));
+  subPanel.classList.add('active');
+  const subBtns = cmsView.querySelectorAll('.sub-tab-btn');
+  subBtns.forEach((btn) => {
+    btn.classList.toggle('active', btn.getAttribute('data-sub-target') === subPanel.id);
+  });
+}
 
 // --- FIREBASE ADMIN AUTH ---
 
@@ -78,72 +88,110 @@ function setupCmsAuthentication() {
     });
   }
 
-  if (btnResetDb) {
-    btnResetDb.addEventListener('click', async () => {
-      if (await customConfirm('PERINGATAN: Apakah Anda yakin ingin mengosongkan seluruh database? Semua data pendaftaran, artikel, proyek portofolio, pertanyaan kustom, dan prestasi akan dihapus secara permanen.')) {
-        playRoboticSound('success');
-        
-        state.blogArticles = [];
-        state.portfolioProjects = [];
-        state.applicants = [];
-        
-        state.regSettings = {
-          isOpen: true,
-          status: 'open',
-          countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-          customQuestions: [],
-          waTitle: 'Grup WhatsApp Resmi Calon Anggota',
-          waDesc: 'Harap bergabung ke grup koordinasi calon anggota baru di bawah ini.',
-          waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
-        };
+  const resetDialog = document.getElementById('reset-db-confirm-dialog');
+  const resetForm = document.getElementById('reset-db-confirm-form');
+  const resetPhraseInput = document.getElementById('reset-db-phrase-input');
+  const resetConfirmBtn = document.getElementById('btn-confirm-reset-db');
+  const resetCancelBtn = document.getElementById('btn-cancel-reset-db');
+  const resetCloseBtn = document.getElementById('close-reset-db-dialog-btn');
 
-        state.landingData = {
-          heroTag: 'Ekstrakurikuler Unggulan',
-          heroTitle: 'Rancang Masa Depanmu Bersama <span>Robotik</span>!',
-          heroDesc: 'Deskripsi ekskul robotik.',
-          visiText: 'Visi kami.',
-          misiList: ['Misi 1', 'Misi 2', 'Misi 3', 'Misi 4'],
-          divMechDesc: 'Mekanik.',
-          divElecDesc: 'Elektronika.',
-          divProgDesc: 'Pemrograman.',
-          achievements: [],
-          footerTagline: 'Footer tagline.',
-          footerLocation: 'Lab Robotika',
-          footerEmail: 'robotikmotechart@gmail.com',
-          footerInstagram: '',
-          footerYoutube: ''
-        };
-        
-        saveData('robotik_blog', state.blogArticles);
-        saveData('robotik_portfolio', state.portfolioProjects);
-        saveData('robotik_applicants', state.applicants);
-        saveData('robotik_reg_settings', state.regSettings);
-        saveData('robotik_landing', state.landingData);
+  if (btnResetDb && resetDialog && resetForm && resetPhraseInput && resetConfirmBtn) {
+    const closeResetDialog = () => {
+      playRoboticSound('click');
+      resetPhraseInput.value = '';
+      resetConfirmBtn.disabled = true;
+      resetDialog.close();
+    };
+
+    btnResetDb.addEventListener('click', () => {
+      playRoboticSound('click');
+      resetPhraseInput.value = '';
+      resetConfirmBtn.disabled = true;
+      resetDialog.showModal();
+      document.body.classList.add('dialog-open');
+      resetPhraseInput.focus();
+    });
+
+    resetPhraseInput.addEventListener('input', () => {
+      resetConfirmBtn.disabled = resetPhraseInput.value.trim() !== 'HAPUS SEMUA';
+    });
+
+    if (resetCancelBtn) resetCancelBtn.addEventListener('click', closeResetDialog);
+    if (resetCloseBtn) resetCloseBtn.addEventListener('click', closeResetDialog);
+
+    resetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (resetPhraseInput.value.trim() !== 'HAPUS SEMUA') {
+        playRoboticSound('error');
+        showToast('Ketik HAPUS SEMUA untuk mengonfirmasi reset database.', 'error');
+        return;
+      }
+
+      resetDialog.close();
+      playRoboticSound('success');
+
+      state.blogArticles = [];
+      state.portfolioProjects = [];
+      state.applicants = [];
+
+      state.regSettings = {
+        isOpen: true,
+        status: 'open',
+        showHeaderCountdown: true,
+        countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+        customQuestions: [],
+        waTitle: 'Grup WhatsApp Resmi Calon Anggota',
+        waDesc: 'Gabung ke grup koordinasi calon anggota baru di bawah ini.',
+        waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
+      };
+
+      state.landingData = {
+        heroTag: 'Ekstrakurikuler Robotik MAN 1 Bogor',
+        heroTitle: 'Rancang dan Rakit <span>Robot Pertamamu</span>.',
+        heroDesc: 'Belajar mekanik, elektronika, dan pemrograman dari nol langsung di lab.',
+        visiText: 'Mencetak tim robotik madrasah yang terbiasa merancang dan menguji perangkat nyata.',
+        misiList: ['Misi 1', 'Misi 2', 'Misi 3', 'Misi 4'],
+        divMechDesc: 'Mekanik.',
+        divElecDesc: 'Elektronika.',
+        divProgDesc: 'Pemrograman.',
+        achievements: [],
+        footerTagline: 'Ekstrakurikuler Robotik MAN 1 Bogor.',
+        footerLocation: 'Lab Robotika',
+        footerEmail: 'robotikmotechart@gmail.com',
+        footerInstagram: '',
+        footerYoutube: ''
+      };
+
+      try {
+        await Promise.all([
+          saveData('robotik_blog', state.blogArticles),
+          saveData('robotik_portfolio', state.portfolioProjects),
+          saveData('robotik_applicants', state.applicants, false),
+          saveData('robotik_reg_settings', state.regSettings),
+          saveData('robotik_landing', state.landingData)
+        ]);
 
         if (state.useFirebase) {
-          state.db.collection('applicants').get()
-            .then(snapshot => {
-              const batch = state.db.batch();
-              snapshot.forEach(doc => {
-                batch.delete(doc.ref);
-              });
-              return batch.commit();
-            })
-            .then(() => console.log("Cloud Reset: Applicants database successfully cleared!"))
-            .catch(err => console.error("Cloud Reset Error: Firestore applicants clear failed:", err));
+          const snapshot = await state.db.collection('applicants').get();
+          const batch = state.db.batch();
+          snapshot.forEach(doc => {
+            batch.delete(doc.ref);
+          });
+          await batch.commit();
         }
-        
-        renderAdminBlogTable();
-        renderAdminPortfolioTable();
-        renderAdminApplicantsTable();
-        populateLandingCmsInputs();
-        populateRegSettingsCmsInputs();
-        renderAdminQuestionsTable();
-        
-        showToast('Database telah dikosongkan secara permanen!');
-      } else {
-        playRoboticSound('error');
+        showToast('Database telah dikosongkan secara permanen.');
+      } catch (err) {
+        console.error('Reset database failed:', err);
+        showToast('Sebagian data gagal dihapus di Cloud Firestore.', 'error');
       }
+
+      renderAdminBlogTable();
+      renderAdminPortfolioTable();
+      renderAdminApplicantsTable();
+      populateLandingCmsInputs();
+      populateRegSettingsCmsInputs();
+      renderAdminQuestionsTable();
+      renderDashboardOverview();
     });
   }
 
@@ -154,6 +202,7 @@ function setupCmsAuthentication() {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const errMsg = document.getElementById('login-error-msg');
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
       if (errMsg) errMsg.style.display = 'none';
 
       // Check rate limit BEFORE processing login
@@ -162,22 +211,36 @@ function setupCmsAuthentication() {
         playRoboticSound('error');
         const secs = Math.ceil(rateLimit.remainingMs / 1000);
         if (errMsg) {
-          errMsg.textContent = `⚠️ Terlalu banyak percobaan gagal. Coba lagi dalam ${secs} detik.`;
+          errMsg.textContent = `Terlalu banyak percobaan gagal. Coba lagi dalam ${secs} detik.`;
           errMsg.style.display = 'block';
         }
         return;
       }
 
       const user = document.getElementById('admin_username').value.trim();
-      const pass = document.getElementById('admin_password').value.trim();
+      const pass = document.getElementById('admin_password').value;
+
+      if (!user || !pass) {
+        playRoboticSound('error');
+        if (errMsg) {
+          errMsg.textContent = 'Email dan password wajib diisi.';
+          errMsg.style.display = 'block';
+        }
+        return;
+      }
 
       if (!state.auth) {
         playRoboticSound('error');
         if (errMsg) {
-          errMsg.textContent = '❌ Firebase Authentication tidak aktif atau gagal diinisialisasi.';
+          errMsg.textContent = 'Firebase Authentication tidak aktif atau gagal diinisialisasi.';
           errMsg.style.display = 'block';
         }
         return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Memeriksa akun...';
       }
 
       try {
@@ -189,20 +252,24 @@ function setupCmsAuthentication() {
       } catch (err) {
         playRoboticSound('error');
         const result = recordFailedLogin();
+        const friendlyError = mapFirebaseAuthError(err?.code || err?.message || '');
         if (errMsg) {
           if (result.isLocked) {
             const secs = Math.ceil(result.lockoutMs / 1000);
-            errMsg.textContent = `🔒 Akun terkunci selama ${secs} detik setelah ${result.attempts} percobaan gagal.`;
+            errMsg.textContent = `Akun terkunci sementara selama ${secs} detik setelah ${result.attempts} percobaan gagal.`;
             startLockoutCountdown();
           } else {
             const remaining = 5 - result.attempts;
-            if (remaining > 0) {
-              errMsg.textContent = `Login gagal: ${err.message}. (${remaining} percobaan tersisa sebelum lockout)`;
-            } else {
-              errMsg.textContent = `Login gagal: ${err.message}`;
-            }
+            errMsg.textContent = remaining > 0
+              ? `${friendlyError} (${remaining} percobaan tersisa)`
+              : friendlyError;
           }
           errMsg.style.display = 'block';
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.textContent = 'Akses Dashboard';
+          submitBtn.disabled = getLoginRateLimit().isLocked;
         }
       }
     });
@@ -265,24 +332,45 @@ function clearLockoutTimer() {
 function setupAuthStateListener() {
   const loginSection = document.getElementById('admin-login-section');
   const panelSection = document.getElementById('admin-panel-section');
+  const emailDisplay = document.getElementById('admin-profile-email');
+  const avatarEl = document.getElementById('admin-profile-avatar');
 
   if (state.auth) {
     state.auth.onAuthStateChanged(async (user) => {
       if (user) {
         loginSection.style.display = 'none';
         panelSection.style.display = 'block';
-        
+
+        const emailText = user.email || 'Motechart Robotik';
+        if (emailDisplay) emailDisplay.textContent = emailText;
+        if (avatarEl && user.email) avatarEl.textContent = user.email.charAt(0).toUpperCase();
+
         // Fetch fresh cloud data first
         if (state.useFirebase) {
           try {
             await initializeCloudDataSync();
-            // Setup real-time sync for applicants now that we are authenticated
-            setupRealTimeApplicantsSync((updatedApplicants) => {
+            setupRealTimeApplicantsSync(() => {
               renderAdminApplicantsTable();
+              renderDashboardOverview();
+            });
+            setupRealTimeRegSettingsSync(() => {
+              populateRegSettingsCmsInputs();
+              renderAdminQuestionsTable();
+            });
+            setupRealTimeLandingDataSync(() => {
+              populateLandingCmsInputs();
+            });
+            setupRealTimeBlogSync(() => {
+              renderAdminBlogTable();
+              renderDashboardOverview();
+            });
+            setupRealTimePortfolioSync(() => {
+              renderAdminPortfolioTable();
               renderDashboardOverview();
             });
           } catch (e) {
             console.error("Failed to sync cloud data on auth change:", e);
+            showToast('Gagal sinkronisasi data awal dari Firestore.', 'error');
           }
         }
 
@@ -296,7 +384,9 @@ function setupAuthStateListener() {
       } else {
         loginSection.style.display = 'flex';
         panelSection.style.display = 'none';
-        unsubscribeRealTimeApplicants();
+        const passInput = document.getElementById('admin_password');
+        if (passInput) passInput.value = '';
+        unsubscribeAllRealtimeSync();
       }
     });
   } else {
@@ -433,24 +523,64 @@ function setupCmsTabs() {
 
   const editorForm = document.getElementById('cms-editor-form');
   if (editorForm) {
-    editorForm.addEventListener('submit', (e) => {
+    editorForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const type = editorForm.getAttribute('data-type');
       const mode = editorForm.getAttribute('data-mode');
       
-      playRoboticSound('success');
-      
       if (type === 'blog') {
-        const titleVal = document.getElementById('edit-title').value.trim();
+        const titleEl = document.getElementById('edit-title');
+        const authEl = document.getElementById('edit-author');
+        const excEl = document.getElementById('edit-excerpt');
+        const richDiv = document.getElementById('edit-content-rich');
+        const hiddenInput = document.getElementById('edit-content');
+        const headerImgEl = document.getElementById('edit-header-image');
+
+        const titleVal = titleEl.value.trim();
         const catVal = document.getElementById('edit-category').value;
-        const authVal = document.getElementById('edit-author').value.trim();
-        const excVal = document.getElementById('edit-excerpt').value.trim();
-        const conVal = document.getElementById('edit-content').value.trim();
-        const headerImgVal = document.getElementById('edit-header-image').value.trim();
+        const authVal = authEl.value.trim();
+        const excVal = excEl.value.trim();
+        const rawHeaderImg = headerImgEl.value.trim();
+
+        if (!titleVal) {
+          playRoboticSound('error');
+          showToast('Judul artikel wajib diisi.', 'error');
+          titleEl.focus();
+          return;
+        }
+        if (!authVal) {
+          playRoboticSound('error');
+          showToast('Nama penulis wajib diisi.', 'error');
+          authEl.focus();
+          return;
+        }
+        if (!excVal) {
+          playRoboticSound('error');
+          showToast('Ringkasan singkat artikel wajib diisi.', 'error');
+          excEl.focus();
+          return;
+        }
+        if (rawHeaderImg && !sanitizeUrl(rawHeaderImg)) {
+          playRoboticSound('error');
+          showToast('URL gambar header tidak valid. Gunakan https://, http://, atau upload lokal.', 'error');
+          headerImgEl.focus();
+          return;
+        }
+        const headerImgVal = rawHeaderImg ? sanitizeUrl(rawHeaderImg) : '';
+
+        const sanitizedHtml = richDiv ? sanitizeRichHtml(richDiv.innerHTML) : sanitizeRichHtml(hiddenInput.value);
+        const plainBody = richDiv ? (richDiv.textContent || '').trim() : sanitizeInput(sanitizedHtml);
+        if (!plainBody && !/<img\b/i.test(sanitizedHtml)) {
+          playRoboticSound('error');
+          showToast('Konten lengkap artikel tidak boleh kosong.', 'error');
+          if (richDiv) richDiv.focus();
+          return;
+        }
+        if (hiddenInput) hiddenInput.value = sanitizedHtml;
 
         if (mode === 'add') {
-          const newId = state.blogArticles.length > 0 ? Math.max(...state.blogArticles.map(a => a.id)) + 1 : 1;
+          const newId = state.blogArticles.length > 0 ? Math.max(...state.blogArticles.map(a => Number(a.id) || 0)) + 1 : 1;
           const today = new Date();
           const formatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
           const dateStr = today.toLocaleDateString('id-ID', formatOptions);
@@ -462,7 +592,7 @@ function setupCmsTabs() {
             author: authVal,
             date: dateStr,
             excerpt: excVal,
-            content: conVal,
+            content: sanitizedHtml,
             headerImage: headerImgVal
           });
         } else if (mode === 'edit') {
@@ -473,25 +603,80 @@ function setupCmsTabs() {
             article.category = catVal;
             article.author = authVal;
             article.excerpt = excVal;
-            article.content = conVal;
+            article.content = sanitizedHtml;
             article.headerImage = headerImgVal;
           }
         }
-        saveData('robotik_blog', state.blogArticles);
+
+        try {
+          await saveData('robotik_blog', state.blogArticles);
+          playRoboticSound('success');
+          showToast(mode === 'add' ? 'Artikel baru berhasil disimpan!' : 'Artikel berhasil diperbarui!');
+        } catch (err) {
+          playRoboticSound('error');
+          showToast('Tersimpan lokal, tapi gagal sinkronisasi ke Firestore.', 'error');
+        }
         renderAdminBlogTable();
+        renderDashboardOverview();
         
       } else if (type === 'portfolio') {
-        const titleVal = document.getElementById('edit-title').value.trim();
+        const titleEl = document.getElementById('edit-title');
+        const creatEl = document.getElementById('edit-creators');
+        const descEl = document.getElementById('edit-description');
+        const headerImgEl = document.getElementById('edit-header-image');
+        const awardNameEl = document.getElementById('edit-award-name');
+
+        const titleVal = titleEl.value.trim();
         const catVal = document.getElementById('edit-category').value;
         const statVal = document.getElementById('edit-status').value;
-        const creatVal = document.getElementById('edit-creators').value.trim();
-        const descVal = document.getElementById('edit-description').value.trim();
-        const headerImgVal = document.getElementById('edit-header-image').value.trim();
+        const creatVal = creatEl.value.trim();
+        const descVal = descEl.value.trim();
+        const rawHeaderImg = headerImgEl.value.trim();
         const isWinnerVal = document.getElementById('edit-is-winner').checked;
-        const awardNameVal = isWinnerVal ? document.getElementById('edit-award-name').value.trim() : '';
+        const awardNameVal = isWinnerVal ? awardNameEl.value.trim() : '';
+
+        if (!titleVal) {
+          playRoboticSound('error');
+          showToast('Judul proyek wajib diisi.', 'error');
+          titleEl.focus();
+          return;
+        }
+        if (!creatVal) {
+          playRoboticSound('error');
+          showToast('Nama pembuat proyek wajib diisi.', 'error');
+          creatEl.focus();
+          return;
+        }
+        if (!descVal) {
+          playRoboticSound('error');
+          showToast('Deskripsi singkat proyek wajib diisi.', 'error');
+          descEl.focus();
+          return;
+        }
+        if (rawHeaderImg && !sanitizeUrl(rawHeaderImg)) {
+          playRoboticSound('error');
+          showToast('URL gambar header tidak valid.', 'error');
+          headerImgEl.focus();
+          return;
+        }
+        if (isWinnerVal && !awardNameVal) {
+          playRoboticSound('error');
+          showToast('Nama penghargaan wajib diisi jika proyek menang lomba.', 'error');
+          awardNameEl.focus();
+          return;
+        }
+
+        const headerImgVal = rawHeaderImg ? sanitizeUrl(rawHeaderImg) : '';
+        const yearVal = (document.getElementById('edit-year')?.value || '').trim();
+        const componentsVal = (document.getElementById('edit-components')?.value || '').trim();
+        const specsVal = (document.getElementById('edit-specs')?.value || '').trim();
+        const schematicVal = (document.getElementById('edit-schematic')?.value || '').trim();
+        const projContentVal = (document.getElementById('edit-proj-content')?.value || '').trim();
+        const codeVal = (document.getElementById('edit-code')?.value || '');
+        const showCodeVal = Boolean(document.getElementById('edit-show-code')?.checked);
 
         if (mode === 'add') {
-          const newId = state.portfolioProjects.length > 0 ? Math.max(...state.portfolioProjects.map(p => p.id)) + 1 : 1;
+          const newId = state.portfolioProjects.length > 0 ? Math.max(...state.portfolioProjects.map(p => Number(p.id) || 0)) + 1 : 1;
           state.portfolioProjects.push({
             id: newId,
             title: titleVal,
@@ -501,25 +686,50 @@ function setupCmsTabs() {
             description: descVal,
             headerImage: headerImgVal,
             isWinner: isWinnerVal,
-            awardName: awardNameVal
+            awardName: awardNameVal,
+            year: yearVal,
+            components: componentsVal,
+            specs: specsVal,
+            schematic: schematicVal,
+            content: projContentVal,
+            code: codeVal,
+            showCode: showCodeVal
           });
         } else if (mode === 'edit') {
           const id = editorForm.getAttribute('data-id');
-          const proj = state.portfolioProjects.find(p => String(p.id) === String(id));
-          if (proj) {
-            proj.title = titleVal;
-            proj.category = catVal;
-            proj.status = statVal;
-            proj.creators = creatVal;
-            proj.description = descVal;
-            proj.headerImage = headerImgVal;
-            proj.isWinner = isWinnerVal;
-            proj.awardName = awardNameVal;
+          const idx = state.portfolioProjects.findIndex(p => String(p.id) === String(id));
+          if (idx !== -1) {
+            state.portfolioProjects[idx] = {
+              ...state.portfolioProjects[idx],
+              title: titleVal,
+              category: catVal,
+              status: statVal,
+              creators: creatVal,
+              description: descVal,
+              headerImage: headerImgVal,
+              isWinner: isWinnerVal,
+              awardName: awardNameVal,
+              year: yearVal,
+              components: componentsVal,
+              specs: specsVal,
+              schematic: schematicVal,
+              content: projContentVal,
+              code: codeVal,
+              showCode: showCodeVal
+            };
           }
         }
 
-        saveData('robotik_portfolio', state.portfolioProjects);
+        try {
+          await saveData('robotik_portfolio', state.portfolioProjects);
+          playRoboticSound('success');
+          showToast(mode === 'add' ? 'Proyek baru berhasil disimpan!' : 'Proyek berhasil diperbarui!');
+        } catch (err) {
+          playRoboticSound('error');
+          showToast('Tersimpan lokal, tapi gagal sinkronisasi ke Firestore.', 'error');
+        }
         renderAdminPortfolioTable();
+        renderDashboardOverview();
       }
 
       closeCmsEditor();
@@ -622,8 +832,14 @@ function renderAdminBlogTable() {
       if (await customConfirm('Apakah Anda yakin ingin menghapus artikel blog ini?')) {
         playRoboticSound('click');
         state.blogArticles = state.blogArticles.filter(a => String(a.id) !== String(id));
-        saveData('robotik_blog', state.blogArticles);
+        try {
+          await saveData('robotik_blog', state.blogArticles);
+          showToast('Artikel berhasil dihapus.');
+        } catch (err) {
+          showToast('Gagal menghapus artikel di Firestore.', 'error');
+        }
         renderAdminBlogTable();
+        renderDashboardOverview();
       } else {
         playRoboticSound('error');
       }
@@ -677,8 +893,14 @@ function renderAdminPortfolioTable() {
       if (await customConfirm('Apakah Anda yakin ingin menghapus proyek portfolio ini?')) {
         playRoboticSound('click');
         state.portfolioProjects = state.portfolioProjects.filter(p => String(p.id) !== String(id));
-        saveData('robotik_portfolio', state.portfolioProjects);
+        try {
+          await saveData('robotik_portfolio', state.portfolioProjects);
+          showToast('Proyek berhasil dihapus.');
+        } catch (err) {
+          showToast('Gagal menghapus proyek di Firestore.', 'error');
+        }
         renderAdminPortfolioTable();
+        renderDashboardOverview();
       } else {
         playRoboticSound('error');
       }
@@ -762,10 +984,10 @@ function renderAdminApplicantsTable() {
       : '';
 
     const showActions = applicant.status === 'Pending'
-      ? `<button class="btn btn-green btn-sm btn-approve" data-id="${applicant.id}" title="Setujui">
+      ? `<button class="btn btn-green btn-sm btn-approve" data-id="${escapeHtml(applicant.id)}" aria-label="Setujui ${escapeHtml(applicant.nama)}" title="Setujui">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
          </button>
-         <button class="btn btn-reject btn-sm btn-reject" data-id="${applicant.id}" title="Tolak">
+         <button class="btn btn-reject btn-sm" data-id="${escapeHtml(applicant.id)}" aria-label="Tolak ${escapeHtml(applicant.nama)}" title="Tolak">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
          </button>`
       : '';
@@ -775,17 +997,18 @@ function renderAdminApplicantsTable() {
         <td>${index + 1}</td>
         <td style="font-weight: 600; color: var(--text-white);">${escapeHtml(applicant.nama)}</td>
         <td>${escapeHtml(applicant.kelas)}</td>
+        <td>${applicant.divisi ? `<span class="table-badge">${escapeHtml(applicant.divisi)}</span>` : '<span style="color: var(--text-muted);">—</span>'}</td>
         <td>${escapeHtml(applicant.noHp)}</td>
         <td>${escapeHtml(formatRegistrationDate(applicant))}</td>
         <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
         <td style="width: 1%; white-space: nowrap;">
           <div class="action-buttons-group">
-            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${applicant.id}" title="Detail">
+            <button class="btn btn-outline-cyan btn-sm btn-view-detail" data-id="${escapeHtml(applicant.id)}" aria-label="Detail ${escapeHtml(applicant.nama)}" title="Detail">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
             ${showActions}
             ${showLihatKartu}
-            <button class="btn btn-delete-action btn-sm btn-delete" data-id="${applicant.id}" aria-label="Hapus Pendaftar" title="Hapus">
+            <button class="btn btn-delete-action btn-sm btn-delete" data-id="${escapeHtml(applicant.id)}" aria-label="Hapus ${escapeHtml(applicant.nama)}" title="Hapus">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
@@ -928,6 +1151,36 @@ async function deleteApplicant(id) {
   }
 }
 
+async function revertApplicantToPending(id) {
+  const applicant = state.applicants.find(a => a.id === id);
+  if (!applicant) return;
+
+  if (await customConfirm(`Kembalikan status pendaftaran ${applicant.nama} menjadi Pending?`)) {
+    const idx = state.applicants.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      const originalStatus = state.applicants[idx].status;
+      playRoboticSound('click');
+      state.applicants[idx].status = 'Pending';
+      saveData('robotik_applicants', state.applicants, false);
+      renderAdminApplicantsTable();
+      renderDashboardOverview();
+
+      if (state.useFirebase) {
+        state.db.collection('applicants').doc(id).update({ status: 'Pending' })
+          .then(() => showToast(`Status ${applicant.nama} dikembalikan ke Pending.`))
+          .catch(async (err) => {
+            console.error("Firestore revert sync failed:", err);
+            state.applicants[idx].status = originalStatus;
+            saveData('robotik_applicants', state.applicants, false);
+            renderAdminApplicantsTable();
+            renderDashboardOverview();
+            await customAlert('Gagal mengubah status di Cloud Database: ' + err.message);
+          });
+      }
+    }
+  }
+}
+
 function viewApplicantCard(id) {
   const applicant = state.applicants.find(a => a.id === id);
   if (!applicant) return;
@@ -935,7 +1188,7 @@ function viewApplicantCard(id) {
   const container = document.getElementById('admin-card-preview-container');
   if (!container) return;
 
-  container.innerHTML = generateStudentCardHtml(applicant.nama, applicant.kelas, applicant.id);
+  container.innerHTML = generateStudentCardHtml(applicant.nama, applicant.kelas, applicant.id, applicant.divisi);
 
   const dialog = document.getElementById('admin-card-preview-dialog');
   if (dialog) {
@@ -990,6 +1243,9 @@ function viewApplicantDetail(id) {
       <span style="color: var(--text-muted);">Kelas:</span>
       <span style="color: var(--text-white);">Kelas ${escapeHtml(applicant.kelas)}</span>
 
+      <span style="color: var(--text-muted);">Divisi Minat:</span>
+      <span style="color: var(--text-white);">${escapeHtml(applicant.divisi || '-')}</span>
+
       <span style="color: var(--text-muted);">Email:</span>
       <span style="color: var(--text-white);">${escapeHtml(applicant.email)}</span>
 
@@ -1027,6 +1283,12 @@ function viewApplicantDetail(id) {
         <span>Tolak</span>
       </button>
     `;
+  } else {
+    actionButtonsHtml = `
+      <button type="button" class="btn btn-outline dialog-revert-btn">
+        <span>Kembalikan ke Pending</span>
+      </button>
+    `;
   }
 
   footer.innerHTML = `
@@ -1036,7 +1298,6 @@ function viewApplicantDetail(id) {
 
   const dialog = document.getElementById('admin-applicant-detail-dialog');
   if (dialog) {
-    // Add event listeners for dynamic buttons inside footer
     const closeBtn = footer.querySelector('.dialog-close-btn');
     if (closeBtn) {
       closeBtn.onclick = () => {
@@ -1061,13 +1322,21 @@ function viewApplicantDetail(id) {
       };
     }
 
+    const revertBtn = footer.querySelector('.dialog-revert-btn');
+    if (revertBtn) {
+      revertBtn.onclick = async () => {
+        dialog.close();
+        await revertApplicantToPending(id);
+      };
+    }
+
     playRoboticSound('click');
     dialog.showModal();
     document.body.classList.add('dialog-open');
   }
 }
 
-function generateStudentCardHtml(nama, kelas, regId) {
+function generateStudentCardHtml(nama, kelas, regId, divisi = '') {
   return `
     <div class="robot-student-card" style="margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
       <div class="card-header">
@@ -1122,8 +1391,8 @@ function generateStudentCardHtml(nama, kelas, regId) {
         </div>
         <div class="card-info">
           <div class="card-name">${escapeHtml(nama)}</div>
-          <div class="card-class">KELAS ${escapeHtml(kelas)}</div>
-          <div class="card-id-row">NIM/ID: <span>${escapeHtml(regId)}</span></div>
+          <div class="card-class">KELAS ${escapeHtml(kelas)}${divisi ? ` • ${escapeHtml(divisi).toUpperCase()}` : ''}</div>
+          <div class="card-id-row">ID: <span>${escapeHtml(regId)}</span></div>
         </div>
       </div>
       <div class="card-footer-barcode" aria-label="Barcode keamanan">
@@ -1181,7 +1450,7 @@ function openCmsEditor(type, mode, id = null) {
     container.innerHTML = `
       <div class="form-group">
         <label class="form-label" for="edit-title">Judul Artikel <span>*</span></label>
-        <input type="text" id="edit-title" class="input-control" required value="${article.title || ''}" placeholder="Masukkan judul menarik...">
+        <input type="text" id="edit-title" class="input-control" required value="${escapeHtml(article.title || '')}" placeholder="Masukkan judul artikel...">
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-category">Kategori <span>*</span></label>
@@ -1194,12 +1463,12 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-author">Penulis <span>*</span></label>
-        <input type="text" id="edit-author" class="input-control" required value="${article.author || 'Tim Mentor Robotik'}" placeholder="Nama penulis atau mentor...">
+        <input type="text" id="edit-author" class="input-control" required value="${escapeHtml(article.author || 'Tim Mentor Robotik')}" placeholder="Nama penulis atau mentor...">
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-header-image">URL Gambar Header (Foto Sampul)</label>
         <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
-          <input type="text" id="edit-header-image" class="input-control" value="${article.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
+          <input type="text" id="edit-header-image" class="input-control" value="${escapeHtml(article.headerImage || '')}" placeholder="Tautan URL gambar atau pilih file lokal..." style="flex: 1; margin-bottom: 0;">
           <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
             Pilih File
           </button>
@@ -1212,7 +1481,7 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-excerpt">Ringkasan Singkat (Excerpt) <span>*</span></label>
-        <textarea id="edit-excerpt" class="input-control" required placeholder="Tulis deskripsi 1-2 baris untuk kartu list artikel...">${article.excerpt || ''}</textarea>
+        <textarea id="edit-excerpt" class="input-control" required placeholder="Tulis deskripsi 1-2 baris untuk kartu artikel...">${escapeHtml(article.excerpt || '')}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Konten Lengkap <span>*</span></label>
@@ -1229,17 +1498,28 @@ function openCmsEditor(type, mode, id = null) {
             <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertUnorderedList" title="Daftar Bulatan" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">• List</button>
             <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertOrderedList" title="Daftar Angka" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">1. List</button>
             <span style="width: 1px; height: 18px; background: rgba(255,255,255,0.15); margin: 0 0.2rem;"></span>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🔗 Tautan</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">📷 Foto</button>
-            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">🧹 Bersih</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="createLink" title="Tautan Link" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Tautan</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="insertImage" title="Sisipkan Gambar" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Foto</button>
+            <button type="button" class="btn btn-secondary btn-sm rich-btn" data-cmd="removeFormat" title="Hapus Format" style="padding: 0.35rem 0.5rem; min-height: auto; font-size: 0.8rem;">Bersih</button>
           </div>
-          <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 250px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-light); margin-bottom: 0; min-height: 200px;">
+          <div id="rich-inline-url-bar" class="rich-inline-url-bar" style="display: none;">
+            <input type="url" id="rich-inline-url-input" class="input-control" placeholder="https://..." style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <button type="button" id="rich-inline-url-apply" class="btn btn-cyan btn-sm">Sisipkan</button>
+            <button type="button" id="rich-inline-url-cancel" class="btn btn-outline btn-sm">Batal</button>
+          </div>
+          <div id="edit-content-rich" contenteditable="true" class="input-control" style="height: 250px; overflow-y: auto; background: transparent; border: none; outline: none; padding: 1rem; color: var(--text-main); margin-bottom: 0; min-height: 200px;">
             ${parseMarkdownToHtml(article.content || '')}
           </div>
-          <input type="hidden" id="edit-content" value="${escapeHtml(article.content || '')}">
+          <input type="hidden" id="edit-content" value="">
         </div>
       </div>
     `;
+
+    const initRichDiv = document.getElementById('edit-content-rich');
+    const initHiddenInput = document.getElementById('edit-content');
+    if (initRichDiv && initHiddenInput) {
+      initHiddenInput.value = sanitizeRichHtml(initRichDiv.innerHTML);
+    }
 
   } else if (type === 'portfolio') {
     title.textContent = mode === 'add' ? 'Tambah Proyek Portfolio Baru' : 'Ubah Proyek Portfolio';
@@ -1249,7 +1529,7 @@ function openCmsEditor(type, mode, id = null) {
     container.innerHTML = `
       <div class="form-group">
         <label class="form-label" for="edit-title">Judul Proyek <span>*</span></label>
-        <input type="text" id="edit-title" class="input-control" required value="${proj.title || ''}" placeholder="Contoh: Lengan Robot 4 DOF...">
+        <input type="text" id="edit-title" class="input-control" required value="${escapeHtml(proj.title || '')}" placeholder="Contoh: Lengan Robot 4 DOF...">
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-category">Kategori Fokus <span>*</span></label>
@@ -1268,12 +1548,12 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-creators">Pembuat Proyek Siswa <span>*</span></label>
-        <input type="text" id="edit-creators" class="input-control" required value="${proj.creators || ''}" placeholder="Masukkan nama pembuat (Kelas)...">
+        <input type="text" id="edit-creators" class="input-control" required value="${escapeHtml(proj.creators || '')}" placeholder="Masukkan nama pembuat (Kelas)...">
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-header-image">URL Gambar Header (Foto Sampul)</label>
         <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.5rem;">
-          <input type="text" id="edit-header-image" class="input-control" value="${proj.headerImage || ''}" placeholder="Tautan foto Unsplash, Imgur, atau URL gambar..." style="flex: 1; margin-bottom: 0;">
+          <input type="text" id="edit-header-image" class="input-control" value="${escapeHtml(proj.headerImage || '')}" placeholder="Tautan URL gambar atau pilih file lokal..." style="flex: 1; margin-bottom: 0;">
           <button type="button" id="btn-upload-local" class="btn btn-secondary" style="white-space: nowrap; height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.75rem; font-size: 0.85rem;">
             Pilih File
           </button>
@@ -1286,7 +1566,7 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group">
         <label class="form-label" for="edit-description">Deskripsi Singkat Proyek <span>*</span></label>
-        <textarea id="edit-description" class="input-control" required placeholder="Tulis ringkasan singkat 1-2 kalimat untuk kartu galeri..." style="height: 60px;">${proj.description || ''}</textarea>
+        <textarea id="edit-description" class="input-control" required placeholder="Tulis ringkasan singkat 1-2 kalimat untuk kartu galeri..." style="height: 60px;">${escapeHtml(proj.description || '')}</textarea>
       </div>
       <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; margin-bottom: 0.5rem;">
         <input type="checkbox" id="edit-is-winner" style="width: 18px; height: 18px; cursor: pointer;" ${proj.isWinner ? 'checked' : ''}>
@@ -1294,8 +1574,42 @@ function openCmsEditor(type, mode, id = null) {
       </div>
       <div class="form-group" id="award-name-container" style="display: ${proj.isWinner ? 'block' : 'none'};">
         <label class="form-label" for="edit-award-name">Nama Penghargaan / Juara <span>*</span></label>
-        <input type="text" id="edit-award-name" class="input-control" value="${proj.awardName || ''}" placeholder="Contoh: Juara 2 Robot Sepak Bola Regional...">
+        <input type="text" id="edit-award-name" class="input-control" value="${escapeHtml(proj.awardName || '')}" placeholder="Contoh: Juara 2 Robot Sepak Bola Regional...">
       </div>
+
+      <details class="tech-details-accordion">
+        <summary>Detail Teknis & Dokumentasi (Opsional)</summary>
+        <div class="tech-details-body">
+          <div class="form-group">
+            <label class="form-label" for="edit-year">Tahun Pembuatan</label>
+            <input type="text" id="edit-year" class="input-control" value="${escapeHtml(proj.year || '')}" placeholder="Contoh: 2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-components">Daftar Komponen Utama</label>
+            <textarea id="edit-components" class="input-control" style="height: 60px;" placeholder="ESP32, Motor N20, Sensor 8-Ch...">${escapeHtml(proj.components || '')}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-specs">Spesifikasi Ringkas</label>
+            <textarea id="edit-specs" class="input-control" style="height: 60px;" placeholder="Berat 650g, LiPo 3S 11.1V...">${escapeHtml(proj.specs || '')}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-schematic">Catatan Skema / Wiring</label>
+            <textarea id="edit-schematic" class="input-control" style="height: 70px;" placeholder="Ringkasan pinout atau alur wiring...">${escapeHtml(proj.schematic || '')}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-proj-content">Dokumentasi Lengkap (Markdown)</label>
+            <textarea id="edit-proj-content" class="input-control" style="height: 90px;" placeholder="Detail perakitan dan pengujian...">${escapeHtml(proj.content || '')}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-code">Cuplikan Firmware / Kode</label>
+            <textarea id="edit-code" class="input-control" style="height: 90px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;" placeholder="// Potongan kode Arduino/C++...">${escapeHtml(proj.code || '')}</textarea>
+          </div>
+          <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0;">
+            <input type="checkbox" id="edit-show-code" style="width: 18px; height: 18px; cursor: pointer;" ${proj.showCode ? 'checked' : ''}>
+            <label class="form-label" for="edit-show-code" style="margin-bottom: 0; cursor: pointer;">Tampilkan Tab Kode di Modal Publik</label>
+          </div>
+        </div>
+      </details>
     `;
   }
 
@@ -1313,7 +1627,6 @@ function openCmsEditor(type, mode, id = null) {
         awardNameInput.removeAttribute('required');
       }
     });
-    // Ensure initial required status matches checked state
     if (isWinnerCheckbox.checked) {
       awardNameInput.setAttribute('required', '');
     } else {
@@ -1342,6 +1655,84 @@ function setupRichTextEditor() {
   const hiddenInput = document.getElementById('edit-content');
   if (!richDiv || !hiddenInput) return;
 
+  const urlBar = document.getElementById('rich-inline-url-bar');
+  const urlInput = document.getElementById('rich-inline-url-input');
+  const urlApplyBtn = document.getElementById('rich-inline-url-apply');
+  const urlCancelBtn = document.getElementById('rich-inline-url-cancel');
+  let pendingCmd = null;
+  let savedRange = null;
+
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      savedRange = sel.getRangeAt(0).cloneRange();
+    }
+  };
+
+  const restoreSelection = () => {
+    if (!savedRange) return;
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+    }
+  };
+
+  const closeUrlBar = () => {
+    pendingCmd = null;
+    if (urlBar) urlBar.style.display = 'none';
+    if (urlInput) urlInput.value = '';
+  };
+
+  const applyInlineUrl = () => {
+    if (!pendingCmd || !urlInput) return;
+    const safeUrl = sanitizeUrl(urlInput.value);
+    if (!safeUrl || !/^https?:\/\//i.test(safeUrl)) {
+      playRoboticSound('error');
+      showToast('URL tidak valid. Gunakan protokol https:// atau http://.', 'error');
+      urlInput.focus();
+      return;
+    }
+
+    richDiv.focus();
+    restoreSelection();
+    document.execCommand(pendingCmd, false, safeUrl);
+    if (pendingCmd === 'insertImage') {
+      const images = richDiv.querySelectorAll('img');
+      images.forEach(img => {
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        img.style.margin = '0.5rem 0';
+      });
+    }
+    hiddenInput.value = sanitizeRichHtml(richDiv.innerHTML);
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+    captureCmsState(true);
+    closeUrlBar();
+  };
+
+  if (urlApplyBtn) {
+    urlApplyBtn.addEventListener('click', applyInlineUrl);
+  }
+  if (urlCancelBtn) {
+    urlCancelBtn.addEventListener('click', () => {
+      closeUrlBar();
+      richDiv.focus();
+    });
+  }
+  if (urlInput) {
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyInlineUrl();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeUrlBar();
+        richDiv.focus();
+      }
+    });
+  }
+
   // Sync contenteditable div content to hidden input (sanitized to prevent Stored XSS)
   richDiv.addEventListener('input', () => {
     hiddenInput.value = sanitizeRichHtml(richDiv.innerHTML);
@@ -1362,25 +1753,20 @@ function setupRichTextEditor() {
       const cmd = btn.getAttribute('data-cmd');
       const val = btn.getAttribute('data-val') || null;
 
-      if (cmd === 'createLink') {
-        const url = prompt('Masukkan URL Tautan:', 'https://');
-        if (url) {
-          document.execCommand(cmd, false, url);
+      if (cmd === 'createLink' || cmd === 'insertImage') {
+        saveSelection();
+        pendingCmd = cmd;
+        if (urlBar && urlInput) {
+          urlInput.placeholder = cmd === 'createLink' ? 'Masukkan URL tautan (https://...)' : 'Masukkan URL gambar (https://...)';
+          urlInput.value = 'https://';
+          urlBar.style.display = 'flex';
+          urlInput.focus();
+          urlInput.select();
         }
-      } else if (cmd === 'insertImage') {
-        const url = prompt('Masukkan URL Gambar:', 'https://');
-        if (url) {
-          document.execCommand(cmd, false, url);
-          const images = richDiv.querySelectorAll('img');
-          images.forEach(img => {
-            img.style.maxWidth = '100%';
-            img.style.borderRadius = '8px';
-            img.style.margin = '0.5rem 0';
-          });
-        }
-      } else {
-        document.execCommand(cmd, false, val);
+        return;
       }
+
+      document.execCommand(cmd, false, val);
 
       // Sync and trigger event for CMS undo/redo stack
       hiddenInput.value = sanitizeRichHtml(richDiv.innerHTML);
@@ -1728,6 +2114,7 @@ async function exportApplicantsToCsv() {
     'ID Pendaftaran',
     'Nama Lengkap',
     'Kelas',
+    'Divisi Minat',
     'Email',
     'No. WhatsApp',
     'Kepemilikan Laptop',
@@ -1744,6 +2131,7 @@ async function exportApplicantsToCsv() {
       app.id || '',
       app.nama || '',
       app.kelas || '',
+      app.divisi || '-',
       app.email || '',
       app.noHp || '',
       app.laptop || 'Tidak',
@@ -1763,13 +2151,10 @@ async function exportApplicantsToCsv() {
     return row;
   });
 
-  // Gabungkan header dan baris menggunakan pemisah koma (comma delimiter) standar RFC 4180
+  // Gabungkan header dan baris menggunakan sanitizeCsvCell untuk mencegah formula injection
   const csvContent = [
-    headers.map(h => `"${String(h).replace(/"/g, '""')}"`).join(','),
-    ...rows.map(row => row.map(val => {
-      const strVal = String(val).replace(/"/g, '""');
-      return `"${strVal}"`;
-    }).join(','))
+    headers.map(h => sanitizeCsvCell(h)).join(','),
+    ...rows.map(row => row.map(val => sanitizeCsvCell(val)).join(','))
   ].join('\r\n');
 
   const BOM = '\uFEFF';
@@ -1857,6 +2242,45 @@ function setupAdminRegSettings() {
     regSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const statusVal = statusToggle ? statusToggle.value : 'open';
+
+      if (statusVal === 'closed' && dateInput && !dateInput.value) {
+        activateSubTabForElement(dateInput);
+        playRoboticSound('error');
+        showToast('Target tanggal pembukaan wajib diisi saat status ditutup dengan hitung mundur.', 'error');
+        dateInput.focus();
+        return;
+      }
+
+      const waTitleInput = document.getElementById('reg-wa-title');
+      const waDescInput = document.getElementById('reg-wa-desc');
+      const waLinkInput = document.getElementById('reg-wa-link');
+
+      const waTitleVal = waTitleInput ? waTitleInput.value.trim() : '';
+      const waDescVal = waDescInput ? waDescInput.value.trim() : '';
+      const waLinkRaw = waLinkInput ? waLinkInput.value.trim() : '';
+
+      if (!waTitleVal) {
+        activateSubTabForElement(waTitleInput);
+        playRoboticSound('error');
+        showToast('Judul banner WhatsApp wajib diisi.', 'error');
+        if (waTitleInput) waTitleInput.focus();
+        return;
+      }
+      if (!waLinkRaw || !/^https?:\/\//i.test(sanitizeUrl(waLinkRaw))) {
+        activateSubTabForElement(waLinkInput);
+        playRoboticSound('error');
+        showToast('Tautan undangan WhatsApp harus berupa URL https:// yang valid.', 'error');
+        if (waLinkInput) waLinkInput.focus();
+        return;
+      }
+      if (!waDescVal) {
+        activateSubTabForElement(waDescInput);
+        playRoboticSound('error');
+        showToast('Deskripsi petunjuk WhatsApp wajib diisi.', 'error');
+        if (waDescInput) waDescInput.focus();
+        return;
+      }
+
       state.regSettings.status = statusVal;
       state.regSettings.isOpen = (statusVal === 'open');
 
@@ -1875,24 +2299,18 @@ function setupAdminRegSettings() {
         state.regSettings.showHeaderCountdown = headerCountdownToggle.checked;
       }
 
-      const waTitleInput = document.getElementById('reg-wa-title');
-      const waDescInput = document.getElementById('reg-wa-desc');
-      const waLinkInput = document.getElementById('reg-wa-link');
+      state.regSettings.waTitle = waTitleVal;
+      state.regSettings.waDesc = waDescVal;
+      state.regSettings.waLink = sanitizeUrl(waLinkRaw);
 
-      if (waTitleInput) state.regSettings.waTitle = waTitleInput.value.trim();
-      if (waDescInput) state.regSettings.waDesc = waDescInput.value.trim();
-      if (waLinkInput) state.regSettings.waLink = waLinkInput.value.trim();
-
-      saveData('robotik_reg_settings', state.regSettings);
-
-      if (state.useFirebase) {
-        state.db.collection('settings').doc('registration').set(state.regSettings)
-          .then(() => console.log("Registration settings successfully synced to Cloud Firestore!"))
-          .catch(err => console.error("Firestore settings sync failed:", err));
+      try {
+        await saveData('robotik_reg_settings', state.regSettings);
+        playRoboticSound('success');
+        showToast('Konfigurasi pendaftaran berhasil disimpan!');
+      } catch (err) {
+        playRoboticSound('error');
+        showToast('Tersimpan lokal, tapi gagal sinkronisasi ke Firestore.', 'error');
       }
-
-      playRoboticSound('success');
-      showToast('Konfigurasi pendaftaran berhasil disimpan!');
     });
   }
 
@@ -2195,6 +2613,8 @@ function setupLandingPageCMS() {
       document.getElementById('achievement-juara').value = '';
       document.getElementById('achievement-organizer').value = '';
       document.getElementById('achievement-year').value = '';
+      const levelInput = document.getElementById('achievement-level');
+      if (levelInput) levelInput.value = '';
       achDialog.showModal();
     });
   }
@@ -2208,31 +2628,39 @@ function setupLandingPageCMS() {
   if (btnCancelAch) btnCancelAch.addEventListener('click', closeAchModal);
 
   if (achForm) {
-    achForm.addEventListener('submit', (e) => {
+    achForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const idxVal = document.getElementById('edit-achievement-idx').value;
       const juaraVal = document.getElementById('achievement-juara').value.trim();
       const organizerVal = document.getElementById('achievement-organizer').value.trim();
       const yearVal = document.getElementById('achievement-year').value.trim();
+      const levelVal = (document.getElementById('achievement-level')?.value || '').trim();
 
       if (!state.landingData.achievements) {
         state.landingData.achievements = [];
       }
 
       const achObj = { juara: juaraVal, organizer: organizerVal, year: yearVal };
+      if (levelVal) achObj.level = levelVal;
 
       if (idxVal !== '') {
         const idx = parseInt(idxVal, 10);
-        state.landingData.achievements[idx] = achObj;
+        state.landingData.achievements[idx] = { ...state.landingData.achievements[idx], ...achObj };
+        if (!levelVal) delete state.landingData.achievements[idx].level;
       } else {
         state.landingData.achievements.push(achObj);
       }
 
-      saveData('robotik_landing', state.landingData);
+      try {
+        await saveData('robotik_landing', state.landingData);
+        playRoboticSound('success');
+        showToast('Data prestasi berhasil disimpan!');
+      } catch (err) {
+        playRoboticSound('error');
+        showToast('Prestasi tersimpan lokal, tapi gagal sinkronisasi ke Firestore.', 'error');
+      }
       renderAdminAchievementsTable();
-
-      playRoboticSound('success');
       if (achDialog) achDialog.close();
     });
   }
@@ -2255,13 +2683,54 @@ function setupLandingPageCMS() {
     const footerInstagramInput = document.getElementById('cms-footer-instagram');
     const footerYoutubeInput = document.getElementById('cms-footer-youtube');
 
+    const requiredFields = [
+      [heroTagInput, 'Tagline hero wajib diisi.'],
+      [heroTitleInput, 'Judul utama hero wajib diisi.'],
+      [heroDescInput, 'Deskripsi hero wajib diisi.'],
+      [visiTextInput, 'Visi ekskul wajib diisi.'],
+      [footerLocationInput, 'Alamat basecamp wajib diisi.'],
+      [footerEmailInput, 'Email resmi wajib diisi.'],
+      [divMechInput, 'Deskripsi Divisi Mekanik wajib diisi.'],
+      [divElecInput, 'Deskripsi Divisi Elektronika wajib diisi.'],
+      [divProgInput, 'Deskripsi Divisi Pemrograman wajib diisi.'],
+      [footerTaglineInput, 'Tagline footer wajib diisi.'],
+    ];
+
+    for (const [fieldEl, msg] of requiredFields) {
+      if (fieldEl && !fieldEl.value.trim()) {
+        activateSubTabForElement(fieldEl);
+        playRoboticSound('error');
+        showToast(msg, 'error');
+        fieldEl.focus();
+        return;
+      }
+    }
+
+    if (footerEmailInput && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(footerEmailInput.value.trim())) {
+      activateSubTabForElement(footerEmailInput);
+      playRoboticSound('error');
+      showToast('Format email resmi tidak valid.', 'error');
+      footerEmailInput.focus();
+      return;
+    }
+
     const updatedMisi = [];
     for (let i = 1; i <= 4; i++) {
       const input = document.getElementById(`cms-misi-item-${i}`);
-      if (input) updatedMisi.push(input.value.trim());
+      if (input) {
+        if (!input.value.trim()) {
+          activateSubTabForElement(input);
+          playRoboticSound('error');
+          showToast(`Pilar misi ke-${i} wajib diisi.`, 'error');
+          input.focus();
+          return;
+        }
+        updatedMisi.push(input.value.trim());
+      }
     }
 
     state.landingData = {
+      ...state.landingData,
       heroTag: heroTagInput ? heroTagInput.value.trim() : '',
       heroTitle: heroTitleInput ? heroTitleInput.value.trim() : '',
       heroDesc: heroDescInput ? heroDescInput.value.trim() : '',
@@ -2278,10 +2747,14 @@ function setupLandingPageCMS() {
       footerYoutube: footerYoutubeInput ? footerYoutubeInput.value.trim() : ''
     };
 
-    saveData('robotik_landing', state.landingData);
-
-    playRoboticSound('success');
-    showToast('Konten landing page & footer berhasil diperbarui!');
+    try {
+      await saveData('robotik_landing', state.landingData);
+      playRoboticSound('success');
+      showToast('Konten landing page & footer berhasil diperbarui!');
+    } catch (err) {
+      playRoboticSound('error');
+      showToast('Tersimpan lokal, tapi gagal sinkronisasi ke Firestore.', 'error');
+    }
   });
 }
 
@@ -2324,6 +2797,8 @@ function renderAdminAchievementsTable() {
       document.getElementById('achievement-juara').value = ach.juara || '';
       document.getElementById('achievement-organizer').value = ach.organizer || '';
       document.getElementById('achievement-year').value = ach.year || '';
+      const levelInput = document.getElementById('achievement-level');
+      if (levelInput) levelInput.value = ach.level || '';
       
       const dialog = document.getElementById('custom-achievement-dialog');
       if (dialog) dialog.showModal();
@@ -2402,12 +2877,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Asynchronously initialize Firebase before loading admin features
   await ensureFirebaseInitialized();
 
-  // Check login state first (async: verifies HMAC session token)
+  // Check login state first (Firebase Auth gates all cloud sync listeners)
   setupAuthStateListener();
   setupCmsAuthentication();
   setupCmsTabs();
   setupSubTabs();
-  setupLocalImageUploader();
   setupApplicantsFilterAndExport();
   setupAdminRegSettings();
   setupLandingPageCMS();
@@ -2425,7 +2899,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Setup close buttons on achievement dialog
+  // Setup close buttons on preview dialog
   const closePreviewBtn = document.getElementById('close-preview-dialog-btn');
   const previewDialog = document.getElementById('admin-card-preview-dialog');
   if (closePreviewBtn && previewDialog) {
@@ -2454,25 +2928,4 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
   }
-
-  // Setup Realtime Cloud Sync callbacks
-
-  setupRealTimeRegSettingsSync((updatedRegSettings) => {
-    populateRegSettingsCmsInputs();
-    renderAdminQuestionsTable();
-  });
-
-  setupRealTimeLandingDataSync((updatedLandingData) => {
-    populateLandingCmsInputs();
-  });
-
-  setupRealTimeBlogSync((updatedBlogArticles) => {
-    renderAdminBlogTable();
-    renderDashboardOverview();
-  });
-
-  setupRealTimePortfolioSync((updatedPortfolioProjects) => {
-    renderAdminPortfolioTable();
-    renderDashboardOverview();
-  });
 });

@@ -4,35 +4,35 @@
    ========================================================================= */
 
 :root {
-  /* Color Palette */
-  --bg-dark: #0f172a;          /* Slate 900 */
-  --bg-darker: #020617;        /* Slate 950 */
-  --sidebar-bg: rgba(15, 23, 42, 0.85);
-  --topbar-bg: rgba(15, 23, 42, 0.75);
-  --card-bg: rgba(30, 41, 59, 0.5); /* Slate 800 with opacity */
+  /* Color Palette aligned with Motechart main site */
+  --bg-dark: #0D1320;
+  --bg-darker: #090D16;
+  --sidebar-bg: rgba(13, 19, 32, 0.92);
+  --topbar-bg: rgba(13, 19, 32, 0.85);
+  --card-bg: rgba(17, 24, 39, 0.72);
   
-  --accent-cyan: #06b6d4;      /* Cyan 500 */
-  --accent-cyan-hover: #0891b2;/* Cyan 600 */
-  --accent-cyan-glow: rgba(6, 182, 212, 0.15);
+  --accent-cyan: #22D3EE;
+  --accent-cyan-hover: #06B6D4;
+  --accent-cyan-glow: rgba(34, 211, 238, 0.16);
   
-  --accent-yellow: #facc15;    /* Yellow 400 */
-  --accent-yellow-hover: #eab308; /* Yellow 500 */
-  --accent-yellow-glow: rgba(250, 204, 21, 0.15);
+  --accent-yellow: #FACC15;
+  --accent-yellow-hover: #EAB308;
+  --accent-yellow-glow: rgba(250, 204, 21, 0.16);
 
-  --accent-green: #10b981;     /* Emerald 500 */
-  --accent-red: #ef4444;       /* Red 500 */
+  --accent-green: #10B981;
+  --accent-red: #EF4444;
   
-  --text-main: #f8fafc;        /* Slate 50 */
-  --text-muted: #94a3b8;       /* Slate 400 */
-  --border-color: rgba(255, 255, 255, 0.06);
-  --border-light: rgba(255, 255, 255, 0.03);
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.04);
 
   /* Layout Metrics */
   --sidebar-width: 260px;
   --topbar-height: 70px;
   
   /* Fonts */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   /* Member Card Variables & Glows */
   --border-glass: rgba(255, 255, 255, 0.04);
@@ -683,10 +683,12 @@ body {
   font-weight: 600;
 }
 .stat-info .stat-value {
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 800;
   color: var(--text-main);
   line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------------------------------------------------
@@ -740,8 +742,9 @@ body {
 }
 
 .data-table th, .data-table td {
-  padding: 1.5rem 2rem;
+  padding: 1rem 1.15rem;
   border-bottom: 1px solid var(--border-light);
+  font-variant-numeric: tabular-nums;
 }
 
 .data-table th {
@@ -1198,5 +1201,77 @@ dialog[open]::backdrop {
 @keyframes fadeInCms {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Rich text inline URL insertion bar */
+.rich-inline-url-bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  background: rgba(9, 13, 22, 0.92);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.25);
+}
+
+/* Image upload thumbnail preview */
+.img-upload-preview {
+  display: none;
+  width: 96px;
+  height: 60px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* Portfolio Technical Details Accordion */
+.tech-details-accordion {
+  margin-top: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+.tech-details-accordion summary {
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-yellow);
+  user-select: none;
+  list-style: none;
+}
+.tech-details-accordion summary::-webkit-details-marker {
+  display: none;
+}
+.tech-details-accordion summary::before {
+  content: '▸ ';
+  display: inline-block;
+  margin-right: 0.35rem;
+  transition: transform 0.2s ease;
+}
+.tech-details-accordion[open] summary::before {
+  content: '▾ ';
+}
+.tech-details-body {
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Reset DB Warning Box */
+.reset-confirm-warning {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #FCA5A5;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 

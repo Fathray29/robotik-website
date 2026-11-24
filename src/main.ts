@@ -165,6 +165,43 @@ function initHeroAmbientSpotlight(): void {
   });
 }
 
+function initDivisionCardTilt(): void {
+  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const isCoarsePointer = window.matchMedia?.('(pointer: coarse)').matches;
+  if (prefersReduced || isCoarsePointer) return;
+
+  const cards = document.querySelectorAll<HTMLElement>('.division-tab-btn, .division-choice-tile');
+  cards.forEach((card) => {
+    let rafId = 0;
+    let rx = 0;
+    let ry = 0;
+
+    card.addEventListener('pointermove', (e) => {
+      const rect = card.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      rx = Number((-py * 8).toFixed(2));
+      ry = Number((px * 10).toFixed(2));
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        card.style.setProperty('--tilt-rx', `${rx}deg`);
+        card.style.setProperty('--tilt-ry', `${ry}deg`);
+      });
+    });
+
+    card.addEventListener('pointerleave', () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      card.style.removeProperty('--tilt-rx');
+      card.style.removeProperty('--tilt-ry');
+    });
+  });
+}
+
 function animateProofCount(el: HTMLElement | null, target: number): void {
   if (!el) return;
   const pad = (n: number) => String(Math.max(0, Math.round(n))).padStart(2, '0');
@@ -690,6 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderBrandMarks();
   initHeroBlueprintWorkbench();
   initHeroAmbientSpotlight();
+  initDivisionCardTilt();
   renderHomeLandingContent();
   renderHomeFeaturedProjects();
   renderBlogGrid();

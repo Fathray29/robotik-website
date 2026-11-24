@@ -99,9 +99,9 @@ export function initHeroBlueprintWorkbench(): void {
           <span class="whitespace-nowrap">Klik subsistem</span>
         </div>
 
-        <div class="relative aspect-[16/10] w-full rounded-lg border border-white/8 bg-[#070D19] overflow-hidden">
+        <div class="relative aspect-[468/282] w-full rounded-lg border border-white/8 bg-[#070D19] overflow-hidden">
           <svg
-            viewBox="0 0 420 262"
+            viewBox="-24 -26 468 282"
             class="h-full w-full"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -118,13 +118,13 @@ export function initHeroBlueprintWorkbench(): void {
               </radialGradient>
             </defs>
 
-            <rect width="420" height="262" fill="#070D19" />
-            <rect width="420" height="262" fill="url(#hero-bp-grid)" />
-            <circle cx="210" cy="136" r="120" fill="url(#hero-bp-glow)" />
+            <rect x="-24" y="-26" width="468" height="282" fill="#070D19" />
+            <rect x="-24" y="-26" width="468" height="282" fill="url(#hero-bp-grid)" />
+            <circle cx="210" cy="134" r="126" fill="url(#hero-bp-glow)" />
 
             <!-- Subtle Axis Guides -->
-            <line x1="28" y1="136" x2="392" y2="136" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4" />
-            <line x1="210" y1="18" x2="210" y2="246" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4" />
+            <line x1="-6" y1="136" x2="426" y2="136" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4" />
+            <line x1="210" y1="-10" x2="210" y2="244" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4" />
 
             <!-- Sweeping Ultrasonic Sonar Cone (Top / Front of Rover) -->
             <g class="hero-bp-sonar">
@@ -236,22 +236,22 @@ export function initHeroBlueprintWorkbench(): void {
               <text x="210" y="203" text-anchor="middle" fill="#FACC15" font-family="JetBrains Mono, monospace" font-size="8.2" font-weight="600">LI-PO 3S · 11.1V</text>
             </g>
 
-            <!-- Precision Callout Labels (Clean spacing with clear margin gaps) -->
+            <!-- Precision Callout Labels (Generous breathing space from viewport walls) -->
             <g font-family="JetBrains Mono, monospace" font-size="8" fill="#94A3B8">
-              <text x="14" y="66" fill="#6EE7B7">HC-SR04</text>
-              <line x1="60" y1="63" x2="164" y2="63" stroke="rgba(52,211,153,0.35)" stroke-dasharray="2 2" />
+              <text x="6" y="66" fill="#6EE7B7">HC-SR04</text>
+              <line x1="52" y1="63" x2="164" y2="63" stroke="rgba(52,211,153,0.35)" stroke-dasharray="2 2" />
               <circle cx="164" cy="63" r="1.8" fill="#34D399" opacity="0.7" />
 
-              <text x="14" y="111" fill="#FDE047">MECANUM 4WD</text>
-              <line x1="78" y1="108" x2="92" y2="108" stroke="rgba(250,204,21,0.45)" />
+              <text x="6" y="111" fill="#FDE047">MECANUM 4WD</text>
+              <line x1="70" y1="108" x2="92" y2="108" stroke="rgba(250,204,21,0.45)" />
               <circle cx="92" cy="108" r="1.8" fill="#FACC15" opacity="0.7" />
 
-              <text x="406" y="140" text-anchor="end" fill="#67E8F9">MCU CORE</text>
-              <line x1="258" y1="137" x2="354" y2="137" stroke="rgba(34,211,238,0.35)" stroke-dasharray="2 2" />
+              <text x="414" y="140" text-anchor="end" fill="#67E8F9">MCU CORE</text>
+              <line x1="258" y1="137" x2="362" y2="137" stroke="rgba(34,211,238,0.35)" stroke-dasharray="2 2" />
               <circle cx="258" cy="137" r="1.8" fill="#22D3EE" opacity="0.7" />
 
-              <text x="406" y="203" text-anchor="end" fill="#FDE047">BUCK 5V</text>
-              <line x1="271" y1="200" x2="358" y2="200" stroke="rgba(250,204,21,0.35)" stroke-dasharray="2 2" />
+              <text x="414" y="203" text-anchor="end" fill="#FDE047">BUCK 5V</text>
+              <line x1="271" y1="200" x2="366" y2="200" stroke="rgba(250,204,21,0.35)" stroke-dasharray="2 2" />
               <circle cx="271" cy="200" r="1.8" fill="#FACC15" opacity="0.7" />
             </g>
           </svg>
@@ -260,7 +260,7 @@ export function initHeroBlueprintWorkbench(): void {
 
       <!-- Interactive Subsystem Selector Tabs + Live Engineering Readout -->
       <div class="px-4 pb-4 pt-2 sm:px-5 sm:pb-5 space-y-3">
-        <div role="tablist" aria-label="Pilih subsistem robot" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 rounded-lg border border-white/8 bg-[#070D19] p-1">
+        <div role="tablist" aria-label="Pilih subsistem robot" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
           ${ORDER.map((key) => {
             const item = SUBSYSTEMS[key];
             const active = key === activeSubsystem;
@@ -270,9 +270,10 @@ export function initHeroBlueprintWorkbench(): void {
                 role="tab"
                 data-hero-tab="${key}"
                 aria-selected="${active}"
-                class="hero-bp-tab ${active ? 'is-active' : ''} rounded-md px-2.5 py-2 text-xs font-medium whitespace-nowrap transition-colors cursor-pointer"
+                class="hero-bp-tab ${active ? 'is-active' : ''} inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap cursor-pointer"
               >
-                ${escapeHtml(item.tabLabel)}
+                <span class="hero-bp-tab-dot h-1.5 w-1.5 rounded-full shrink-0" aria-hidden="true"></span>
+                <span>${escapeHtml(item.tabLabel)}</span>
               </button>
             `;
           }).join('')}

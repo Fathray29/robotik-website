@@ -2,6 +2,7 @@ import {
   computeCountdown,
   escapeHtml,
   generateRegistrationId,
+  isStatusCheckEnabled,
   normalizePhoneNumber,
   normalizeRegistrationId,
   sanitizePlainText,
@@ -335,6 +336,46 @@ export function updateRegistrationAvailabilityUI(): void {
   const heroNotice = document.getElementById('hero-reg-window');
   const heroCta = document.getElementById('hero-btn-daftar') as HTMLButtonElement | null;
   const headerCta = document.getElementById('header-cta-daftar') as HTMLButtonElement | null;
+  const bottomStatusBtn = document.getElementById('cta-bottom-status') as HTMLButtonElement | null;
+  const statusInput = document.getElementById('status-check-input') as HTMLInputElement | null;
+  const statusSubmitBtn = document.getElementById('btn-check-status') as HTMLButtonElement | null;
+  const statusDisabledBanner = document.getElementById('status-checker-disabled-banner');
+  const statusStateBadge = document.getElementById('status-checker-state-badge');
+  const statusControls = document.getElementById('status-checker-controls');
+  const checkMyStatusBtn = document.getElementById('btn-check-my-status') as HTMLButtonElement | null;
+  const successPendingNote = document.getElementById('success-status-pending-note');
+
+  const canCheckStatus = isStatusCheckEnabled(settings.status);
+  if (bottomStatusBtn) {
+    bottomStatusBtn.disabled = !canCheckStatus;
+    bottomStatusBtn.setAttribute('aria-disabled', String(!canCheckStatus));
+    bottomStatusBtn.title = canCheckStatus
+      ? 'Periksa status pendaftaranmu'
+      : 'Opsi cek status aktif setelah proses pendaftaran selesai';
+  }
+  if (statusDisabledBanner) statusDisabledBanner.classList.toggle('hidden', canCheckStatus);
+  if (statusControls) statusControls.classList.toggle('opacity-55', !canCheckStatus);
+  if (statusStateBadge) {
+    statusStateBadge.textContent = canCheckStatus ? 'Aktif' : 'Nonaktif Sementara';
+    statusStateBadge.className = canCheckStatus
+      ? 'rounded-md border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-300'
+      : 'rounded-md border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-300';
+  }
+  if (statusInput) {
+    statusInput.disabled = !canCheckStatus;
+    if (!canCheckStatus) setFieldError('status-check-input', '');
+  }
+  if (statusSubmitBtn) statusSubmitBtn.disabled = !canCheckStatus;
+  document.querySelectorAll<HTMLButtonElement>('[data-demo-status-id]').forEach((btn) => {
+    btn.disabled = !canCheckStatus;
+  });
+  if (checkMyStatusBtn) {
+    checkMyStatusBtn.disabled = !canCheckStatus;
+    checkMyStatusBtn.setAttribute('aria-disabled', String(!canCheckStatus));
+  }
+  if (successPendingNote) {
+    successPendingNote.classList.toggle('hidden', canCheckStatus);
+  }
 
   const successVisible = Boolean(successCard && !successCard.classList.contains('hidden'));
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -577,6 +618,10 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
   });
 
   document.getElementById('btn-check-my-status')?.addEventListener('click', async () => {
+    if (!isStatusCheckEnabled(appState.regSettings.status)) {
+      showToast('Opsi cek status aktif setelah proses pendaftaran selesai.', 'error');
+      return;
+    }
     const idText = document.getElementById('success-student-id')?.textContent || lastSubmittedId;
     if (!idText) return;
     const found = await findApplicantById(normalizeRegistrationId(idText));
@@ -595,6 +640,10 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
 
   statusForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!isStatusCheckEnabled(appState.regSettings.status)) {
+      showToast('Pendaftaran sedang berjalan. Cek status aktif setelah pendaftaran selesai.', 'error');
+      return;
+    }
     if (!statusInput) return;
     const normalized = normalizeRegistrationId(statusInput.value);
     if (!normalized) {
@@ -613,8 +662,8 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
       openStatusModal(applicant, normalized, appState.regSettings);
     } finally {
       if (statusBtn) {
-        statusBtn.disabled = false;
-        statusBtn.textContent = 'Periksa Status';
+        statusBtn.disabled = !isStatusCheckEnabled(appState.regSettings.status);
+        statusBtn.textContent = 'Cek Status Sekarang';
       }
     }
   });
@@ -624,6 +673,10 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
   // Quick demo ID helper buttons inside status checker
   document.querySelectorAll<HTMLButtonElement>('[data-demo-status-id]').forEach((btn) => {
     btn.addEventListener('click', async () => {
+      if (!isStatusCheckEnabled(appState.regSettings.status)) {
+        showToast('Opsi cek status aktif setelah proses pendaftaran selesai.', 'error');
+        return;
+      }
       const demoId = btn.dataset.demoStatusId || '';
       if (!demoId || !statusInput) return;
       statusInput.value = demoId;

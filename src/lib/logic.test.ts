@@ -9,6 +9,7 @@ import {
   filterArticles,
   filterProjects,
   generateRegistrationId,
+  isStatusCheckEnabled,
   mapFirebaseAuthError,
   migrateLegacyLandingData,
   normalizePhoneNumber,
@@ -275,4 +276,10 @@ test('extractPrimarySkillTag infers concise primary skill labels across project 
     extractPrimarySkillTag({ ...base, title: 'Sumo Bot', category: 'mekanik & elektronik', description: 'Robot untuk bertanding di arena sumo' }),
     { label: 'Mechanics', tone: 'mechanics' }
   );
+});
+
+test('isStatusCheckEnabled disables status lookup while registration is open and enables it once closed', () => {
+  assert.equal(isStatusCheckEnabled('open'), false);
+  assert.equal(isStatusCheckEnabled('closed'), true);
+  assert.equal(isStatusCheckEnabled('closed_permanently'), true);
 });

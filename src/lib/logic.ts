@@ -471,6 +471,10 @@ export function mapFirebaseAuthError(codeOrMessage: string): string {
   return 'Gagal masuk ke Portal Pengurus. Periksa email, password, dan koneksi internet.';
 }
 
+export function isStatusCheckEnabled(status: RegistrationSettings['status'] | string | undefined): boolean {
+  return status !== 'open';
+}
+
 export function normalizeRegSettings(
   settings: Partial<RegistrationSettings> | null | undefined,
   defaults: RegistrationSettings

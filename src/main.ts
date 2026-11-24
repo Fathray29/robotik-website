@@ -7,6 +7,7 @@ import {
   extractProjectShortDesc,
   filterArticles,
   filterProjects,
+  isStatusCheckEnabled,
   sanitizeHeroHtml,
   sanitizeUrl,
 } from './lib/logic';
@@ -618,9 +619,19 @@ function updatePortfolioFilterButtons(): void {
 }
 
 function setupGlobalEventDelegation(): void {
-  // Navigation clicks
+  // Navigation clicks & auto-close mobile drawer when clicking outside it on the page
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
+
+    const drawer = document.getElementById('mobile-nav-drawer');
+    if (
+      drawer &&
+      !drawer.classList.contains('hidden') &&
+      !target.closest('#mobile-nav-drawer') &&
+      !target.closest('#mobile-menu-toggle')
+    ) {
+      setMobileMenuOpen(false);
+    }
 
     const navLink = target.closest<HTMLElement>('[data-nav-target]');
     if (navLink) {
@@ -668,17 +679,27 @@ function setupGlobalEventDelegation(): void {
   document.getElementById('home-btn-all-projects')?.addEventListener('click', () => navigateTo('view-portfolio'));
   document.getElementById('cta-bottom-daftar')?.addEventListener('click', () => navigateTo('view-pendaftaran'));
   document.getElementById('cta-bottom-status')?.addEventListener('click', () => {
+    if (!isStatusCheckEnabled(appState.regSettings.status)) return;
     navigateTo('view-pendaftaran', { scrollTop: false });
     setTimeout(() => {
       document.getElementById('status-checker-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 60);
   });
 
-  // Mobile drawer toggle
+  // Mobile drawer toggle & Escape key dismiss
   const mobileToggle = document.getElementById('mobile-menu-toggle');
   mobileToggle?.addEventListener('click', () => {
     const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
     setMobileMenuOpen(!isExpanded);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      if (drawer && !drawer.classList.contains('hidden')) {
+        setMobileMenuOpen(false);
+      }
+    }
   });
 
   // Blog search & category tabs

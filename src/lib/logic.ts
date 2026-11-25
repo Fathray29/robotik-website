@@ -471,28 +471,312 @@ export function mapFirebaseAuthError(codeOrMessage: string): string {
   return 'Gagal masuk ke Portal Pengurus. Periksa email, password, dan koneksi internet.';
 }
 
-export function isStatusCheckEnabled(status: RegistrationSettings['status'] | string | undefined): boolean {
-  return status !== 'open';
+export function parseScheduleTimestamp(raw: string | undefined | null): number | null {
+  if (!raw || typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  // Handle explicit timezone offsets or Z directly
+  if (/(Z|[+-]\d{2}:?\d{2})$/i.test(trimmed)) {
+    const ms = Date.parse(trimmed);
+    return Number.isNaN(ms) ? null : ms;
+  }
+
+  // Parse local YYYY-MM-DDTHH:mm(:ss)? strictly in local browser time
+  const localMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if (localMatch) {
+    const [, y, m, d, hh, mm, ss = '0'] = localMatch;
+    const dt = new Date(Number(y), Number(m) - 1, Number(d), Number(hh), Number(mm), Number(ss), 0);
+    return Number.isNaN(dt.getTime()) ? null : dt.getTime();
+  }
+
+  const fallback = Date.parse(trimmed);
+  return Number.isNaN(fallback) ? null : fallback;
+}
+
+export function formatLocalOffsetIso(
+  dateInput: Date | string,
+  hourStr?: string,
+  minuteStr?: string,
+  customOffsetMinutes?: number
+): string {
+  let dt: Date;
+  if (dateInput instanceof Date) {
+    dt = dateInput;
+  } else {
+    const dateMatch = String(dateInput || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!dateMatch) return '';
+    const [, y, m, d] = dateMatch;
+    const hh = Math.min(23, Math.max(0, Number(hourStr ?? 0) || 0));
+    const mm = Math.min(59, Math.max(0, Number(minuteStr ?? 0) || 0));
+    dt = new Date(Number(y), Number(m) - 1, Number(d), hh, mm, 0, 0);
+  }
+  if (Number.isNaN(dt.getTime())) return '';
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const offsetMin = typeof customOffsetMinutes === 'number' ? customOffsetMinutes : -dt.getTimezoneOffset();
+  const sign = offsetMin >= 0 ? '+' : '-';
+  const absOff = Math.abs(offsetMin);
+  const offH = pad(Math.floor(absOff / 60));
+  const offM = pad(absOff % 60);
+
+  return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}:00${sign}${offH}:${offM}`;
+}
+
+export function toLocalDateTimeParts(raw: string | undefined | null): { date: string; hour: string; minute: string } {
+  const ms = parseScheduleTimestamp(raw);
+  if (ms === null) return { date: '', hour: '08', minute: '00' };
+  const dt = new Date(ms);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return {
+    date: `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`,
+    hour: pad(dt.getHours()),
+    minute: pad(dt.getMinutes()),
+  };
+}
+
+export function formatIndonesianSchedule(rawOrMs: string | number | null | undefined): string {
+  const ms = typeof rawOrMs === 'number' ? rawOrMs : parseScheduleTimestamp(rawOrMs);
+  if (ms === null) return '';
+  try {
+    return new Intl.DateTimeFormat('id-ID', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(ms));
+  } catch {
+    return new Date(ms).toLocaleString();
+  }
+}
+
+export function computeCountdownFromMs(targetMs: number | null, nowMs: number = Date.now()): CountdownParts {
+  if (targetMs === null || Number.isNaN(targetMs)) {
+    return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+  const diff = targetMs - nowMs;
+  if (diff <= 0) {
+    return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  return { expired: false, days, hours, minutes, seconds };
+}
+
+export function resolveRegistrationState(
+  settings: Partial<RegistrationSettings> | null | undefined,
+  nowMs: number = Date.now()
+): import('./types').ResolvedRegistrationState {
+  const mode: import('./types').RegistrationMode =
+    settings?.mode === 'auto' || settings?.mode === 'manual_open' || settings?.mode === 'manual_closed'
+      ? settings.mode
+      : settings?.status === 'closed_permanently'
+        ? 'manual_closed'
+        : settings?.status === 'closed'
+          ? settings?.countdownTarget
+            ? 'auto'
+            : 'manual_closed'
+          : 'manual_open';
+
+  const openAtMs = parseScheduleTimestamp(
+    settings?.openAt !== undefined
+      ? settings.openAt
+      : settings?.status === 'closed'
+        ? settings?.countdownTarget
+        : ''
+  );
+  const closeAtMs = parseScheduleTimestamp(
+    settings?.closeAt !== undefined
+      ? settings.closeAt
+      : settings?.status === 'open' || (!settings?.status && settings?.isOpen !== false)
+        ? settings?.countdownTarget
+        : ''
+  );
+  const showCountdown =
+    settings?.showCountdown !== undefined
+      ? settings.showCountdown !== false
+      : settings?.showHeaderCountdown !== false;
+
+  let phase: import('./types').RegistrationPhase = 'closed';
+  let countdownTargetMs: number | null = null;
+
+  if (mode === 'manual_closed') {
+    phase = 'closed';
+    countdownTargetMs = null;
+  } else if (mode === 'manual_open') {
+    if (closeAtMs !== null && nowMs >= closeAtMs) {
+      // Deadline passed -> automatically close registration
+      phase = 'closed';
+      countdownTargetMs = null;
+    } else {
+      phase = 'open';
+      countdownTargetMs = closeAtMs;
+    }
+  } else {
+    // mode === 'auto'
+    if (openAtMs !== null && closeAtMs !== null && closeAtMs <= openAtMs) {
+      // Malformed inverted window safety fallback: closed
+      phase = 'closed';
+      countdownTargetMs = null;
+    } else if (openAtMs !== null && nowMs < openAtMs) {
+      phase = 'upcoming';
+      countdownTargetMs = openAtMs;
+    } else if (closeAtMs !== null && nowMs >= closeAtMs) {
+      phase = 'closed';
+      countdownTargetMs = null;
+    } else if (openAtMs !== null || closeAtMs !== null) {
+      phase = 'open';
+      countdownTargetMs = closeAtMs;
+    } else {
+      // No timestamps set in auto mode -> safe closed default
+      phase = 'closed';
+      countdownTargetMs = null;
+    }
+  }
+
+  const countdown = countdownTargetMs !== null ? computeCountdownFromMs(countdownTargetMs, nowMs) : null;
+
+  return {
+    phase,
+    mode,
+    canSubmit: phase === 'open',
+    canCheckStatus: phase === 'closed',
+    openAtMs,
+    closeAtMs,
+    countdownTargetMs,
+    countdown: countdown && !countdown.expired ? countdown : null,
+    showCountdown,
+  };
+}
+
+export function validateRegistrationSchedule(
+  mode: import('./types').RegistrationMode,
+  openAt: string,
+  closeAt: string,
+  nowMs: number = Date.now()
+): ValidationResult {
+  const openMs = parseScheduleTimestamp(openAt);
+  const closeMs = parseScheduleTimestamp(closeAt);
+
+  if (mode === 'manual_closed') {
+    return { valid: true, message: '' };
+  }
+
+  if (mode === 'manual_open') {
+    if (closeAt.trim() && closeMs === null) {
+      return { valid: false, message: 'Format waktu penutupan tidak valid.' };
+    }
+    if (closeMs !== null && closeMs <= nowMs) {
+      return {
+        valid: false,
+        message: 'Waktu penutupan harus lebih besar dari waktu sekarang agar pendaftaran tetap terbuka.',
+      };
+    }
+    return { valid: true, message: '' };
+  }
+
+  // mode === 'auto'
+  if (openAt.trim() && openMs === null) {
+    return { valid: false, message: 'Format waktu pembukaan tidak valid.' };
+  }
+  if (closeAt.trim() && closeMs === null) {
+    return { valid: false, message: 'Format waktu penutupan tidak valid.' };
+  }
+  if (openMs === null && closeMs === null) {
+    return {
+      valid: false,
+      message: 'Pada mode Jadwal Otomatis, isi minimal Waktu Mulai atau Waktu Selesai pendaftaran.',
+    };
+  }
+  if (openMs !== null && closeMs !== null && closeMs <= openMs) {
+    return {
+      valid: false,
+      message: 'Waktu Selesai (Tutup) harus lebih akhir daripada Waktu Mulai (Buka).',
+    };
+  }
+
+  return { valid: true, message: '' };
+}
+
+export function isStatusCheckEnabled(
+  statusOrSettings: RegistrationSettings | RegistrationSettings['status'] | string | undefined,
+  nowMs: number = Date.now()
+): boolean {
+  if (statusOrSettings && typeof statusOrSettings === 'object') {
+    return resolveRegistrationState(statusOrSettings, nowMs).canCheckStatus;
+  }
+  // Legacy string support: enabled once closed/closed_permanently, disabled when open or upcoming
+  return statusOrSettings !== 'open' && statusOrSettings !== 'upcoming';
 }
 
 export function normalizeRegSettings(
   settings: Partial<RegistrationSettings> | null | undefined,
   defaults: RegistrationSettings
 ): RegistrationSettings {
-  if (!settings) return { ...defaults, customQuestions: [...defaults.customQuestions] };
-  const validStatus: RegistrationSettings['status'] =
-    settings.status === 'open' || settings.status === 'closed' || settings.status === 'closed_permanently'
-      ? settings.status
-      : settings.isOpen === false
+  if (!settings) {
+    return { ...defaults, customQuestions: [...defaults.customQuestions] };
+  }
+
+  const hasExplicitMode =
+    settings.mode === 'auto' || settings.mode === 'manual_open' || settings.mode === 'manual_closed';
+
+  let mode: import('./types').RegistrationMode;
+  let openAt = typeof settings.openAt === 'string' ? settings.openAt : '';
+  let closeAt = typeof settings.closeAt === 'string' ? settings.closeAt : '';
+
+  if (hasExplicitMode) {
+    mode = settings.mode!;
+  } else if (settings.status === 'closed_permanently') {
+    mode = 'manual_closed';
+    openAt = '';
+    closeAt = '';
+  } else if (settings.status === 'closed' || settings.isOpen === false) {
+    if (settings.countdownTarget && settings.countdownTarget.trim()) {
+      mode = 'auto';
+      openAt = settings.countdownTarget.trim();
+      closeAt = '';
+    } else {
+      mode = 'manual_closed';
+      openAt = '';
+      closeAt = '';
+    }
+  } else {
+    mode = 'manual_open';
+    openAt = '';
+    closeAt = typeof settings.countdownTarget === 'string' ? settings.countdownTarget.trim() : '';
+  }
+
+  const showCountdown =
+    settings.showCountdown !== undefined
+      ? settings.showCountdown !== false
+      : settings.showHeaderCountdown !== false;
+
+  const resolved = resolveRegistrationState({ mode, openAt, closeAt, showCountdown });
+  const legacyStatus: RegistrationSettings['status'] =
+    resolved.phase === 'open'
+      ? 'open'
+      : resolved.phase === 'upcoming'
         ? 'closed'
-        : 'open';
+        : 'closed_permanently';
+
+  const legacyCountdownTarget =
+    resolved.phase === 'upcoming' ? openAt : resolved.phase === 'open' ? closeAt : '';
 
   return {
     ...defaults,
     ...settings,
-    status: validStatus,
-    isOpen: validStatus === 'open',
-    showHeaderCountdown: settings.showHeaderCountdown !== false,
+    mode,
+    openAt,
+    closeAt,
+    showCountdown,
+    showHeaderCountdown: showCountdown,
+    status: legacyStatus,
+    isOpen: resolved.phase === 'open',
+    countdownTarget: legacyCountdownTarget,
     customQuestions: Array.isArray(settings.customQuestions)
       ? settings.customQuestions
       : [...defaults.customQuestions],

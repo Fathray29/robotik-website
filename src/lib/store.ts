@@ -214,11 +214,14 @@ export async function saveApplicantRecord(applicant: Applicant): Promise<void> {
 }
 
 export async function findApplicantById(normalizedId: string): Promise<Applicant | null> {
-  // Always check Firestore first when online & connected, then gracefully fall back to localStorage
+  // Always check Firestore first when online & connected, with a bounded timeout so flaky networks fall back cleanly
   if (appState.useFirebase && appState.db) {
     try {
-      const snap = await appState.db.collection('applicants').doc(normalizedId).get();
-      if (snap.exists) {
+      const snap = await Promise.race<FirestoreDocSnapshot | null>([
+        appState.db.collection('applicants').doc(normalizedId).get(),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3500)),
+      ]);
+      if (snap && snap.exists) {
         return snap.data() as unknown as Applicant;
       }
     } catch {

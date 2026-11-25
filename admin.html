@@ -324,27 +324,70 @@
             <div class="sub-tab-content active" id="sub-settings-main">
               <!-- Sistem Pendaftaran -->
               <div class="setting-card">
-                <h4 class="setting-card-title">Kontrol Utama Sistem</h4>
-                <div class="form-group">
-                  <label class="form-label" for="reg-status-toggle">Status Pendaftaran Ekskul</label>
-                  <select id="reg-status-toggle" class="input-control">
-                    <option value="open">Buka (Terima Pendaftar Baru)</option>
-                    <option value="closed">Tutup (Aktifkan Hitung Mundur)</option>
-                    <option value="closed_permanently">Tutup (Pendaftaran Selesai/Berakhir)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" id="reg-countdown-label">Target Waktu Pembukaan</label>
-                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <input type="date" id="reg-countdown-date" class="input-control" style="flex: 2; min-width: 150px;">
-                    <select id="reg-countdown-hour" class="input-control" style="flex: 1; min-width: 70px;"></select>
-                    <select id="reg-countdown-minute" class="input-control" style="flex: 1; min-width: 70px;"></select>
+                <h4 class="setting-card-title">Kontrol Utama &amp; Jadwal Pendaftaran</h4>
+
+                <!-- Live Effective Status Preview -->
+                <div id="reg-live-preview-box" class="reg-live-preview is-open" aria-live="polite">
+                  <div class="reg-live-preview-top">
+                    <span id="reg-live-preview-badge" class="reg-preview-badge">DIBUKA SEKARANG</span>
+                    <span id="reg-live-preview-status-check" class="reg-preview-meta">Cek Status: Nonaktif (saat pendaftaran berjalan)</span>
                   </div>
+                  <p id="reg-live-preview-summary" class="reg-live-preview-summary">
+                    Formulir menerima pendaftar baru.
+                  </p>
                 </div>
-                <div class="form-group" style="margin-top: 1.25rem;">
-                  <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; user-select: none;">
+
+                <div class="form-group">
+                  <label class="form-label" for="reg-mode-select">Mode Operasional Pendaftaran</label>
+                  <select id="reg-mode-select" class="input-control">
+                    <option value="auto">Jadwal Otomatis (Buka &amp; Tutup Sesuai Waktu)</option>
+                    <option value="manual_open">Buka Sekarang (Manual)</option>
+                    <option value="manual_closed">Tutup Sekarang (Pendaftaran Selesai)</option>
+                  </select>
+                  <p id="reg-mode-hint" class="form-helper-text">
+                    Sistem otomatis membuka dan menutup formulir tepat saat waktu tercapai.
+                  </p>
+                </div>
+
+                <!-- Waktu Pembukaan (Auto mode) -->
+                <div class="form-group schedule-field-group" id="reg-open-group">
+                  <div class="schedule-label-row">
+                    <label class="form-label" for="reg-open-date" style="margin-bottom: 0;">Waktu Pembukaan (Mulai)</label>
+                    <button type="button" id="btn-clear-open-at" class="preset-chip-btn preset-chip-muted">Kosongkan</button>
+                  </div>
+                  <div class="schedule-row">
+                    <input type="date" id="reg-open-date" class="input-control schedule-date-input">
+                    <select id="reg-open-hour" class="input-control schedule-time-select" aria-label="Jam buka"></select>
+                    <span class="schedule-colon" aria-hidden="true">:</span>
+                    <select id="reg-open-minute" class="input-control schedule-time-select" aria-label="Menit buka"></select>
+                  </div>
+                  <p class="form-helper-text">Kosongkan jika ingin langsung aktif sekarang sampai waktu penutupan.</p>
+                </div>
+
+                <!-- Waktu Penutupan (Auto & Manual Open) -->
+                <div class="form-group schedule-field-group" id="reg-close-group">
+                  <div class="schedule-label-row">
+                    <label class="form-label" for="reg-close-date" id="reg-close-label" style="margin-bottom: 0;">Waktu Penutupan (Batas Akhir)</label>
+                    <div class="schedule-presets" role="group" aria-label="Preset durasi penutupan">
+                      <button type="button" class="preset-chip-btn" data-close-preset="3">+3 Hari</button>
+                      <button type="button" class="preset-chip-btn" data-close-preset="7">+7 Hari</button>
+                      <button type="button" class="preset-chip-btn" data-close-preset="14">+14 Hari</button>
+                      <button type="button" class="preset-chip-btn preset-chip-muted" data-close-preset="clear">Tanpa Batas</button>
+                    </div>
+                  </div>
+                  <div class="schedule-row">
+                    <input type="date" id="reg-close-date" class="input-control schedule-date-input">
+                    <select id="reg-close-hour" class="input-control schedule-time-select" aria-label="Jam tutup"></select>
+                    <span class="schedule-colon" aria-hidden="true">:</span>
+                    <select id="reg-close-minute" class="input-control schedule-time-select" aria-label="Menit tutup"></select>
+                  </div>
+                  <p class="form-helper-text">Ketika waktu ini habis, formulir otomatis terkunci dan fitur Cek Status Pendaftaran aktif.</p>
+                </div>
+
+                <div class="form-group" style="margin-top: 1.25rem; margin-bottom: 0;">
+                  <label class="form-label" style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; user-select: none; text-transform: none; letter-spacing: normal; color: var(--text-main); font-size: 0.92rem;">
                     <input type="checkbox" id="reg-header-countdown-toggle" style="width: auto; margin: 0;">
-                    Aktifkan Bar Hitung Mundur di Atas Navigasi
+                    Tampilkan Hitung Mundur di Halaman Utama &amp; Pendaftaran
                   </label>
                 </div>
               </div>

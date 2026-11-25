@@ -1275,3 +1275,177 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Registration Schedule & Live Preview Panel */
+.reg-live-preview {
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  background: rgba(15, 23, 42, 0.75);
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.reg-live-preview.is-open {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.reg-live-preview.is-upcoming {
+  border-color: rgba(250, 204, 21, 0.4);
+  background: rgba(250, 204, 21, 0.08);
+}
+
+.reg-live-preview.is-closed {
+  border-color: rgba(148, 163, 184, 0.35);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.reg-live-preview.is-invalid {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.reg-live-preview-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.45rem;
+}
+
+.reg-preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.18);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.reg-live-preview.is-upcoming .reg-preview-badge {
+  background: rgba(250, 204, 21, 0.16);
+  color: var(--accent-yellow);
+  border-color: rgba(250, 204, 21, 0.38);
+}
+
+.reg-live-preview.is-closed .reg-preview-badge {
+  background: rgba(148, 163, 184, 0.16);
+  color: #CBD5E1;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+.reg-live-preview.is-invalid .reg-preview-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.reg-preview-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.reg-live-preview-summary {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.form-helper-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.45rem;
+  line-height: 1.45;
+}
+
+.schedule-field-group {
+  padding: 1rem 1.15rem;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid var(--border-color);
+}
+
+.schedule-label-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.schedule-date-input {
+  flex: 2 1 170px;
+  color-scheme: dark;
+}
+
+#cms-reg-settings-form input[type="checkbox"] {
+  accent-color: var(--accent-cyan);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.schedule-time-select {
+  flex: 0 1 82px;
+  min-width: 74px;
+  text-align: center;
+}
+
+.schedule-colon {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.schedule-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.preset-chip-btn {
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  color: var(--accent-cyan);
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.preset-chip-btn:hover {
+  background: rgba(34, 211, 238, 0.2);
+  border-color: var(--accent-cyan);
+}
+
+.preset-chip-btn.preset-chip-muted {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+.preset-chip-btn.preset-chip-muted:hover {
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+

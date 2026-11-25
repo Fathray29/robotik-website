@@ -20,7 +20,14 @@ import {
   ensureFirebaseInitialized,
   getLoginRateLimit,
   recordFailedLogin,
-  resetLoginRateLimit
+  resetLoginRateLimit,
+  INITIAL_REG_SETTINGS,
+  normalizeRegSettings,
+  resolveRegistrationState,
+  validateRegistrationSchedule,
+  formatLocalOffsetIso,
+  toLocalDateTimeParts,
+  formatIndonesianSchedule
 } from './shared.js';
 import { sanitizeCsvCell, mapFirebaseAuthError } from './src/lib/logic.ts';
 
@@ -134,16 +141,18 @@ function setupCmsAuthentication() {
       state.portfolioProjects = [];
       state.applicants = [];
 
-      state.regSettings = {
-        isOpen: true,
-        status: 'open',
-        showHeaderCountdown: true,
-        countdownTarget: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+      const defaultCloseAt = formatLocalOffsetIso(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+      state.regSettings = normalizeRegSettings({
+        ...INITIAL_REG_SETTINGS,
+        mode: 'manual_open',
+        openAt: '',
+        closeAt: defaultCloseAt,
+        showCountdown: true,
         customQuestions: [],
         waTitle: 'Grup WhatsApp Resmi Calon Anggota',
         waDesc: 'Gabung ke grup koordinasi calon anggota baru di bawah ini.',
         waLink: 'https://chat.whatsapp.com/mock-motechart-robotik'
-      };
+      });
 
       state.landingData = {
         heroTag: 'Ekstrakurikuler Robotik MAN 1 Bogor',
@@ -2173,81 +2182,232 @@ async function exportApplicantsToCsv() {
 }
 
 function populateTimeDropdowns() {
-  const hourSelect = document.getElementById('reg-countdown-hour');
-  const minuteSelect = document.getElementById('reg-countdown-minute');
+  const hourIds = ['reg-open-hour', 'reg-close-hour'];
+  const minuteIds = ['reg-open-minute', 'reg-close-minute'];
 
-  if (hourSelect && hourSelect.children.length === 0) {
-    for (let i = 0; i < 24; i++) {
-      const val = String(i).padStart(2, '0');
-      hourSelect.add(new Option(val, val));
+  hourIds.forEach((id) => {
+    const sel = document.getElementById(id);
+    if (sel && sel.children.length === 0) {
+      for (let i = 0; i < 24; i++) {
+        const val = String(i).padStart(2, '0');
+        sel.add(new Option(val, val));
+      }
     }
+  });
+
+  minuteIds.forEach((id) => {
+    const sel = document.getElementById(id);
+    if (sel && sel.children.length === 0) {
+      for (let i = 0; i < 60; i++) {
+        const val = String(i).padStart(2, '0');
+        sel.add(new Option(val, val));
+      }
+    }
+  });
+}
+
+let adminRegPreviewInterval = null;
+
+function readScheduleInputsFromForm() {
+  const modeSelect = document.getElementById('reg-mode-select');
+  const openDate = document.getElementById('reg-open-date');
+  const openHour = document.getElementById('reg-open-hour');
+  const openMinute = document.getElementById('reg-open-minute');
+  const closeDate = document.getElementById('reg-close-date');
+  const closeHour = document.getElementById('reg-close-hour');
+  const closeMinute = document.getElementById('reg-close-minute');
+  const countdownToggle = document.getElementById('reg-header-countdown-toggle');
+
+  const mode = modeSelect ? modeSelect.value : 'manual_open';
+  const openAt =
+    mode === 'auto' && openDate && openDate.value
+      ? formatLocalOffsetIso(openDate.value, openHour?.value || '08', openMinute?.value || '00')
+      : '';
+  const closeAt =
+    (mode === 'auto' || mode === 'manual_open') && closeDate && closeDate.value
+      ? formatLocalOffsetIso(closeDate.value, closeHour?.value || '23', closeMinute?.value || '59')
+      : '';
+  const showCountdown = countdownToggle ? countdownToggle.checked : true;
+
+  return { mode, openAt, closeAt, showCountdown };
+}
+
+function updateAdminRegScheduleUI() {
+  const modeSelect = document.getElementById('reg-mode-select');
+  const modeHint = document.getElementById('reg-mode-hint');
+  const openGroup = document.getElementById('reg-open-group');
+  const closeGroup = document.getElementById('reg-close-group');
+  const closeLabel = document.getElementById('reg-close-label');
+  const openInputs = ['reg-open-date', 'reg-open-hour', 'reg-open-minute'].map((id) => document.getElementById(id));
+  const closeInputs = ['reg-close-date', 'reg-close-hour', 'reg-close-minute'].map((id) => document.getElementById(id));
+
+  const mode = modeSelect ? modeSelect.value : 'manual_open';
+
+  if (mode === 'auto') {
+    if (openGroup) openGroup.style.display = 'block';
+    if (closeGroup) closeGroup.style.display = 'block';
+    if (closeLabel) closeLabel.textContent = 'Waktu Penutupan (Selesai)';
+    if (modeHint) modeHint.textContent = 'Sistem otomatis membuka dan menutup formulir tepat saat waktu tercapai.';
+    openInputs.forEach((inp) => { if (inp) inp.disabled = false; });
+    closeInputs.forEach((inp) => { if (inp) inp.disabled = false; });
+  } else if (mode === 'manual_open') {
+    if (openGroup) openGroup.style.display = 'none';
+    if (closeGroup) closeGroup.style.display = 'block';
+    if (closeLabel) closeLabel.textContent = 'Batas Waktu Penutupan Otomatis (Opsional)';
+    if (modeHint) modeHint.textContent = 'Pendaftaran langsung dibuka sekarang. Isi waktu penutupan jika ingin tutup otomatis.';
+    openInputs.forEach((inp) => { if (inp) inp.disabled = true; });
+    closeInputs.forEach((inp) => { if (inp) inp.disabled = false; });
+  } else {
+    if (openGroup) openGroup.style.display = 'none';
+    if (closeGroup) closeGroup.style.display = 'none';
+    if (modeHint) modeHint.textContent = 'Formulir ditutup sekarang dan fitur Cek Status Pendaftaran langsung aktif untuk pendaftar.';
+    openInputs.forEach((inp) => { if (inp) inp.disabled = true; });
+    closeInputs.forEach((inp) => { if (inp) inp.disabled = true; });
   }
 
-  if (minuteSelect && minuteSelect.children.length === 0) {
-    for (let i = 0; i < 60; i++) {
-      const val = String(i).padStart(2, '0');
-      minuteSelect.add(new Option(val, val));
+  renderAdminRegLivePreview();
+}
+
+function renderAdminRegLivePreview() {
+  const previewBox = document.getElementById('reg-live-preview-box');
+  const badgeEl = document.getElementById('reg-live-preview-badge');
+  const statusCheckEl = document.getElementById('reg-live-preview-status-check');
+  const summaryEl = document.getElementById('reg-live-preview-summary');
+  if (!previewBox || !badgeEl || !statusCheckEl || !summaryEl) return;
+
+  const nowMs = Date.now();
+  const { mode, openAt, closeAt, showCountdown } = readScheduleInputsFromForm();
+  const validation = validateRegistrationSchedule(mode, openAt, closeAt, nowMs);
+
+  previewBox.classList.remove('is-open', 'is-upcoming', 'is-closed', 'is-invalid');
+
+  if (!validation.valid) {
+    previewBox.classList.add('is-invalid');
+    badgeEl.textContent = 'JADWAL PERLU DIPERBAIKI';
+    statusCheckEl.textContent = 'Belum dapat disimpan';
+    summaryEl.textContent = validation.message;
+    return;
+  }
+
+  const resolved = resolveRegistrationState({ mode, openAt, closeAt, showCountdown }, nowMs);
+  const pad = (n) => String(n).padStart(2, '0');
+  const fmtCd = (cd) => `${pad(cd.days)}h ${pad(cd.hours)}j ${pad(cd.minutes)}m ${pad(cd.seconds)}d`;
+
+  if (resolved.phase === 'open') {
+    previewBox.classList.add('is-open');
+    badgeEl.textContent = 'DIBUKA SEKARANG';
+    statusCheckEl.textContent = 'Cek Status: Nonaktif (pendaftaran sedang berjalan)';
+    if (resolved.countdown && resolved.closeAtMs) {
+      summaryEl.textContent = `Formulir aktif. Ditutup otomatis pada ${formatIndonesianSchedule(resolved.closeAtMs)} (sisa ${fmtCd(resolved.countdown)}).`;
+    } else {
+      summaryEl.textContent = 'Formulir aktif menerima pendaftar baru tanpa batas waktu penutupan.';
+    }
+  } else if (resolved.phase === 'upcoming') {
+    previewBox.classList.add('is-upcoming');
+    badgeEl.textContent = 'SEGERA DIBUKA (TERJADWAL)';
+    statusCheckEl.textContent = 'Cek Status: Nonaktif (menunggu pendaftaran dimulai)';
+    const openLabel = formatIndonesianSchedule(resolved.openAtMs);
+    const cdText = resolved.countdown ? ` · mulai dalam ${fmtCd(resolved.countdown)}` : '';
+    const closeExtra = resolved.closeAtMs ? ` — ditutup ${formatIndonesianSchedule(resolved.closeAtMs)}` : '';
+    summaryEl.textContent = `Formulir terkunci sampai ${openLabel}${cdText}${closeExtra}.`;
+  } else {
+    previewBox.classList.add('is-closed');
+    badgeEl.textContent = 'DITUTUP / SELESAI';
+    statusCheckEl.textContent = 'Cek Status: Aktif (pendaftar dapat mengecek hasil)';
+    if (mode === 'auto' && resolved.closeAtMs) {
+      summaryEl.textContent = `Periode pendaftaran telah berakhir pada ${formatIndonesianSchedule(resolved.closeAtMs)}.`;
+    } else {
+      summaryEl.textContent = 'Formulir pendaftaran ditutup. Pengunjung diarahkan ke Cek Status Pendaftaran.';
     }
   }
 }
 
 // --- REGISTRATION SETTINGS CMS ---
 function setupAdminRegSettings() {
-  const statusToggle = document.getElementById('reg-status-toggle');
-  const dateInput = document.getElementById('reg-countdown-date');
-  const hourSelect = document.getElementById('reg-countdown-hour');
-  const minuteSelect = document.getElementById('reg-countdown-minute');
+  const modeSelect = document.getElementById('reg-mode-select');
+  const openDate = document.getElementById('reg-open-date');
+  const openHour = document.getElementById('reg-open-hour');
+  const openMinute = document.getElementById('reg-open-minute');
+  const closeDate = document.getElementById('reg-close-date');
+  const closeHour = document.getElementById('reg-close-hour');
+  const closeMinute = document.getElementById('reg-close-minute');
+  const btnClearOpenAt = document.getElementById('btn-clear-open-at');
+  const countdownToggle = document.getElementById('reg-header-countdown-toggle');
   const regSettingsForm = document.getElementById('cms-reg-settings-form');
 
   if (regSettingsForm) {
     populateTimeDropdowns();
 
-    if (statusToggle && dateInput) {
-      const toggleCountdownTargetVisibility = () => {
-        const targetGroup = dateInput.closest('.form-group');
-        const targetLabel = document.getElementById('reg-countdown-label');
-        const inputs = [dateInput, hourSelect, minuteSelect];
-
-        if (statusToggle.value === 'closed') {
-          if (targetGroup) targetGroup.style.display = 'block';
-          if (targetLabel) targetLabel.textContent = 'Target Waktu Pembukaan';
-          inputs.forEach(inp => {
-            if (inp) {
-              inp.disabled = false;
-              inp.required = true;
-            }
-          });
-        } else if (statusToggle.value === 'open') {
-          if (targetGroup) targetGroup.style.display = 'block';
-          if (targetLabel) targetLabel.textContent = 'Target Waktu Penutupan (Opsional)';
-          inputs.forEach(inp => {
-            if (inp) {
-              inp.disabled = false;
-              inp.required = false;
-            }
-          });
-        } else {
-          if (targetGroup) targetGroup.style.display = 'none';
-          inputs.forEach(inp => {
-            if (inp) {
-              inp.disabled = true;
-              inp.required = false;
-            }
-          });
-        }
-      };
-      statusToggle.addEventListener('change', toggleCountdownTargetVisibility);
+    if (modeSelect) {
+      modeSelect.addEventListener('change', updateAdminRegScheduleUI);
     }
+
+    [openDate, openHour, openMinute, closeDate, closeHour, closeMinute, countdownToggle].forEach((el) => {
+      if (el) {
+        el.addEventListener('change', renderAdminRegLivePreview);
+        el.addEventListener('input', renderAdminRegLivePreview);
+      }
+    });
+
+    if (btnClearOpenAt && openDate && openHour && openMinute) {
+      btnClearOpenAt.addEventListener('click', () => {
+        playRoboticSound('click');
+        openDate.value = '';
+        openHour.value = '08';
+        openMinute.value = '00';
+        renderAdminRegLivePreview();
+      });
+    }
+
+    regSettingsForm.querySelectorAll('[data-close-preset]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playRoboticSound('click');
+        const preset = btn.getAttribute('data-close-preset');
+        if (!closeDate || !closeHour || !closeMinute) return;
+        if (preset === 'clear') {
+          closeDate.value = '';
+          closeHour.value = '23';
+          closeMinute.value = '59';
+          renderAdminRegLivePreview();
+          return;
+        }
+        const days = Number(preset);
+        if (!Number.isFinite(days) || days <= 0) return;
+        let baseMs = Date.now();
+        if (modeSelect && modeSelect.value === 'auto' && openDate && openDate.value) {
+          const openIso = formatLocalOffsetIso(openDate.value, openHour?.value || '08', openMinute?.value || '00');
+          const parsedOpen = Date.parse(openIso);
+          if (!Number.isNaN(parsedOpen) && parsedOpen > baseMs) {
+            baseMs = parsedOpen;
+          }
+        }
+        const target = new Date(baseMs + days * 24 * 60 * 60 * 1000);
+        target.setHours(23, 59, 0, 0);
+        const parts = toLocalDateTimeParts(formatLocalOffsetIso(target));
+        closeDate.value = parts.date;
+        closeHour.value = parts.hour;
+        closeMinute.value = parts.minute;
+        renderAdminRegLivePreview();
+      });
+    });
+
+    if (adminRegPreviewInterval) clearInterval(adminRegPreviewInterval);
+    adminRegPreviewInterval = setInterval(renderAdminRegLivePreview, 1000);
 
     regSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const statusVal = statusToggle ? statusToggle.value : 'open';
+      const { mode, openAt, closeAt, showCountdown } = readScheduleInputsFromForm();
+      const validation = validateRegistrationSchedule(mode, openAt, closeAt, Date.now());
 
-      if (statusVal === 'closed' && dateInput && !dateInput.value) {
-        activateSubTabForElement(dateInput);
+      if (!validation.valid) {
+        activateSubTabForElement(modeSelect || closeDate);
         playRoboticSound('error');
-        showToast('Target tanggal pembukaan wajib diisi saat status ditutup dengan hitung mundur.', 'error');
-        dateInput.focus();
+        showToast(validation.message, 'error');
+        if (mode === 'auto' && !openAt && !closeAt && openDate) {
+          openDate.focus();
+        } else if (closeDate) {
+          closeDate.focus();
+        }
         return;
       }
 
@@ -2281,32 +2441,23 @@ function setupAdminRegSettings() {
         return;
       }
 
-      state.regSettings.status = statusVal;
-      state.regSettings.isOpen = (statusVal === 'open');
-
-      if (dateInput && hourSelect && minuteSelect) {
-        if (dateInput.value && statusVal !== 'closed_permanently') {
-          const hr = hourSelect.value || '00';
-          const mn = minuteSelect.value || '00';
-          state.regSettings.countdownTarget = `${dateInput.value}T${hr}:${mn}`;
-        } else {
-          state.regSettings.countdownTarget = '';
-        }
-      }
-
-      const headerCountdownToggle = document.getElementById('reg-header-countdown-toggle');
-      if (headerCountdownToggle) {
-        state.regSettings.showHeaderCountdown = headerCountdownToggle.checked;
-      }
-
-      state.regSettings.waTitle = waTitleVal;
-      state.regSettings.waDesc = waDescVal;
-      state.regSettings.waLink = sanitizeUrl(waLinkRaw);
+      state.regSettings = normalizeRegSettings({
+        ...state.regSettings,
+        mode,
+        openAt,
+        closeAt,
+        showCountdown,
+        showHeaderCountdown: showCountdown,
+        waTitle: waTitleVal,
+        waDesc: waDescVal,
+        waLink: sanitizeUrl(waLinkRaw),
+      });
 
       try {
         await saveData('robotik_reg_settings', state.regSettings);
+        renderAdminRegLivePreview();
         playRoboticSound('success');
-        showToast('Konfigurasi pendaftaran berhasil disimpan!');
+        showToast('Konfigurasi jadwal & pendaftaran berhasil disimpan!');
       } catch (err) {
         playRoboticSound('error');
         showToast('Tersimpan lokal, tapi gagal sinkronisasi ke Firestore.', 'error');
@@ -2431,74 +2582,61 @@ function setupAdminRegSettings() {
 
 function populateRegSettingsCmsInputs() {
   populateTimeDropdowns();
-  const statusToggle = document.getElementById('reg-status-toggle');
-  const dateInput = document.getElementById('reg-countdown-date');
-  const hourSelect = document.getElementById('reg-countdown-hour');
-  const minuteSelect = document.getElementById('reg-countdown-minute');
+  const normalized = normalizeRegSettings(state.regSettings);
+  state.regSettings = normalized;
 
-  if (statusToggle && dateInput && hourSelect && minuteSelect) {
-    statusToggle.value = state.regSettings.status || (state.regSettings.isOpen ? 'open' : 'closed');
-    let targetVal = state.regSettings.countdownTarget || '';
-    if (targetVal.includes('T')) {
-      const parts = targetVal.split('T');
-      dateInput.value = parts[0];
-      const timeParts = parts[1].split(':');
-      if (timeParts.length >= 2) {
-        hourSelect.value = timeParts[0];
-        minuteSelect.value = timeParts[1];
-      }
+  const modeSelect = document.getElementById('reg-mode-select');
+  const openDate = document.getElementById('reg-open-date');
+  const openHour = document.getElementById('reg-open-hour');
+  const openMinute = document.getElementById('reg-open-minute');
+  const closeDate = document.getElementById('reg-close-date');
+  const closeHour = document.getElementById('reg-close-hour');
+  const closeMinute = document.getElementById('reg-close-minute');
+
+  if (modeSelect) {
+    modeSelect.value = normalized.mode || 'manual_open';
+  }
+
+  if (openDate && openHour && openMinute) {
+    if (normalized.openAt) {
+      const parts = toLocalDateTimeParts(normalized.openAt);
+      openDate.value = parts.date;
+      openHour.value = parts.hour;
+      openMinute.value = parts.minute;
     } else {
-      dateInput.value = '';
-      hourSelect.value = '00';
-      minuteSelect.value = '00';
+      openDate.value = '';
+      openHour.value = '08';
+      openMinute.value = '00';
     }
+  }
 
-    // Initial visibility check
-    const targetGroup = dateInput.closest('.form-group');
-    const targetLabel = document.getElementById('reg-countdown-label');
-    const inputs = [dateInput, hourSelect, minuteSelect];
-
-    if (statusToggle.value === 'closed') {
-      if (targetGroup) targetGroup.style.display = 'block';
-      if (targetLabel) targetLabel.textContent = 'Target Waktu Pembukaan';
-      inputs.forEach(inp => {
-        if (inp) {
-          inp.disabled = false;
-          inp.required = true;
-        }
-      });
-    } else if (statusToggle.value === 'open') {
-      if (targetGroup) targetGroup.style.display = 'block';
-      if (targetLabel) targetLabel.textContent = 'Target Waktu Penutupan (Opsional)';
-      inputs.forEach(inp => {
-        if (inp) {
-          inp.disabled = false;
-          inp.required = false;
-        }
-      });
+  if (closeDate && closeHour && closeMinute) {
+    if (normalized.closeAt) {
+      const parts = toLocalDateTimeParts(normalized.closeAt);
+      closeDate.value = parts.date;
+      closeHour.value = parts.hour;
+      closeMinute.value = parts.minute;
     } else {
-      if (targetGroup) targetGroup.style.display = 'none';
-      inputs.forEach(inp => {
-        if (inp) {
-          inp.disabled = true;
-          inp.required = false;
-        }
-      });
+      closeDate.value = '';
+      closeHour.value = '23';
+      closeMinute.value = '59';
     }
   }
 
   const headerCountdownToggle = document.getElementById('reg-header-countdown-toggle');
   if (headerCountdownToggle) {
-    headerCountdownToggle.checked = (state.regSettings.showHeaderCountdown !== false);
+    headerCountdownToggle.checked = normalized.showCountdown !== false;
   }
 
   const waTitleInput = document.getElementById('reg-wa-title');
   const waDescInput = document.getElementById('reg-wa-desc');
   const waLinkInput = document.getElementById('reg-wa-link');
 
-  if (waTitleInput) waTitleInput.value = state.regSettings.waTitle || '';
-  if (waDescInput) waDescInput.value = state.regSettings.waDesc || '';
-  if (waLinkInput) waLinkInput.value = state.regSettings.waLink || '';
+  if (waTitleInput) waTitleInput.value = normalized.waTitle || '';
+  if (waDescInput) waDescInput.value = normalized.waDesc || '';
+  if (waLinkInput) waLinkInput.value = normalized.waLink || '';
+
+  updateAdminRegScheduleUI();
 }
 
 function renderAdminQuestionsTable() {

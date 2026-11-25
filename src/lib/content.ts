@@ -512,11 +512,25 @@ export const INITIAL_APPLICANTS: Applicant[] = [
   },
 ];
 
+const DEFAULT_CLOSE_AT = (() => {
+  const dt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+  dt.setHours(23, 59, 0, 0);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const off = -dt.getTimezoneOffset();
+  const sign = off >= 0 ? '+' : '-';
+  const absOff = Math.abs(off);
+  return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T23:59:00${sign}${pad(Math.floor(absOff / 60))}:${pad(absOff % 60)}`;
+})();
+
 export const INITIAL_REG_SETTINGS: RegistrationSettings = {
+  mode: 'manual_open',
+  openAt: '',
+  closeAt: DEFAULT_CLOSE_AT,
+  showCountdown: true,
   isOpen: true,
   status: 'open',
   showHeaderCountdown: true,
-  countdownTarget: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+  countdownTarget: DEFAULT_CLOSE_AT,
   customQuestions: [
     {
       id: 'q-1779445719',

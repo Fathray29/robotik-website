@@ -18,6 +18,14 @@ import {
   INITIAL_PORTFOLIO_PROJECTS,
   INITIAL_REG_SETTINGS,
 } from './src/lib/content.ts';
+import {
+  formatIndonesianSchedule,
+  formatLocalOffsetIso,
+  normalizeRegSettings as normalizeRegSettingsCore,
+  resolveRegistrationState,
+  toLocalDateTimeParts,
+  validateRegistrationSchedule,
+} from './src/lib/logic.ts';
 
 export {
   INITIAL_APPLICANTS,
@@ -25,20 +33,15 @@ export {
   INITIAL_LANDING_DATA,
   INITIAL_PORTFOLIO_PROJECTS,
   INITIAL_REG_SETTINGS,
+  formatIndonesianSchedule,
+  formatLocalOffsetIso,
+  resolveRegistrationState,
+  toLocalDateTimeParts,
+  validateRegistrationSchedule,
 };
 
 export function normalizeRegSettings(settings) {
-  if (!settings) return { ...INITIAL_REG_SETTINGS };
-  const validStatus = ['open', 'closed', 'closed_permanently'].includes(settings.status)
-    ? settings.status
-    : (settings.isOpen ? 'open' : 'closed');
-
-  settings.status = validStatus;
-  settings.isOpen = (validStatus === 'open');
-  if (settings.showHeaderCountdown === undefined) {
-    settings.showHeaderCountdown = true;
-  }
-  return settings;
+  return normalizeRegSettingsCore(settings, INITIAL_REG_SETTINGS);
 }
 
 

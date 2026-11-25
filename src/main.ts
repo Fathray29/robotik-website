@@ -673,16 +673,27 @@ function setupGlobalEventDelegation(): void {
   });
 
   // Top bar CTA & Hero buttons
-  document.getElementById('header-cta-daftar')?.addEventListener('click', () => navigateTo('view-pendaftaran'));
-  document.getElementById('hero-btn-daftar')?.addEventListener('click', () => navigateTo('view-pendaftaran'));
+  const openRegistrationOrStatus = () => {
+    const canCheck = isStatusCheckEnabled(appState.regSettings, Date.now());
+    navigateTo('view-pendaftaran', { scrollTop: !canCheck });
+    if (canCheck) {
+      setTimeout(() => {
+        document.getElementById('status-checker-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        (document.getElementById('status-check-input') as HTMLInputElement | null)?.focus();
+      }, 60);
+    }
+  };
+  document.getElementById('header-cta-daftar')?.addEventListener('click', openRegistrationOrStatus);
+  document.getElementById('hero-btn-daftar')?.addEventListener('click', openRegistrationOrStatus);
   document.getElementById('hero-btn-galeri')?.addEventListener('click', () => navigateTo('view-portfolio'));
   document.getElementById('home-btn-all-projects')?.addEventListener('click', () => navigateTo('view-portfolio'));
   document.getElementById('cta-bottom-daftar')?.addEventListener('click', () => navigateTo('view-pendaftaran'));
   document.getElementById('cta-bottom-status')?.addEventListener('click', () => {
-    if (!isStatusCheckEnabled(appState.regSettings.status)) return;
+    if (!isStatusCheckEnabled(appState.regSettings, Date.now())) return;
     navigateTo('view-pendaftaran', { scrollTop: false });
     setTimeout(() => {
       document.getElementById('status-checker-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      (document.getElementById('status-check-input') as HTMLInputElement | null)?.focus();
     }, 60);
   });
 

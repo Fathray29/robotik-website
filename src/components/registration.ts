@@ -1,10 +1,10 @@
 import {
-  computeCountdown,
   escapeHtml,
+  formatIndonesianSchedule,
   generateRegistrationId,
-  isStatusCheckEnabled,
   normalizePhoneNumber,
   normalizeRegistrationId,
+  resolveRegistrationState,
   sanitizePlainText,
   sanitizeUrl,
   validateCustomQuestionAnswer,
@@ -313,7 +313,7 @@ export function resetRegistrationWizard(): void {
   goToStep(1);
 
   if (successCard) successCard.classList.add('hidden');
-  if (appState.regSettings.status === 'open') {
+  if (resolveRegistrationState(appState.regSettings, Date.now()).canSubmit) {
     if (formCard) formCard.classList.remove('hidden');
     if (progress) progress.classList.remove('hidden');
   }
@@ -325,17 +325,22 @@ export function updateRegistrationAvailabilityUI(): void {
     countdownTimerId = null;
   }
 
-  const settings = appState.regSettings;
   const closedCard = document.getElementById('reg-closed-card');
+  const closedBadge = document.getElementById('reg-closed-badge');
   const closedTitle = document.getElementById('reg-closed-title');
   const closedDesc = document.getElementById('reg-closed-desc');
+  const scheduleSummary = document.getElementById('reg-schedule-summary');
   const closedCountdownWrap = document.getElementById('reg-closed-countdown');
+  const openCountdownBanner = document.getElementById('reg-open-countdown-banner');
+  const openDeadlineDate = document.getElementById('reg-open-deadline-date');
+  const openCountdownValue = document.getElementById('reg-open-countdown-value');
   const formCard = document.getElementById('reg-form-card');
   const progress = document.getElementById('reg-step-progress');
   const successCard = document.getElementById('reg-success-card');
   const heroNotice = document.getElementById('hero-reg-window');
   const heroCta = document.getElementById('hero-btn-daftar') as HTMLButtonElement | null;
   const headerCta = document.getElementById('header-cta-daftar') as HTMLButtonElement | null;
+  const bottomDaftarBtn = document.getElementById('cta-bottom-daftar') as HTMLButtonElement | null;
   const bottomStatusBtn = document.getElementById('cta-bottom-status') as HTMLButtonElement | null;
   const statusInput = document.getElementById('status-check-input') as HTMLInputElement | null;
   const statusSubmitBtn = document.getElementById('btn-check-status') as HTMLButtonElement | null;
@@ -345,127 +350,203 @@ export function updateRegistrationAvailabilityUI(): void {
   const checkMyStatusBtn = document.getElementById('btn-check-my-status') as HTMLButtonElement | null;
   const successPendingNote = document.getElementById('success-status-pending-note');
 
-  const canCheckStatus = isStatusCheckEnabled(settings.status);
-  if (bottomStatusBtn) {
-    bottomStatusBtn.disabled = !canCheckStatus;
-    bottomStatusBtn.setAttribute('aria-disabled', String(!canCheckStatus));
-    bottomStatusBtn.title = canCheckStatus
-      ? 'Periksa status pendaftaranmu'
-      : 'Opsi cek status aktif setelah proses pendaftaran selesai';
-  }
-  if (statusDisabledBanner) statusDisabledBanner.classList.toggle('hidden', canCheckStatus);
-  if (statusControls) statusControls.classList.toggle('opacity-55', !canCheckStatus);
-  if (statusStateBadge) {
-    statusStateBadge.textContent = canCheckStatus ? 'Aktif' : 'Nonaktif Sementara';
-    statusStateBadge.className = canCheckStatus
-      ? 'rounded-md border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-300'
-      : 'rounded-md border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-300';
-  }
-  if (statusInput) {
-    statusInput.disabled = !canCheckStatus;
-    if (!canCheckStatus) setFieldError('status-check-input', '');
-  }
-  if (statusSubmitBtn) statusSubmitBtn.disabled = !canCheckStatus;
-  document.querySelectorAll<HTMLButtonElement>('[data-demo-status-id]').forEach((btn) => {
-    btn.disabled = !canCheckStatus;
-  });
-  if (checkMyStatusBtn) {
-    checkMyStatusBtn.disabled = !canCheckStatus;
-    checkMyStatusBtn.setAttribute('aria-disabled', String(!canCheckStatus));
-  }
-  if (successPendingNote) {
-    successPendingNote.classList.toggle('hidden', canCheckStatus);
-  }
-
-  const successVisible = Boolean(successCard && !successCard.classList.contains('hidden'));
   const pad = (n: number) => String(n).padStart(2, '0');
+  const setTxt = (id: string, value: string) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
 
-  if (settings.status === 'open') {
-    closedCard?.classList.add('hidden');
-    if (!successVisible) {
-      formCard?.classList.remove('hidden');
-      progress?.classList.remove('hidden');
-    }
-    if (heroCta) {
-      heroCta.disabled = false;
-      heroCta.textContent = 'Daftar Sekarang';
-    }
-    if (headerCta) {
-      headerCta.textContent = 'Daftar Sekarang';
-    }
+  let lastRenderedPhase: string | null = null;
 
-    const tickOpen = () => {
-      const cd = computeCountdown(settings.countdownTarget, Date.now());
-      if (!heroNotice) return;
-      if (settings.showHeaderCountdown && !cd.expired) {
-        heroNotice.classList.remove('hidden');
-        heroNotice.innerHTML = `<span class="inline-flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-1"><span>Pendaftaran aktif · ditutup dalam</span><span class="font-mono font-semibold text-amber-300 tabular-nums tracking-wide">${pad(cd.days)}h&nbsp;&nbsp;${pad(cd.hours)}j&nbsp;&nbsp;${pad(cd.minutes)}m&nbsp;&nbsp;${pad(cd.seconds)}d</span></span>`;
+  const syncFrame = () => {
+    const nowMs = Date.now();
+    const resolved = resolveRegistrationState(appState.regSettings, nowMs);
+    const { phase, canCheckStatus, countdown, showCountdown, openAtMs, closeAtMs } = resolved;
+    const phaseChanged = phase !== lastRenderedPhase;
+
+    if (phaseChanged) {
+      lastRenderedPhase = phase;
+      const successVisible = Boolean(successCard && !successCard.classList.contains('hidden'));
+
+      // 1. Status Checker Gating (active strictly when phase === 'closed')
+      if (bottomStatusBtn) {
+        bottomStatusBtn.disabled = !canCheckStatus;
+        bottomStatusBtn.setAttribute('aria-disabled', String(!canCheckStatus));
+        bottomStatusBtn.title = canCheckStatus
+          ? 'Periksa status pendaftaranmu'
+          : phase === 'upcoming'
+            ? 'Pendaftaran belum dimulai. Opsi cek status aktif setelah pendaftaran selesai'
+            : 'Opsi cek status aktif setelah proses pendaftaran selesai';
+      }
+      if (statusDisabledBanner) {
+        statusDisabledBanner.classList.toggle('hidden', canCheckStatus);
+        if (!canCheckStatus) {
+          statusDisabledBanner.textContent =
+            phase === 'upcoming'
+              ? 'Pendaftaran gelombang ini belum dibuka. Opsi cek status seleksi otomatis aktif setelah proses pendaftaran selesai.'
+              : 'Pendaftaran sedang berjalan. Opsi cek status seleksi otomatis aktif setelah pendaftaran selesai.';
+        }
+      }
+      if (statusControls) statusControls.classList.toggle('opacity-55', !canCheckStatus);
+      if (statusStateBadge) {
+        statusStateBadge.textContent = canCheckStatus ? 'Aktif' : 'Nonaktif Sementara';
+        statusStateBadge.className = canCheckStatus
+          ? 'rounded-md border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-300'
+          : 'rounded-md border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-300';
+      }
+      if (statusInput) {
+        statusInput.disabled = !canCheckStatus;
+        if (!canCheckStatus) setFieldError('status-check-input', '');
+      }
+      if (statusSubmitBtn) statusSubmitBtn.disabled = !canCheckStatus;
+      document.querySelectorAll<HTMLButtonElement>('[data-demo-status-id]').forEach((btn) => {
+        btn.disabled = !canCheckStatus;
+      });
+      if (checkMyStatusBtn) {
+        checkMyStatusBtn.disabled = !canCheckStatus;
+        checkMyStatusBtn.setAttribute('aria-disabled', String(!canCheckStatus));
+      }
+      if (successPendingNote) {
+        successPendingNote.classList.toggle('hidden', canCheckStatus);
+      }
+
+      // 2. Phase-specific layout & CTAs
+      if (phase === 'open') {
+        closedCard?.classList.add('hidden');
+        if (!successVisible) {
+          formCard?.classList.remove('hidden');
+          progress?.classList.remove('hidden');
+        }
+        if (heroCta) {
+          heroCta.disabled = false;
+          heroCta.textContent = 'Daftar Sekarang';
+        }
+        if (headerCta) headerCta.textContent = 'Daftar Sekarang';
+        if (bottomDaftarBtn) bottomDaftarBtn.textContent = 'Daftar Sekarang';
+      } else if (phase === 'upcoming') {
+        formCard?.classList.add('hidden');
+        progress?.classList.add('hidden');
+        openCountdownBanner?.classList.add('hidden');
+        closedCard?.classList.remove('hidden');
+
+        if (closedBadge) {
+          closedBadge.textContent = 'Segera Dibuka';
+          closedBadge.className =
+            'rounded-md border border-amber-400/30 bg-amber-400/10 px-2.5 py-0.5 font-mono text-[10px] font-medium text-amber-300 uppercase';
+        }
+        if (closedTitle) closedTitle.textContent = 'Pendaftaran Segera Dibuka';
+        if (closedDesc) {
+          closedDesc.textContent =
+            'Gelombang pendaftaran baru sudah dijadwalkan. Formulir otomatis terbuka begitu hitung mundur selesai.';
+        }
+        if (scheduleSummary) {
+          const openFmt = formatIndonesianSchedule(openAtMs);
+          const closeFmt = closeAtMs ? formatIndonesianSchedule(closeAtMs) : '';
+          scheduleSummary.textContent = closeFmt
+            ? `Dibuka: ${openFmt}  ·  Ditutup: ${closeFmt}`
+            : `Jadwal buka: ${openFmt}`;
+          scheduleSummary.classList.toggle('hidden', !openFmt);
+        }
+        if (heroCta) {
+          heroCta.disabled = false;
+          heroCta.textContent = 'Lihat Jadwal Buka';
+        }
+        if (headerCta) headerCta.textContent = 'Jadwal Buka';
+        if (bottomDaftarBtn) bottomDaftarBtn.textContent = 'Lihat Jadwal Pembukaan';
       } else {
+        // phase === 'closed'
+        formCard?.classList.add('hidden');
+        progress?.classList.add('hidden');
+        openCountdownBanner?.classList.add('hidden');
+        closedCountdownWrap?.classList.add('hidden');
+        closedCard?.classList.remove('hidden');
+
+        if (closedBadge) {
+          closedBadge.textContent = 'Pendaftaran Selesai';
+          closedBadge.className =
+            'rounded-md border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[10px] font-medium text-emerald-300 uppercase';
+        }
+        if (closedTitle) closedTitle.textContent = 'Pendaftaran Periode Ini Sudah Selesai';
+        if (closedDesc) {
+          closedDesc.textContent =
+            'Penerimaan anggota baru periode ini telah ditutup. Jika kamu sudah mendaftar, langsung cek status seleksimu di panel sebelah kanan.';
+        }
+        if (scheduleSummary) {
+          const closeFmt = closeAtMs ? formatIndonesianSchedule(closeAtMs) : '';
+          scheduleSummary.textContent = closeFmt ? `Ditutup pada: ${closeFmt}` : '';
+          scheduleSummary.classList.toggle('hidden', !closeFmt);
+        }
+        if (heroCta) {
+          heroCta.disabled = false;
+          heroCta.textContent = 'Cek Status Pendaftaran';
+        }
+        if (headerCta) headerCta.textContent = 'Cek Status';
+        if (bottomDaftarBtn) bottomDaftarBtn.textContent = 'Info Pendaftaran';
+      }
+    }
+
+    // 3. Per-second live countdown rendering
+    if (phase === 'open') {
+      const hasLiveCloseCountdown = Boolean(showCountdown && countdown && closeAtMs);
+      if (heroNotice) {
         heroNotice.classList.remove('hidden');
-        heroNotice.textContent = 'Pendaftaran anggota baru tahun ajaran 2026/2027 sedang dibuka.';
+        if (hasLiveCloseCountdown && countdown) {
+          heroNotice.innerHTML = `<span class="inline-flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-1"><span>Pendaftaran aktif · ditutup dalam</span><span class="font-mono font-semibold text-amber-300 tabular-nums tracking-wide">${pad(countdown.days)}h&nbsp;&nbsp;${pad(countdown.hours)}j&nbsp;&nbsp;${pad(countdown.minutes)}m&nbsp;&nbsp;${pad(countdown.seconds)}d</span></span>`;
+        } else {
+          heroNotice.textContent = 'Pendaftaran anggota baru sedang dibuka.';
+        }
       }
-    };
 
-    tickOpen();
-    countdownTimerId = window.setInterval(tickOpen, 1000);
-  } else {
-    formCard?.classList.add('hidden');
-    progress?.classList.add('hidden');
-    closedCard?.classList.remove('hidden');
-
-    if (settings.status === 'closed_permanently') {
-      if (closedTitle) closedTitle.textContent = 'Pendaftaran Periode Ini Sudah Selesai';
-      if (closedDesc) {
-        closedDesc.textContent =
-          'Penerimaan anggota baru periode ini sudah ditutup. Kalau kamu sudah daftar, cek statusmu di kolom sebelah kanan.';
+      const successVisible = Boolean(successCard && !successCard.classList.contains('hidden'));
+      if (openCountdownBanner) {
+        const showBanner = hasLiveCloseCountdown && !successVisible;
+        openCountdownBanner.classList.toggle('hidden', !showBanner);
+        if (showBanner && countdown) {
+          if (openDeadlineDate) openDeadlineDate.textContent = `Ditutup otomatis pada ${formatIndonesianSchedule(closeAtMs)}`;
+          if (openCountdownValue) {
+            openCountdownValue.textContent = `${pad(countdown.days)}h ${pad(countdown.hours)}j ${pad(countdown.minutes)}m ${pad(countdown.seconds)}d`;
+          }
+        }
       }
-      closedCountdownWrap?.classList.add('hidden');
-      if (heroNotice) heroNotice.textContent = 'Pendaftaran anggota baru sedang ditutup.';
-      if (heroCta) {
-        heroCta.disabled = false;
-        heroCta.textContent = 'Cek Status Pendaftaran';
-      }
-      if (headerCta) {
-        headerCta.textContent = 'Cek Status';
+    } else if (phase === 'upcoming') {
+      if (countdown && showCountdown) {
+        closedCountdownWrap?.classList.remove('hidden');
+        setTxt('cd-days', pad(countdown.days));
+        setTxt('cd-hours', pad(countdown.hours));
+        setTxt('cd-minutes', pad(countdown.minutes));
+        setTxt('cd-seconds', pad(countdown.seconds));
+        if (heroNotice) {
+          heroNotice.classList.remove('hidden');
+          heroNotice.innerHTML = `<span class="inline-flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-1"><span>Pendaftaran dibuka dalam</span><span class="font-mono font-semibold text-amber-300 tabular-nums tracking-wide">${pad(countdown.days)}h&nbsp;&nbsp;${pad(countdown.hours)}j&nbsp;&nbsp;${pad(countdown.minutes)}m&nbsp;&nbsp;${pad(countdown.seconds)}d</span></span>`;
+        }
+      } else {
+        closedCountdownWrap?.classList.add('hidden');
+        if (heroNotice) {
+          heroNotice.classList.remove('hidden');
+          const openFmt = formatIndonesianSchedule(openAtMs);
+          heroNotice.textContent = openFmt
+            ? `Pendaftaran segera dibuka pada ${openFmt}.`
+            : 'Pendaftaran segera dibuka.';
+        }
       }
     } else {
-      if (closedTitle) closedTitle.textContent = 'Pendaftaran Segera Dibuka';
-      if (closedDesc) {
-        closedDesc.textContent =
-          'Pengurus lab sedang menyiapkan gelombang pendaftaran baru. Pantau hitung mundur pembukaan di bawah:';
+      closedCountdownWrap?.classList.add('hidden');
+      if (heroNotice) {
+        heroNotice.classList.remove('hidden');
+        heroNotice.textContent = 'Pendaftaran periode ini telah ditutup · Cek status seleksi sudah aktif.';
       }
-      if (heroCta) {
-        heroCta.disabled = false;
-        heroCta.textContent = 'Lihat Jadwal Pembukaan';
+      // No future auto-transition needed once closed -> stop ticking to save CPU
+      if (countdownTimerId !== null) {
+        window.clearInterval(countdownTimerId);
+        countdownTimerId = null;
       }
-      if (headerCta) {
-        headerCta.textContent = 'Jadwal Buka';
-      }
-
-      const tickClosed = () => {
-        const cd = computeCountdown(settings.countdownTarget, Date.now());
-        if (cd.expired) {
-          closedCountdownWrap?.classList.add('hidden');
-          if (heroNotice) heroNotice.textContent = 'Pendaftaran sedang ditutup sementara.';
-          return;
-        }
-        closedCountdownWrap?.classList.remove('hidden');
-        const setTxt = (id: string, v: string) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = v;
-        };
-        setTxt('cd-days', pad(cd.days));
-        setTxt('cd-hours', pad(cd.hours));
-        setTxt('cd-minutes', pad(cd.minutes));
-        setTxt('cd-seconds', pad(cd.seconds));
-        if (heroNotice) {
-          heroNotice.innerHTML = `<span class="inline-flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-1"><span>Pendaftaran dibuka dalam</span><span class="font-mono font-semibold text-amber-300 tabular-nums tracking-wide">${pad(cd.days)}h&nbsp;&nbsp;${pad(cd.hours)}j&nbsp;&nbsp;${pad(cd.minutes)}m</span></span>`;
-        }
-      };
-
-      tickClosed();
-      countdownTimerId = window.setInterval(tickClosed, 1000);
     }
+  };
+
+  syncFrame();
+  const initial = resolveRegistrationState(appState.regSettings, Date.now());
+  if (initial.countdownTargetMs !== null) {
+    countdownTimerId = window.setInterval(syncFrame, 1000);
   }
 }
 
@@ -513,8 +594,15 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (appState.regSettings.status !== 'open') {
-      showToast('Pendaftaran saat ini sedang ditutup.', 'error');
+    const liveState = resolveRegistrationState(appState.regSettings, Date.now());
+    if (!liveState.canSubmit) {
+      updateRegistrationAvailabilityUI();
+      showToast(
+        liveState.phase === 'upcoming'
+          ? 'Pendaftaran belum dibuka. Tunggu hingga jadwal pembukaan tiba.'
+          : 'Waktu pendaftaran sudah berakhir.',
+        'error'
+      );
       return;
     }
     if (currentStep < 3) {
@@ -618,7 +706,7 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
   });
 
   document.getElementById('btn-check-my-status')?.addEventListener('click', async () => {
-    if (!isStatusCheckEnabled(appState.regSettings.status)) {
+    if (!resolveRegistrationState(appState.regSettings, Date.now()).canCheckStatus) {
       showToast('Opsi cek status aktif setelah proses pendaftaran selesai.', 'error');
       return;
     }
@@ -640,8 +728,8 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
 
   statusForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!isStatusCheckEnabled(appState.regSettings.status)) {
-      showToast('Pendaftaran sedang berjalan. Cek status aktif setelah pendaftaran selesai.', 'error');
+    if (!resolveRegistrationState(appState.regSettings, Date.now()).canCheckStatus) {
+      showToast('Pendaftaran belum selesai. Cek status aktif setelah pendaftaran ditutup.', 'error');
       return;
     }
     if (!statusInput) return;
@@ -662,7 +750,7 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
       openStatusModal(applicant, normalized, appState.regSettings);
     } finally {
       if (statusBtn) {
-        statusBtn.disabled = !isStatusCheckEnabled(appState.regSettings.status);
+        statusBtn.disabled = !resolveRegistrationState(appState.regSettings, Date.now()).canCheckStatus;
         statusBtn.textContent = 'Cek Status Sekarang';
       }
     }
@@ -673,7 +761,7 @@ export function initRegistrationModule(onNavigateHome: () => void): void {
   // Quick demo ID helper buttons inside status checker
   document.querySelectorAll<HTMLButtonElement>('[data-demo-status-id]').forEach((btn) => {
     btn.addEventListener('click', async () => {
-      if (!isStatusCheckEnabled(appState.regSettings.status)) {
+      if (!resolveRegistrationState(appState.regSettings, Date.now()).canCheckStatus) {
         showToast('Opsi cek status aktif setelah proses pendaftaran selesai.', 'error');
         return;
       }

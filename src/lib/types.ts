@@ -40,7 +40,15 @@ export interface CustomQuestion {
   required: boolean;
 }
 
+export type RegistrationMode = 'auto' | 'manual_open' | 'manual_closed';
+export type RegistrationPhase = 'upcoming' | 'open' | 'closed';
+
 export interface RegistrationSettings {
+  mode: RegistrationMode;
+  openAt: string;
+  closeAt: string;
+  showCountdown: boolean;
+  /** Legacy compatibility mirror fields */
   isOpen: boolean;
   status: 'open' | 'closed' | 'closed_permanently';
   showHeaderCountdown: boolean;
@@ -49,6 +57,18 @@ export interface RegistrationSettings {
   waTitle: string;
   waDesc: string;
   waLink: string;
+}
+
+export interface ResolvedRegistrationState {
+  phase: RegistrationPhase;
+  mode: RegistrationMode;
+  canSubmit: boolean;
+  canCheckStatus: boolean;
+  openAtMs: number | null;
+  closeAtMs: number | null;
+  countdownTargetMs: number | null;
+  countdown: CountdownParts | null;
+  showCountdown: boolean;
 }
 
 export interface Applicant {

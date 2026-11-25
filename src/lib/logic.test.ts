@@ -9,21 +9,26 @@ import {
   extractProjectShortDesc,
   filterArticles,
   filterProjects,
+  formatLocalOffsetIso,
   generateRegistrationId,
   isStatusCheckEnabled,
   mapFirebaseAuthError,
   migrateLegacyLandingData,
   normalizePhoneNumber,
+  normalizeRegSettings,
   normalizeRegistrationId,
   parseMarkdownToSafeHtml,
+  parseScheduleTimestamp,
+  resolveRegistrationState,
   sanitizeCsvCell,
   sanitizeHeroHtml,
   sanitizeRichHtmlSafe,
   sanitizeUrl,
   validateCustomQuestionAnswer,
   validateRegistrationField,
+  validateRegistrationSchedule,
 } from './logic';
-import type { BlogArticle, LandingData, PortfolioProject } from './types';
+import type { BlogArticle, LandingData, PortfolioProject, RegistrationSettings } from './types';
 
 test('validateRegistrationField accepts realistic Indonesian names with punctuation', () => {
   assert.equal(validateRegistrationField('nama_lengkap', 'M. Farhan Pratama').valid, true);
@@ -313,3 +318,153 @@ test('buildSpurGearPath builds closed symmetric gear polygons with clean 3:2 mes
   assert.equal(centerDistance - (43.6 + 18.6) >= 2, true);
   assert.equal(centerDistance - (30.6 + 31.6) >= 2, true);
 });
+
+test('parseScheduleTimestamp and formatLocalOffsetIso handle explicit offsets and legacy local strings safely', () => {
+  const wibIso = formatLocalOffsetIso('2026-07-01', '08', '30', 420);
+  assert.equal(wibIso, '2026-07-01T08:30:00+07:00');
+  assert.equal(parseScheduleTimestamp(wibIso), Date.UTC(2026, 6, 1, 1, 30, 0));
+
+  const utcIso = '2026-07-01T01:30:00Z';
+  assert.equal(parseScheduleTimestamp(utcIso), Date.UTC(2026, 6, 1, 1, 30, 0));
+
+  // Local naive string parses deterministically without throwing NaN
+  const localMs = parseScheduleTimestamp('2026-07-01T08:30');
+  assert.equal(typeof localMs, 'number');
+  assert.equal(parseScheduleTimestamp(''), null);
+  assert.equal(parseScheduleTimestamp('invalid-date'), null);
+});
+
+test('resolveRegistrationState handles auto schedule transitions (upcoming -> open -> closed)', () => {
+  const openAt = '2026-07-01T08:00:00+07:00';
+  const closeAt = '2026-07-10T23:59:00+07:00';
+  const openMs = Date.parse(openAt);
+  const closeMs = Date.parse(closeAt);
+  const cfg = { mode: 'auto' as const, openAt, closeAt, showCountdown: true };
+
+  // 1 second before opening -> upcoming, cannot submit, cannot check status
+  const before = resolveRegistrationState(cfg, openMs - 1000);
+  assert.equal(before.phase, 'upcoming');
+  assert.equal(before.canSubmit, false);
+  assert.equal(before.canCheckStatus, false);
+  assert.equal(before.countdownTargetMs, openMs);
+  assert.equal(before.countdown?.seconds, 1);
+
+  // Exact opening timestamp -> open, can submit, status checker disabled, countdown switches to closeAt
+  const atOpen = resolveRegistrationState(cfg, openMs);
+  assert.equal(atOpen.phase, 'open');
+  assert.equal(atOpen.canSubmit, true);
+  assert.equal(atOpen.canCheckStatus, false);
+  assert.equal(atOpen.countdownTargetMs, closeMs);
+  assert.notEqual(atOpen.countdown, null);
+
+  // Exact closing timestamp -> closed, form locked, status checker enabled
+  const atClose = resolveRegistrationState(cfg, closeMs);
+  assert.equal(atClose.phase, 'closed');
+  assert.equal(atClose.canSubmit, false);
+  assert.equal(atClose.canCheckStatus, true);
+  assert.equal(atClose.countdown, null);
+});
+
+test('resolveRegistrationState handles manual_open deadline auto-close, indefinite open, and manual_closed', () => {
+  const closeAt = '2026-07-10T23:59:00+07:00';
+  const closeMs = Date.parse(closeAt);
+
+  // Manual open before deadline -> open
+  const openBefore = resolveRegistrationState(
+    { mode: 'manual_open', openAt: '', closeAt, showCountdown: true },
+    closeMs - 60_000
+  );
+  assert.equal(openBefore.phase, 'open');
+  assert.equal(openBefore.canSubmit, true);
+  assert.equal(openBefore.canCheckStatus, false);
+  assert.equal(openBefore.countdown?.minutes, 1);
+
+  // Manual open after deadline passes -> automatically closes!
+  const openAfter = resolveRegistrationState(
+    { mode: 'manual_open', openAt: '', closeAt, showCountdown: true },
+    closeMs + 1000
+  );
+  assert.equal(openAfter.phase, 'closed');
+  assert.equal(openAfter.canSubmit, false);
+  assert.equal(openAfter.canCheckStatus, true);
+
+  // Manual open without deadline -> open indefinitely
+  const indefinite = resolveRegistrationState(
+    { mode: 'manual_open', openAt: '', closeAt: '', showCountdown: true },
+    closeMs + 999_999
+  );
+  assert.equal(indefinite.phase, 'open');
+  assert.equal(indefinite.canSubmit, true);
+  assert.equal(indefinite.countdown, null);
+
+  // Manual closed -> closed regardless of dates, status checker enabled
+  const closed = resolveRegistrationState(
+    { mode: 'manual_closed', openAt: '', closeAt, showCountdown: true },
+    closeMs - 60_000
+  );
+  assert.equal(closed.phase, 'closed');
+  assert.equal(closed.canSubmit, false);
+  assert.equal(closed.canCheckStatus, true);
+});
+
+test('normalizeRegSettings migrates legacy Firestore docs cleanly without breaking open/close logic', () => {
+  const defaults: RegistrationSettings = {
+    mode: 'manual_open',
+    openAt: '',
+    closeAt: '',
+    showCountdown: true,
+    isOpen: true,
+    status: 'open',
+    showHeaderCountdown: true,
+    countdownTarget: '',
+    waTitle: 'WA',
+    waDesc: 'Desc',
+    waLink: 'https://chat.whatsapp.com/test',
+    customQuestions: [],
+  };
+
+  // Legacy 'closed' + countdownTarget -> auto mode with openAt
+  const legacyUpcoming = normalizeRegSettings(
+    { status: 'closed', isOpen: false, countdownTarget: '2027-08-01T08:00:00+07:00', showHeaderCountdown: true },
+    defaults
+  );
+  assert.equal(legacyUpcoming.mode, 'auto');
+  assert.equal(legacyUpcoming.openAt, '2027-08-01T08:00:00+07:00');
+  assert.equal(legacyUpcoming.closeAt, '');
+
+  // Legacy 'closed_permanently' -> manual_closed
+  const legacyPerm = normalizeRegSettings(
+    { status: 'closed_permanently', isOpen: false, countdownTarget: '' },
+    defaults
+  );
+  assert.equal(legacyPerm.mode, 'manual_closed');
+  assert.equal(isStatusCheckEnabled(legacyPerm, Date.now()), true);
+
+  // Legacy 'open' + countdownTarget -> manual_open with closeAt
+  const legacyOpen = normalizeRegSettings(
+    { status: 'open', isOpen: true, countdownTarget: '2027-08-10T23:59:00+07:00' },
+    defaults
+  );
+  assert.equal(legacyOpen.mode, 'manual_open');
+  assert.equal(legacyOpen.closeAt, '2027-08-10T23:59:00+07:00');
+});
+
+test('validateRegistrationSchedule rejects missing auto bounds, inverted ranges, and expired manual deadlines', () => {
+  const now = Date.parse('2026-07-05T12:00:00+07:00');
+
+  assert.equal(validateRegistrationSchedule('manual_closed', '', '', now).valid, true);
+  assert.equal(validateRegistrationSchedule('manual_open', '', '', now).valid, true);
+  assert.equal(validateRegistrationSchedule('manual_open', '', '2026-07-04T12:00:00+07:00', now).valid, false);
+  assert.equal(validateRegistrationSchedule('manual_open', '', '2026-07-06T12:00:00+07:00', now).valid, true);
+
+  assert.equal(validateRegistrationSchedule('auto', '', '', now).valid, false);
+  assert.equal(
+    validateRegistrationSchedule('auto', '2026-07-10T10:00:00+07:00', '2026-07-09T10:00:00+07:00', now).valid,
+    false
+  );
+  assert.equal(
+    validateRegistrationSchedule('auto', '2026-07-06T08:00:00+07:00', '2026-07-12T23:59:00+07:00', now).valid,
+    true
+  );
+});
+

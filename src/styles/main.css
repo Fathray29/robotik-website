@@ -369,37 +369,42 @@
 
 /* Live Technical SVG Animations (Compositor-Friendly) */
 .svg-spin-slow {
-  animation: spinCW 28s linear infinite;
+  transform-origin: 0 0;
+  animation: spinCW 36s linear infinite;
 }
 
 .svg-gear-cw {
-  animation: spinCW 11s linear infinite;
+  transform-origin: 0 0;
+  animation: spinCW 12s linear infinite;
 }
 
 .svg-gear-ccw {
-  animation: spinCCW 7.33s linear infinite;
+  transform-origin: 0 0;
+  animation: spinCCW 8s linear infinite;
 }
 
-.svg-arm-rock {
-  animation: armRock 4.5s ease-in-out infinite alternate;
+.svg-pitch-pulse {
+  transform-origin: 0 0;
+  animation: pitchPulse 2s ease-in-out infinite;
+}
+
+.svg-led-pulse {
+  animation: ledPulse 1.6s ease-in-out infinite;
 }
 
 .svg-trace-flow {
-  stroke-dasharray: 18 76;
-  animation: traceFlow 2.6s linear infinite;
+  stroke-dasharray: 16 84;
+  animation: traceFlow 2.4s linear infinite;
 }
 
 .svg-trace-flow-alt {
-  stroke-dasharray: 14 84;
-  animation: traceFlow 3.2s linear infinite reverse;
+  stroke-dasharray: 12 88;
+  animation: traceFlow 2.4s linear infinite;
+  animation-delay: -0.9s;
 }
 
 .svg-wave-scroll {
-  animation: waveScroll 2.2s linear infinite;
-}
-
-.svg-wave-scroll-slow {
-  animation: waveScroll 3.8s linear infinite;
+  animation: waveScroll 2.4s linear infinite;
 }
 
 .svg-maze-path {
@@ -437,18 +442,31 @@
   }
 }
 
-@keyframes armRock {
-  0% {
-    transform: rotate(-10deg);
-  }
+@keyframes pitchPulse {
+  0%,
   100% {
-    transform: rotate(12deg);
+    opacity: 0.3;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes ledPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
 @keyframes traceFlow {
   from {
-    stroke-dashoffset: 94;
+    stroke-dashoffset: 100;
   }
   to {
     stroke-dashoffset: 0;

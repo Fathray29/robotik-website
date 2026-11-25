@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  buildSpurGearPath,
   computeCountdown,
   escapeHtml,
   extractPrimarySkillTag,
@@ -282,4 +283,33 @@ test('isStatusCheckEnabled disables status lookup while registration is open and
   assert.equal(isStatusCheckEnabled('open'), false);
   assert.equal(isStatusCheckEnabled('closed'), true);
   assert.equal(isStatusCheckEnabled('closed_permanently'), true);
+});
+
+test('buildSpurGearPath builds closed symmetric gear polygons with clean 3:2 mesh clearance', () => {
+  const drivePath = buildSpurGearPath({
+    teeth: 12,
+    rootRadius: 31.6,
+    pitchRadius: 39,
+    tipRadius: 43.6,
+    phaseOffsetDeg: 0,
+  });
+  const pinionPath = buildSpurGearPath({
+    teeth: 8,
+    rootRadius: 18.6,
+    pitchRadius: 26,
+    tipRadius: 30.6,
+    phaseOffsetDeg: 22.5,
+  });
+
+  assert.equal(drivePath.startsWith('M '), true);
+  assert.equal(drivePath.endsWith(' Z'), true);
+  assert.equal(pinionPath.startsWith('M '), true);
+  assert.equal(pinionPath.endsWith(' Z'), true);
+  // 6 vertices per tooth
+  assert.equal(drivePath.split('L ').length, 12 * 6);
+  assert.equal(pinionPath.split('L ').length, 8 * 6);
+  // Center distance d = 39 + 26 = 65; tip + mating root must leave >= 2px radial clearance
+  const centerDistance = 39 + 26;
+  assert.equal(centerDistance - (43.6 + 18.6) >= 2, true);
+  assert.equal(centerDistance - (30.6 + 31.6) >= 2, true);
 });

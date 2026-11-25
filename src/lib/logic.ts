@@ -513,3 +513,47 @@ export function migrateLegacyLandingData(data: Partial<LandingData> | null | und
 
   return merged;
 }
+
+export interface SpurGearParams {
+  teeth: number;
+  rootRadius: number;
+  pitchRadius: number;
+  tipRadius: number;
+  phaseOffsetDeg?: number;
+}
+
+export function buildSpurGearPath({
+  teeth,
+  rootRadius,
+  pitchRadius,
+  tipRadius,
+  phaseOffsetDeg = 0,
+}: SpurGearParams): string {
+  const step = (Math.PI * 2) / teeth;
+  const phaseRad = (phaseOffsetDeg * Math.PI) / 180;
+  // Involute-inspired trapezoidal tooth profile with crisp visual backlash for stroke clearance
+  const halfRoot = step * 0.23;
+  const halfPitch = step * 0.195;
+  const halfTip = step * 0.13;
+  const fmt = (n: number) => Number(n.toFixed(2));
+
+  const commands: string[] = [];
+  for (let i = 0; i < teeth; i += 1) {
+    const center = phaseRad + i * step;
+    const vertices = [
+      { a: center - halfRoot, r: rootRadius },
+      { a: center - halfPitch, r: pitchRadius },
+      { a: center - halfTip, r: tipRadius },
+      { a: center + halfTip, r: tipRadius },
+      { a: center + halfPitch, r: pitchRadius },
+      { a: center + halfRoot, r: rootRadius },
+    ];
+    vertices.forEach(({ a, r }, idx) => {
+      const x = fmt(Math.cos(a) * r);
+      const y = fmt(Math.sin(a) * r);
+      commands.push(`${i === 0 && idx === 0 ? 'M' : 'L'} ${x} ${y}`);
+    });
+  }
+  return `${commands.join(' ')} Z`;
+}
+
